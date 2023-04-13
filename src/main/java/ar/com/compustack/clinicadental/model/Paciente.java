@@ -1,6 +1,6 @@
 package ar.com.compustack.clinicadental.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,8 +45,9 @@ public class Paciente
     private String alergias;
 
     @Temporal(TemporalType.DATE)
-    private LocalDate fechaNacimiento;
+    private Date fechaNacimiento;
     
-    @Column(nullable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
-    private LocalDate createdAt;
+    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Temporal(TemporalType.DATE)
+    private Date createdAt;
 }

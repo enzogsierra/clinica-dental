@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <main class="w-100 p-4 d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+            <div class="p-3 bg-light border rounded-3 text-center">
+                <div class="mb-4">
+                    <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" class="my-2" style="max-height: 8rem;" alt="Logo">
+                    <h1 th:text="${clinica.nombre}"></h1>
+                </div>
+
+                <p th:if="${param.error}" class="text-danger">Nombre de usuario o contraseña incorrectos</p>
+                <p th:unless="${param.error}" class="text-muted">Introduce tus credenciales para iniciar sesión en el sistema</p>
+
+                <form method="POST">
+                    <input name="username" type="username" class="form-control mb-3" placeholder="Usuario" required>
+                    <input name="password" type="password" class="form-control mb-3" placeholder="Contraseña" required>
+
+                    <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

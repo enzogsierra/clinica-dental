@@ -49,6 +49,6 @@ public class Cita
     
     private String estado;
     
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_DATE")
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 }
