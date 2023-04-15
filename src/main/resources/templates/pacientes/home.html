@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <script th:if="${param.close}">
+            // Cuando se crea un nuevo paciente, se redirige a esta misma pagina (/pacientes/home) 
+            // Pero con el parametro "close=true"
+            // Este parámetro indica que esta esta ventana es una ventana emergente y por lo tanto debe cerrarase
+            window.close();
+        </script>
+
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Pacientes</h2>
+                <button type="button" class="btn btn-success" id="addPatientBtn">
+                    <i class="bi bi-person-fill-add"></i>
+                    Añadir paciente
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Lista de pacientes</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Nombre completo</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Historial médico</th>
+                                <th>Alergias</th>
+                                <th>Fecha de naciemiento (edad)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="paciente: ${pacientes}">
+                                <td th:text="${paciente.nombre + ' ' + paciente.apellido}"></td>
+                                <td th:text="${paciente.telefono}"></td>
+                                <td th:text="${paciente.direccion}"></td>
+                                <td th:text="${paciente.historialMedico}"></td>
+                                <td th:text="${paciente.alergias}"></td>
+                                <td>
+                                    <span th:text="${#dates.format(paciente.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                    (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(paciente.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-warning" id="editPatientBtn" th:patient-id="${paciente.id}"><i class="bi bi-pencil-square" style="pointer-events: none;"></i></button>
+                                    <button type="button" class="btn btn-danger" id="deletePatientBtn" th:patient-id="${paciente.id}"><i class="bi bi-trash" style="pointer-events: none;"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/pacientes.js}"></script>
+    </body>
+</html>

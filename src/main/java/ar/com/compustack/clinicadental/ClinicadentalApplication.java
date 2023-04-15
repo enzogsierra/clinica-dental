@@ -49,9 +49,9 @@ public class ClinicadentalApplication
 			clinicaRepository.save(clinica);
 		}
 
-		// Crear admin
+		// Verificar usuario por default
 		List<Usuario> usuarios = usuarioRepository.findAll();
-		if(usuarios.size() == 0) // First init - significa que es la primera vez que se lanza la aplicación
+		if(usuarios.size() == 0) // No existen usuarios - crear un usuario admin por defecto
 		{
 			// Crearemos un usuario por defecto llamado "admin", contraseña "admin" y con rol de "ADMIN"
 			Usuario usuario = new Usuario();

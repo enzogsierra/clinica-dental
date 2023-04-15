@@ -43,11 +43,9 @@ public class Cita
     private Paciente paciente;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    private Dentista dentista;
+    private Doctor doctor;
 
     private String observaciones;
-    
-    private String estado;
     
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;

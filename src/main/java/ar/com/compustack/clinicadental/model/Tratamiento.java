@@ -1,6 +1,5 @@
 package ar.com.compustack.clinicadental.model;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -24,10 +23,10 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "servicios")
+@Table(name = "tratamientos")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class Servicio 
+public class Tratamiento 
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

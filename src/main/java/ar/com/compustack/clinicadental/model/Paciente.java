@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,13 +40,14 @@ public class Paciente
     @NotBlank(message = "Debes especificar un número de teléfono")
     private String telefono;
 
-    @NotBlank(message = "Debes especificar una dirección")
     private String direccion;
 
     private String historialMedico;
 
     private String alergias;
 
+    @NotNull(message = "Debes indicar una fecha de nacimiento")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
     

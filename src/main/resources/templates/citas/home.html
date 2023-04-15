@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Citas</h2>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevaCitaModal">
+                    <i class="bi bi-calendar-plus"></i>
+                    Nueva cita
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Próximas citas programadas</p>
+
+                    <div>
+                        <div th:each="cita: ${citas}">
+                            <p th:text="${cita.fecha}"></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Nueva cita - modal -->
+        <div class="modal fade" id="nuevaCitaModal" tabindex="-1" aria-labelledby="nuevaCitaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="nuevaCitaLabel">Nueva cita</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form th:action="@{/citas/nueva}" th:object="${cita}" method="POST">
+                            <input type="hidden" th:field="*{id}">
+    
+                            <div class="mb-3">
+                                <label class="form-label" for="pacientes">Paciente</label>
+
+                                <div class="mb-3 d-flex" style="gap: .5rem;">
+                                    <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{paciente}" id="pacientes" list="pacienteList">
+                                    <datalist id="pacienteList" >
+                                        <option th:each="paciente: ${pacientes}" th:value="${paciente.nombre + ' ' + paciente.apellido}" th:paciente-id="${paciente.id}"></option>
+                                    </datalist>
+
+                                    <button type="button" class="btn btn-success"><i class="bi bi-person-plus-fill"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="paciente">Doctor</label>
+                                <select th:name="*{doctor}" class="form-select" id="doctor">
+                                    <option value="0">-- Seleccionar doctor --</option>
+
+                                    <option 
+                                        th:each="doctor: ${doctores}" 
+                                        th:value="${doctor.id}" 
+                                        th:text="${doctor.nombre + ' ' + doctor.apellido}"
+                                        th:selected="${cita.doctor != null && cita.doctor.id == doctor.id}"
+                                        >
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3 d-flex" style="gap: 1rem;">
+                                <div class="w-100">
+                                    <label class="form-label" for="fecha">Fecha</label>
+                                    <input class="form-control" th:errorclass="is-invalid" type="date" th:field="*{fecha}" id="fecha">
+                                    <div th:errors="*{fecha}" class="invalid-feedback" id="fecha"></div>
+                                </div>
+                                <div class="w-100">
+                                    <label class="form-label" for="hora">Hora</label>
+                                    <input class="form-control" th:errorclass="is-invalid" type="time" th:field="*{hora}" id="hora">
+                                    <div th:errors="*{hora}" class="invalid-feedback" id="hora"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="observaciones">Observaciones</label>
+                                <textarea class="form-control" th:errorclass="is-invalid" th:field="*{observaciones}" id="observaciones" rows="3"></textarea>
+                                <div th:errors="*{observaciones}" class="invalid-feedback" id="observaciones"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success">Agendar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>

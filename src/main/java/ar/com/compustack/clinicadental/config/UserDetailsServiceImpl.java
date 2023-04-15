@@ -38,9 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
             GrantedAuthority role = new SimpleGrantedAuthority(usuario.getRole());  // Crear el rol del usuario
             roleList.add(role); // Añadir rol a la lista de roles del usuario
 
-            User user = new User(usuario.getUsername(), usuario.getPassword(), roleList);
-            System.out.println("USUARIO: " + user.toString());
-            return user;
+            return new User(usuario.getUsername(), usuario.getPassword(), roleList);
         }
 
         throw new UsernameNotFoundException("Usuario no encontrado");

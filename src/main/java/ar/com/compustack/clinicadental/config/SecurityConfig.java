@@ -28,8 +28,8 @@ public class SecurityConfig
             {
                 auth.antMatchers("/admin/**").hasAuthority("ADMIN");
                 auth.antMatchers("/assets/logo.**").permitAll();
+                auth.antMatchers("/css/**").permitAll();
                 auth.anyRequest().authenticated();
-                //auth.anyRequest().hasAuthority("USER");
             })
             .formLogin(form ->
             {
@@ -38,32 +38,13 @@ public class SecurityConfig
                 form.defaultSuccessUrl("/");
                 form.permitAll();
             })
-            // .formLogin(form ->
-            // {
-            //     form.loginPage("/login");
-            //     form.loginProcessingUrl("/login");
-            //     form.defaultSuccessUrl("/");
-            //     form.permitAll();
-            // })
-            .formLogin(Customizer.withDefaults())
-            // .logout(logout ->
-            // {
-            //     logout.logoutUrl("/logout");
-            //     logout.logoutSuccessUrl("/");
-            //     logout.permitAll();
-            // })
+            .logout(logout ->
+            {
+                logout.logoutUrl("/logout");
+                logout.logoutSuccessUrl("/");
+                logout.permitAll();
+            })
             .httpBasic(Customizer.withDefaults())
             .build();
-
-        // return http
-        //     .csrf(csrf -> csrf.disable())
-        //     .authorizeHttpRequests(auth ->
-        //     {
-        //         auth.antMatchers("/admin/**").hasAuthority("ADMIN");
-        //         auth.anyRequest().authenticated();
-        //     })
-        //     .formLogin(Customizer.withDefaults())
-        //     .httpBasic(Customizer.withDefaults())
-        // .build();
     }
 }

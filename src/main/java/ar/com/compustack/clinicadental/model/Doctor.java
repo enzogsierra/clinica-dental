@@ -1,6 +1,5 @@
 package ar.com.compustack.clinicadental.model;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,9 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +19,10 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "dentistas")
+@Table(name = "doctores")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class Dentista 
+public class Doctor 
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +34,11 @@ public class Dentista
     @NotBlank(message = "Debes asignar un apellido")
     private String apellido;
     
-    @NotBlank(message = "Debes especificar la dirección")
-    private String direccion;
-    
     @NotBlank(message = "Debes especificar un número de teléfono")
     private String telefono;
+    
+    @NotBlank(message = "Debes especificar la dirección")
+    private String direccion;
 
     @NotBlank(message = "Debes especificar la especialidad")
     private String especialidad;

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <form th:action="@{/doctores/form}" th:object="${doctor}" method="POST" novalidate>
+            <div class="card">
+                <div class="card-header text-bg-success bg-gradient">
+                    <h1>Añadir doctor</h1>
+                </div>
+
+                <div class="card-body">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="mb-3 d-flex" style="gap: .5rem;">
+                        <div class="w-100">
+                            <label class="form-label" for="nombre">Nombre *</label>
+                            <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" id="nombre" autocomplete="off" required>
+                            <div th:errors="*{nombre}" class="invalid-feedback" id="nombre"></div>
+                        </div>
+                        <div class="w-100">
+                            <label class="form-label" for="apellido">Apellido *</label>
+                            <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{apellido}" id="apellido" required>
+                            <div th:errors="*{apellido}" class="invalid-feedback" id="apellido"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="telefono">Teléfono *</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="tel" th:field="*{telefono}" id="telefono" required>
+                        <div th:errors="*{telefono}" class="invalid-feedback" id="telefono"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="direccion">Dirección</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{direccion}" id="direccion">
+                        <div th:errors="*{direccion}" class="invalid-feedback" id="direccion"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="especialidad">Especialidad</label>
+                        <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{especialidad}" id="especialidad">
+                        <div th:errors="*{especialidad}" class="invalid-feedback" id="especialidad"></div>
+                    </div>
+                </div>
+                
+                <div class="card-footer text-end">
+                    <button type="button" class="btn btn-secondary" onclick="window.close();">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Script -->
+        <script>
+            // Centrar el popup en la pantalla
+            document.addEventListener("DOMContentLoaded", () =>
+            {
+                const body = document.querySelector("body");
+                
+                const width = 600; // Ancho del popup
+                const height = body.offsetHeight + 70; // Alto del popup
+                
+                const x = (screen.width / 2) - (width / 2); // Calcular el centro X de la pantalla
+                const y = (screen.height / 2) - (height / 2); // Calcular el centro Y de la pantalla
+                
+                window.resizeTo(width, height); // Redimensionar el popup
+                window.moveTo(x, y); // Mover el popup al centro
+            })
+        </script>
+    </body>
+</html>

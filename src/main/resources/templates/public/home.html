@@ -11,12 +11,23 @@
             </header>
             
             <!-- Contenido -->
-            <main>
-                <h1>Contenido</h1>
-                <h1>Contenido</h1>
-                <h1>Contenido</h1>
-                <h1>Contenido</h1>
-                <h1>Contenido</h1>
+            <main class="container-fluid p-4">
+                <h1 th:text="${clinica.nombre}" class="text-center"></h1>
+
+                <section> 
+                    <h2>Citas</h2>
+
+                    <div class="row g-2">
+                        <div class="col-12 col-lg-4">
+                            <div class="p-4 bg-white rounded-1 shadow-sm">
+                                <p class="text-muted">Citas programadas para hoy</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="p-4 bg-white rounded-1 shadow-sm"></div>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
 
