@@ -66,10 +66,10 @@ public class DoctorController
         }
 
         // Datos validos
-        doctorRepository.save(doctor);
+        //doctorRepository.save(doctor);
 
         // Redirigir a la vista de doctores indicando que la ventana debe cerrarse 
-        return "redirect:/doctores/?close=true";
+        return "redirect:/doctores/form?close=true";
     }
 
     // Eliminar doctor
@@ -87,5 +87,13 @@ public class DoctorController
         doctorRepository.delete(doctor);
         
         return "redirect:/doctores/";
+    }
+
+    // Uso interno - este endpoint solo se utilizara cuando se necesite cerrar el modal del iframe
+    @GetMapping("/form")
+    public String _form(Model model)
+    {
+        model.addAttribute("doctor", new Doctor());
+        return "doctores/form";
     }
 }

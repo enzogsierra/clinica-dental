@@ -5,13 +5,6 @@
     </head>
 
     <body>
-        <script th:if="${param.close}">
-            // Cuando se crea un nuevo doctor, se redirige a esta misma pagina (/doctores/home) 
-            // Pero con el parametro "close=true"
-            // Este parámetro indica que esta esta ventana es una ventana emergente y por lo tanto debe cerrarase
-            window.close();
-        </script>
-
         <div class="d-flex flex-column flex-lg-row">
             <header th:replace="layout::header">
                 
@@ -20,7 +13,8 @@
             <!-- Contenido -->
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Doctores</h2>
-                <button type="button" class="btn btn-success" id="addDoctorBtn">
+
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
                     <i class="bi bi-person-fill-add"></i>
                     Añadir doctor
                 </button>
@@ -52,11 +46,51 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDateLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addDateLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <iframe 
+                                    th:src="@{/doctores/nuevo}"
+                                    title="Agendar cita"
+                                    width="100%"
+                                    id="mi-iframe"
+                                    >
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
 
         <!-- Footer & scripts -->
         <footer th:replace="layout::footer"></footer>
-        <script th:src="@{/js/doctores.js}"></script>
+        
+        <script>
+            // Escuchar cuando el iframe envie un postMessage para cerrar el modal y recargar la página
+            window.addEventListener("message", event => 
+            {
+                if(event.data === "closeModal")
+                {
+                    window.location.reload(); // Recargar la página
+                }
+            });
+
+            // Script para que el iframe tenga la misma altura que el contenido de la vista que renderiza
+            $('#addDoctorModal').on('shown.bs.modal', function () // Se llama cuando se abre el modal
+            {
+                const frame = document.querySelector("#mi-iframe"); // Seleccionamos el iframe
+                const height = frame.contentWindow.document.body.scrollHeight; // Obtenemos la altura total que renderiza el iframe
+                frame.style.height = height + 'px'; // Cambiamos la altura del iframe
+            })
+        </script>
     </body>
 </html>

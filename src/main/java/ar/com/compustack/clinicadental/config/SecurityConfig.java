@@ -45,6 +45,7 @@ public class SecurityConfig
                 logout.permitAll();
             })
             .httpBasic(Customizer.withDefaults())
+            .headers(header -> header.frameOptions().disable()) // Habilita los iframe dentro de la misma aplicacion
             .build();
     }
 }

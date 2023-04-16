@@ -15,6 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,16 +34,20 @@ public class Cita
     private Integer id;
 
     @NotNull(message = "Debes seleccionar una fecha")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
     @NotNull(message = "Debes seleccionar una hora")
+    @DateTimeFormat(pattern = "HH:mm")
     @Temporal(TemporalType.TIME)
     private Date hora;
     
+    @NotNull(message = "Debes seleccionar una paciente")
     @ManyToOne(fetch = FetchType.LAZY)
     private Paciente paciente;
     
+    @NotNull(message = "Debes seleccionar un doctor")
     @ManyToOne(fetch = FetchType.LAZY)
     private Doctor doctor;
 

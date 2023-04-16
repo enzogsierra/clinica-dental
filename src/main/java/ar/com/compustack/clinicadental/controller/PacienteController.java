@@ -1,5 +1,6 @@
 package ar.com.compustack.clinicadental.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import ar.com.compustack.clinicadental.model.Paciente;
 import ar.com.compustack.clinicadental.repository.PacienteRepository;
@@ -70,7 +72,7 @@ public class PacienteController
         pacienteRepository.save(paciente);
 
         // Redirigir a la vista de pacientes indicando que la ventana debe cerrarse 
-        return "redirect:/pacientes/?close=true";
+        return "redirect:/pacientes/form?close=true";
     }
 
     // Eliminar paciente
@@ -88,5 +90,20 @@ public class PacienteController
         pacienteRepository.delete(paciente);
         
         return "redirect:/pacientes/";
+    }
+
+    // Autocomplete
+    @GetMapping(value = "/findAll/{query}", produces = {"application/json"})
+    private @ResponseBody List<Paciente> findAll(@PathVariable String query)
+    {
+        return pacienteRepository.findBy(query);
+    }
+
+    // Uso interno - este endpoint solo se utilizara cuando se necesite cerrar el modal del iframe
+    @GetMapping("/form")
+    public String _form(Model model)
+    {
+        model.addAttribute("paciente", new Paciente());
+        return "pacientes/form";
     }
 }
