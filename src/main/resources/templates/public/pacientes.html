@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Pacientes</h2>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Paciente')">
+                    <i class="bi bi-plus-circle"></i>
+                    Añadir paciente
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Lista de pacientes</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Nombre completo</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Historial médico</th>
+                                <th>Alergias</th>
+                                <th>Fecha de nacimiento (edad)</th>
+                                <th style="width: min-content;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entity: ${pacientes}">
+                                <td th:text="${entity.nombre + ' ' + entity.apellido}"></td>
+                                <td th:text="${entity.telefono}"></td>
+                                <td th:text="${entity.direccion}"></td>
+                                <td th:text="${entity.historialMedico}"></td>
+                                <td th:text="${entity.alergias}"></td>
+                                <td>
+                                    <span th:text="${#dates.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                    (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
+                                </td>
+                                <td class="text-nowrap">
+                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Paciente')">
+                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
+                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="entityLabel">Pacientes</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pacientes/form', 'Paciente')">
+                                    <input type="hidden" name="id">
+                        
+                                    <div class="mb-3 d-flex" style="gap: .5rem;">
+                                        <div class="w-100">
+                                            <label class="form-label" for="nombre">Nombre *</label>
+                                            <input class="form-control" type="text" name="nombre" id="nombre" required>
+                                            <div class="invalid-feedback" id="error-nombre"></div>
+                                        </div>
+                                        <div class="w-100">
+                                            <label class="form-label" for="apellido">Apellido *</label>
+                                            <input class="form-control" type="text" name="apellido" id="apellido" required>
+                                            <div class="invalid-feedback" id="error-apellido"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="telefono">Teléfono *</label>
+                                        <input class="form-control" type="tel" name="telefono" id="telefono" required>
+                                        <div class="invalid-feedback" id="error-telefono"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="direccion">Dirección</label>
+                                        <input class="form-control" type="text" name="direccion" id="direccion">
+                                        <div class="invalid-feedback" id="error-direccion"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="historialMedico">Historial médico</label>
+                                        <input class="form-control" type="text" name="historialMedico" id="historialMedico">
+                                        <div class="invalid-feedback" id="error-historialMedico"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="alergias">Alergias</label>
+                                        <input class="form-control" type="text" name="alergias" id="alergias">
+                                        <div class="invalid-feedback" id="error-alergias"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fechaNacimiento">Fecha de nacimiento *</label>
+                                        <input class="form-control" type="date" name="fechaNacimiento" id="fechaNacimiento" required>
+                                        <div class="invalid-feedback" id="error-fechaNacimiento"></div>
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+    </body>
+</html>

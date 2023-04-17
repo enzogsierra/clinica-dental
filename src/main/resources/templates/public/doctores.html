@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Doctores</h2>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Doctor')">
+                    <i class="bi bi-plus-circle"></i>
+                    Añadir doctor
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Lista de doctores</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Nombre completo</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Especialidad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entity: ${doctores}">
+                                <td th:text="${entity.nombre + ' ' + entity.apellido}"></td>
+                                <td th:text="${entity.telefono}"></td>
+                                <td th:text="${entity.direccion}"></td>
+                                <td th:text="${entity.especialidad}"></td>
+                                <td class="text-nowrap">
+                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/doctores/get', 'Doctor')">
+                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/doctores/delete', 'Doctor')">
+                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="entityLabel">Doctores</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/doctores/form', 'Doctor')">
+                                    <input type="hidden" name="id">
+                        
+                                    <div class="mb-3 d-flex" style="gap: .5rem;">
+                                        <div class="w-100">
+                                            <label class="form-label" for="nombre">Nombre *</label>
+                                            <input class="form-control" type="text" name="nombre" id="nombre" required>
+                                            <div class="invalid-feedback" id="error-nombre"></div>
+                                        </div>
+                                        <div class="w-100">
+                                            <label class="form-label" for="apellido">Apellido *</label>
+                                            <input class="form-control" type="text" name="apellido" id="apellido" required>
+                                            <div class="invalid-feedback" id="error-apellido"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="telefono">Teléfono *</label>
+                                        <input class="form-control" type="tel" name="telefono" id="telefono" required>
+                                        <div class="invalid-feedback" id="error-telefono"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="direccion">Dirección *</label>
+                                        <input class="form-control" type="text" name="direccion" id="direccion">
+                                        <div class="invalid-feedback" id="error-direccion"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="especialidad">Especialidad *</label>
+                                        <input class="form-control" type="text" name="especialidad" id="especialidad">
+                                        <div class="invalid-feedback" id="error-especialidad"></div>
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+    </body>
+</html>

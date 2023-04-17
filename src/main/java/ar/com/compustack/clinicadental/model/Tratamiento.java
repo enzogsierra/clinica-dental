@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -20,11 +21,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 
 @Entity
 @Table(name = "tratamientos")
-@Getter @Setter
+@Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Tratamiento 
 {
@@ -40,7 +42,8 @@ public class Tratamiento
 
     @NotNull(message = "Debes asignar un precio")
     @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)
-    private double precio;
+    @Min(value = 0, message = "El precio no puede ser menor a $0")
+    private Double precio;
 
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.DATE)

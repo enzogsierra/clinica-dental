@@ -1,19 +1,26 @@
 package ar.com.compustack.clinicadental.controller;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import ar.com.compustack.clinicadental.dto.CitaDTO;
 import ar.com.compustack.clinicadental.model.Cita;
 import ar.com.compustack.clinicadental.repository.CitaRepository;
 import ar.com.compustack.clinicadental.repository.DoctorRepository;
@@ -33,47 +40,44 @@ public class CitaController
     @GetMapping("/")
     public String home(Model model)
     {
-        Date yesterday = new Date(System.currentTimeMillis() - (24 * 3600000));
-        Date today = new Date(System.currentTimeMillis());
-        Date tomorrow = new Date(System.currentTimeMillis() + (24 * 3600000));
+        Date yesterday = new Date(System.currentTimeMillis() - (24 * 3600000)); // Obtiene la fecha de ayer
+        Date today = new Date(System.currentTimeMillis()); // Obtiene la fecha actual
+        Date tomorrow = new Date(System.currentTimeMillis() + (24 * 3600000)); // Obtiene la fecha de mañana
 
-        model.addAttribute("citas", citaRepository.findAllByFechaAfterOrderByFechaAsc(yesterday));
+        model.addAttribute("citas", citaRepository.findAllByFechaAfterOrderByFechaAsc(yesterday)); // Enlista todas las citas a partir del día actual
+        model.addAttribute("doctores", doctorRepository.findAll());
         model.addAttribute("todayDate", today);
         model.addAttribute("tomorrowDate", tomorrow);
-        return "citas/home";
+        return "public/citas";
     }
 
-    // Nueva cita
-    @GetMapping("/nueva")
-    public String newDate(Model model)
-    {
-        model.addAttribute("cita", new Cita());
-        model.addAttribute("doctores", doctorRepository.findAll());
-        return "citas/form";
-    }
 
-    // Editar datos de cita
-    @GetMapping("/editar/{id}")
-    public String editDate(Model model, @PathVariable("id") Integer id)
+    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
+    @GetMapping("/get/{id}")
+    public @ResponseBody CitaDTO get(@PathVariable Integer id)
     {
-        Optional<Cita> opt = citaRepository.findById(id); // Buscar cita por id
-        if(!opt.isPresent()) // El cita no existe
+        Optional<Cita> cita = citaRepository.findById(id);
+        CitaDTO dto = new CitaDTO();
+
+        if(cita.isPresent())
         {
-            return "redirect:/citas/";
+            Cita data = cita.get();
+            dto.setId(data.getId());
+            dto.setFecha(data.getFecha());
+            dto.setHora(data.getHora());
+            dto.setPaciente(data.getPaciente().getId());
+            dto.setPacienteNombre(data.getPaciente().getNombre());
+            dto.setDoctor(data.getDoctor().getId());
+            dto.setDoctorNombre(data.getDoctor().getNombre());
+            dto.setObservaciones(data.getObservaciones());
+            dto.setCreatedAt(data.getCreatedAt());
         }
-
-        // Cita encontrada
-        Cita cita = opt.get();
-
-        model.addAttribute("cita", cita);
-        model.addAttribute("doctores", doctorRepository.findAll());
-        return "citas/form";
+        return dto;
     }
 
-
-    // Cuando se envia un form con datos de cita (creando una cita o editando)
+    // Crea/edita datos de una entidad
     @PostMapping("/form")
-    public String form(@Valid Cita cita, BindingResult result, Model model)
+    public ResponseEntity<?> form(@Valid Cita cita, BindingResult result)
     {
         // Verificar disponibilidad de la cita
         Optional<Cita> checkDate = citaRepository.findByFechaAndHora(cita.getFecha(), cita.getHora());
@@ -82,43 +86,32 @@ public class CitaController
             result.rejectValue("hora", "cita.hora", "Este horario ya está reservado para otra cita, elige otro");
         }
 
-        // Validar datos
+        // Verificar errores de validacion
         if(result.hasErrors())
         {
-            model.addAttribute("doctores", doctorRepository.findAll());
-            return "citas/form";
+            Map<String, String> errors = new HashMap<>(); // Esta variable almacenará los errores en forma de map
+            result.getFieldErrors().forEach(error -> // Recorrer todos los errores
+            {
+                errors.put(error.getField(), error.getDefaultMessage()); // Añadir errores al map
+            });
+            return ResponseEntity.badRequest().body(errors); // Devolver con un status 400 junto con los mensajes de validaciones
         }
 
-        // Datos validos
+        // Validacion correcta
         citaRepository.save(cita);
 
-        // Redirigir a la vista de citas indicando que la ventana debe cerrarse 
-        return "redirect:/citas/form?close=true";
+        return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente
     }
 
-    // Eliminar cita
-    @GetMapping("/eliminar/{id}")
-    public String deleteDate(@PathVariable("id") Integer id)
+    // Elimina una entidad
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam Integer id)
     {
-        Optional<Cita> opt = citaRepository.findById(id); // Buscar cita por id
-        if(!opt.isPresent()) // Cita no encontrada
-        {
-            return "redirect:/citas/";
+        try {
+            citaRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
         }
-
-        // Cita encontrada
-        Cita cita = opt.get();
-        citaRepository.delete(cita);
-        
-        return "redirect:/citas/";
-    }
-
-    // Uso interno - este endpoint solo se utilizara cuando se necesite cerrar el modal del iframe
-    @GetMapping("/form")
-    public String _form(Model model)
-    {
-        model.addAttribute("cita", new Cita());
-        model.addAttribute("doctores", null);
-        return "citas/form";
+        return ResponseEntity.ok().build();
     }
 }

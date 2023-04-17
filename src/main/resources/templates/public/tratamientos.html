@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Tratamientos</h2>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Tratamiento')">
+                    <i class="bi bi-plus-circle"></i>
+                    Añadir tratamiento
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Lista de tratamientos</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entity: ${tratamientos}">
+                                <td th:text="${entity.nombre}"></td>
+                                <td th:text="${entity.descripcion}"></td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Tratamiento')">
+                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre}" onclick="onDeleteEntity(event, '/tratamientos/delete', 'Tratamiento')">
+                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="entityLabel">Tratamiento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/tratamientos/form', 'Tratamiento')">
+                                    <input type="hidden" name="id">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nombre">Nombre *</label>
+                                        <input class="form-control" type="tel" name="nombre" id="nombre" required>
+                                        <div class="invalid-feedback" id="error-nombre"></div>
+                                    </div>
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label" for="descripcion">Descripción *</label>
+                                        <input class="form-control" type="tel" name="descripcion" id="descripcion" required>
+                                        <div class="invalid-feedback" id="error-descripcion"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="precio">Precio *</label>
+                                        <input class="form-control" type="number" name="precio" id="precio" min="0" required>
+                                        <div class="invalid-feedback" id="error-precio"></div>
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+    </body>
+</html>

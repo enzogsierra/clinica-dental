@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,11 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 
 @Entity
 @Table(name = "citas")
-@Getter @Setter
+@Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Cita 
 {
@@ -34,6 +36,7 @@ public class Cita
     private Integer id;
 
     @NotNull(message = "Debes seleccionar una fecha")
+    @FutureOrPresent(message = "No es posible agendar una cita en una fecha pasada")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date fecha;

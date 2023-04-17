@@ -1,18 +1,23 @@
 package ar.com.compustack.clinicadental.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ar.com.compustack.clinicadental.model.Paciente;
@@ -26,84 +31,61 @@ public class PacienteController
     @Autowired
     private PacienteRepository pacienteRepository;
 
+
     @GetMapping("/")
     public String home(Model model)
     {
-        model.addAttribute("paciente", new Paciente());
         model.addAttribute("pacientes", pacienteRepository.findAll());
-        return "pacientes/home";
+        return "public/pacientes";
     }
 
-    // Nuevo paciente
-    @GetMapping("/nuevo")
-    public String newPatient(Model model)
+
+    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
+    @GetMapping("/get/{id}")
+    public @ResponseBody Paciente get(@PathVariable Integer id)
     {
-        model.addAttribute("paciente", new Paciente());
-        return "pacientes/form";
+        Optional<Paciente> paciente = pacienteRepository.findById(id);
+        return (paciente.isPresent()) ? (paciente.get()) : (new Paciente());
     }
 
-    // Editar datos de paciente
-    @GetMapping("/editar/{id}")
-    public String editPatient(Model model, @PathVariable("id") Integer id)
-    {
-        Optional<Paciente> opt = pacienteRepository.findById(id); // Buscar paciente por id
-        if(!opt.isPresent()) // El paciente no existe
-        {
-            return "redirect:/pacientes/";
-        }
 
-        // Paciente encontrado
-        Paciente paciente = opt.get();
-        model.addAttribute("paciente", paciente);
-        return "pacientes/form";
-    }
-
-    // Cuando se envia un form con datos de paciente (creando paciente o editando)
+    // Crea/edita datos de una entidad
     @PostMapping("/form")
-    public String form(@Valid Paciente paciente, BindingResult result, Model model)
+    public ResponseEntity<?> form(@Valid Paciente paciente, BindingResult result)
     {
-        // Validar datos
+        // Verificar errores de validacion
         if(result.hasErrors())
         {
-            return "pacientes/form";
+            Map<String, String> errors = new HashMap<>(); // Esta variable almacenará los errores en forma de map
+            result.getFieldErrors().forEach(error -> // Recorrer todos los errores
+            {
+                errors.put(error.getField(), error.getDefaultMessage()); // Añadir errores al map
+            });
+            return ResponseEntity.badRequest().body(errors); // Devolver con un status 400 junto con los mensajes de validaciones
         }
 
-        // Datos validos
+        // Validacion correcta
         pacienteRepository.save(paciente);
 
-        // Redirigir a la vista de pacientes indicando que la ventana debe cerrarse 
-        return "redirect:/pacientes/form?close=true";
+        return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente
     }
 
-    // Eliminar paciente
-    @GetMapping("/eliminar/{id}")
-    public String deletePatient(@PathVariable("id") Integer id)
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam Integer id)
     {
-        Optional<Paciente> opt = pacienteRepository.findById(id); // Buscar paciente por id
-        if(!opt.isPresent()) // Paciente no encontrado
-        {
-            return "redirect:/pacientes/";
+        try {
+            pacienteRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
         }
-
-        // Paciente encontrado
-        Paciente paciente = opt.get();
-        pacienteRepository.delete(paciente);
-        
-        return "redirect:/pacientes/";
+        return ResponseEntity.ok().build();
     }
+
 
     // Autocomplete
     @GetMapping(value = "/findAll/{query}", produces = {"application/json"})
     private @ResponseBody List<Paciente> findAll(@PathVariable String query)
     {
         return pacienteRepository.findBy(query);
-    }
-
-    // Uso interno - este endpoint solo se utilizara cuando se necesite cerrar el modal del iframe
-    @GetMapping("/form")
-    public String _form(Model model)
-    {
-        model.addAttribute("paciente", new Paciente());
-        return "pacientes/form";
     }
 }

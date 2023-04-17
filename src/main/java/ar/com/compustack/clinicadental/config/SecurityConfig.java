@@ -34,14 +34,11 @@ public class SecurityConfig
             .formLogin(form ->
             {
                 form.loginPage("/login");
-                form.loginProcessingUrl("/login");
-                form.defaultSuccessUrl("/");
                 form.permitAll();
             })
             .logout(logout ->
             {
                 logout.logoutUrl("/logout");
-                logout.logoutSuccessUrl("/");
                 logout.permitAll();
             })
             .httpBasic(Customizer.withDefaults())

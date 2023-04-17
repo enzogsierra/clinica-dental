@@ -19,38 +19,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ar.com.compustack.clinicadental.model.Doctor;
-import ar.com.compustack.clinicadental.repository.DoctorRepository;
+import ar.com.compustack.clinicadental.model.Tratamiento;
+import ar.com.compustack.clinicadental.repository.TratamientoRepository;
 
 
 @Controller
-@RequestMapping("/doctores")
-public class DoctorController 
+@RequestMapping("/tratamientos")
+public class TratamientoController 
 {
     @Autowired
-    private DoctorRepository doctorRepository;
+    private TratamientoRepository tratamientoRepository;
 
 
     @GetMapping("/")
     public String home(Model model)
     {
-        model.addAttribute("doctores", doctorRepository.findAll());
-        return "public/doctores";
+        model.addAttribute("tratamientos", tratamientoRepository.findAll());
+        return "public/tratamientos";
     }
 
 
     // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
     @GetMapping("/get/{id}")
-    public @ResponseBody Doctor get(@PathVariable Integer id)
+    public @ResponseBody Tratamiento get(@PathVariable Integer id)
     {
-        Optional<Doctor> doctor = doctorRepository.findById(id);
-        return (doctor.isPresent()) ? (doctor.get()) : (new Doctor());
+        Optional<Tratamiento> tratamiento = tratamientoRepository.findById(id);
+        return (tratamiento.isPresent()) ? (tratamiento.get()) : (new Tratamiento());
     }
 
 
     // Crea/edita datos de una entidad
     @PostMapping("/form")
-    public ResponseEntity<?> form(@Valid Doctor doctor, BindingResult result)
+    public ResponseEntity<?> form(@Valid Tratamiento tratamiento, BindingResult result)
     {
         // Verificar errores de validacion
         if(result.hasErrors())
@@ -64,7 +64,7 @@ public class DoctorController
         }
 
         // Validacion correcta
-        doctorRepository.save(doctor);
+        tratamientoRepository.save(tratamiento);
 
         return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente
     }
@@ -73,7 +73,7 @@ public class DoctorController
     public ResponseEntity<?> delete(@RequestParam Integer id)
     {
         try {
-            doctorRepository.deleteById(id);
+            tratamientoRepository.deleteById(id);
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
