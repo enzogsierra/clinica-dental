@@ -22,114 +22,74 @@
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
                     <p class="text-muted">Próximas citas programadas</p>
 
-                    <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3 g-4">
-                        <div th:each="entity: ${citas}" class="col">
-                            <div class="p-4 shadow border">
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <!-- <h5 th:if="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(todayDate, 'dd/MM/yyyy')}">
-                                            Hoy
-                                        </h5>
-                                        <h5 th:if="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(tomorrowDate, 'dd/MM/yyyy')}">
-                                            Mañana
-                                        </h5>
-                                        <h5 th:unless="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(todayDate, 'dd/MM/yyyy') || #dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(tomorrowDate, 'dd/MM/yyyy')}">
-                                            <span th:text="${#strings.capitalize(#dates.format(entity.fecha, 'EEEE'))}"></span>,
-                                            <span th:text="${#dates.format(entity.fecha, 'dd')}"></span> de
-                                            <span th:text="${#strings.capitalize(#dates.format(entity.fecha, 'MMMM'))}"></span>
-                                        </h5> -->
+                    <div th:each="fecha: ${fechas}" class="mb-5">
+                        <h3 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy')}">
+                            Hoy
+                        </h3>
+                        <h3 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
+                            Mañana
+                        </h3>
+                        <h3 th:unless="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy') || #temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
+                            <span th:text="${#temporals.format(fecha, 'EEEE')}"></span>,
+                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
+                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
+                        </h3>
 
-                                        <h4 th:text="${#dates.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
-                                        
-                                        <p class="mb-0">
-                                            <i class="fs-5 text-primary bi bi-person"></i>
-                                            <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
-                                        </p>
+                        <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3 g-4">
+                            <div th:each="entity: ${citas}" th:if="${fecha == entity.fecha}" class="col">
+                                <div class="p-4 shadow border">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
+                                            
+                                            <p class="mb-0">
+                                                <i class="fs-5 text-primary bi bi-person"></i>
+                                                <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
+                                            </p>
+    
+                                            <p class="mb-0">
+                                                <i class="fs-5 text-success bi bi-clipboard-check"></i>
+                                                <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
+                                            </p>
 
-                                        <p class="mb-0">
-                                            <i class="bi fs-5 text-success bi-clipboard-check"></i>
-                                            <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
-                                        </h6>
-                                    </div>
+                                            <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
+                                                <i class="fs-5 bi bi-chat-dots"></i>
+                                                <span th:text="${entity.observaciones}"></span>
+                                            </p>
+                                        </div>
 
-                                    <div class="text-nowrap">
-                                        <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">
-                                            <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">
-                                            <i class="bi bi-trash" style="pointer-events: none;"></i>
-                                        </button>
+                                        <div>
+                                            <div class="btn-group dropstart">
+                                                <i class="fs-5 bi bi-three-dots-vertical" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+                                                
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">Editar</button></li>
+                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">Eliminar</button></li>
+                                                    <li>
+                                                        <button class="dropdown-item" type="button">
+                                                            <i class="text-success bi bi-whatsapp"></i>
+                                                            <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank">Enviar mensaje</a>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                          
+    
+                                        <!-- <div class="text-nowrap">
+                                            <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">
+                                                <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">
+                                                <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                            </button>
+                                        </div> -->
                                     </div>
                                 </div>
-
-                                
-
-                                <!-- <div class="d-flex justify-content-between">
-                                    <div class="w-100">
-                                        <h5 class="fw-bold">
-                                            <span th:if="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(todayDate, 'dd/MM/yyyy')}" class="text-success">Hoy</span>
-                                            <span th:if="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(tomorrowDate, 'dd/MM/yyyy')}">Mañana</span>
-                                            <span 
-                                                th:unless="${#dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(todayDate, 'dd/MM/yyyy') || #dates.format(entity.fecha, 'dd/MM/yyyy') == #dates.format(tomorrowDate, 'dd/MM/yyyy')}"
-                                                th:text="${#dates.format(entity.fecha, 'dd/MM/yyyy')}"
-                                                class="text-secondary"
-                                                >
-                                            </span>
-                                        </h5>
-                                    </div>
-
-                                    <div class="w-100">
-                                        <h5 class="fw-bold">
-                                            <span th:text="${#dates.format(entity.hora, 'HH:mm')}"></span>
-                                        </h5>
-                                    </div>
-
-                                    <div class="text-nowrap">
-                                        <button type="button" class="btn btn-outline-dark btn-sm" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">
-                                            <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">
-                                            <i class="bi bi-trash" style="pointer-events: none;"></i>
-                                        </button>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-                <!-- <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Lista de citas</p>
-
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead class="text-bg-success bg-gradient">
-                            <tr>
-                                <th>Fecha y hora</th>
-                                <th>Paciente</th>
-                                <th>Doctor</th>
-                                <th>Observaciones</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="entity: ${citas}">
-                                <td th:text="${entity.fecha + ' ' + entity.hora}"></td>
-                                <td th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
-                                <td th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></td>
-                                <td th:text="${entity.observaciones}"></td>
-                                <td class="text-nowrap">
-                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">
-                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">
-                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> -->
 
                 <!-- Modal -->
                 <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
@@ -143,6 +103,7 @@
                             <div class="modal-body ui-front">
                                 <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/citas/form', 'Cita')">
                                     <input type="hidden" name="id">
+                                    <input type="hidden" name="createdAt">
                         
                                     <div class="mb-3 d-flex" style="gap: .5rem;">
                                         <div class="w-100">

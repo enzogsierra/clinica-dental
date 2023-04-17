@@ -1,7 +1,8 @@
 package ar.com.compustack.clinicadental.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +16,8 @@ import lombok.ToString;
 public class CitaDTO 
 {
     private Integer id;
-    private Date fecha;
-    private Date hora;
+    private LocalDate fecha;
+    private LocalTime hora;
     private Integer paciente;
     private String pacienteNombre;
     private Integer doctor;

@@ -61,6 +61,7 @@
                             <div class="modal-body">
                                 <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/tratamientos/form', 'Tratamiento')">
                                     <input type="hidden" name="id">
+                                    <input type="hidden" name="createdAt">
                         
                                     <div class="mb-3">
                                         <label class="form-label" for="nombre">Nombre *</label>
@@ -79,6 +80,7 @@
                                         <input class="form-control" type="number" name="precio" id="precio" min="0" required>
                                         <div class="invalid-feedback" id="error-precio"></div>
                                     </div>
+
                                 
                                     <button type="submit" class="btn btn-primary w-100">Guardar</button>
                                 </form>

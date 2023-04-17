@@ -42,7 +42,7 @@
                                 <td th:text="${entity.historialMedico}"></td>
                                 <td th:text="${entity.alergias}"></td>
                                 <td>
-                                    <span th:text="${#dates.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                    <span th:text="${#temporals.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
                                     (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
                                 </td>
                                 <td class="text-nowrap">
@@ -70,6 +70,7 @@
                             <div class="modal-body">
                                 <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pacientes/form', 'Paciente')">
                                     <input type="hidden" name="id">
+                                    <input type="hidden" name="createdAt">
                         
                                     <div class="mb-3 d-flex" style="gap: .5rem;">
                                         <div class="w-100">

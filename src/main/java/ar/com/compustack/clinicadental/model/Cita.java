@@ -1,7 +1,8 @@
 package ar.com.compustack.clinicadental.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,15 +34,14 @@ public class Cita
     private Integer id;
 
     @NotNull(message = "Debes seleccionar una fecha")
-    @FutureOrPresent(message = "No es posible agendar una cita en una fecha pasada")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Temporal(TemporalType.DATE)
-    private Date fecha;
+    @Column(columnDefinition = "DATE")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate fecha;
 
     @NotNull(message = "Debes seleccionar una hora")
-    @DateTimeFormat(pattern = "HH:mm")
-    @Temporal(TemporalType.TIME)
-    private Date hora;
+    @Column(columnDefinition = "TIME")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+    private LocalTime hora;
     
     @NotNull(message = "Debes seleccionar una paciente")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,9 +1,12 @@
 package ar.com.compustack.clinicadental.controller;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -40,11 +43,16 @@ public class CitaController
     @GetMapping("/")
     public String home(Model model)
     {
-        Date yesterday = new Date(System.currentTimeMillis() - (24 * 3600000)); // Obtiene la fecha de ayer
-        Date today = new Date(System.currentTimeMillis()); // Obtiene la fecha actual
-        Date tomorrow = new Date(System.currentTimeMillis() + (24 * 3600000)); // Obtiene la fecha de mañana
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
 
-        model.addAttribute("citas", citaRepository.findAllByFechaAfterOrderByFechaAsc(yesterday)); // Enlista todas las citas a partir del día actual
+        //
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        List<String> fechasList = citaRepository.findAllAfterFechaGroupByFecha(); // Agrupamos las fechas de todas las citas en una lista
+        List<LocalDate> fechas = fechasList.stream().map(fecha -> LocalDate.parse(fecha, formatter)).collect(Collectors.toList()); // Convertimos las fechas de String a LocalDate
+
+        model.addAttribute("citas", citaRepository.findAllAfterFechaOrderByHoraAsc(today)); // Obtenemos todas las citas a partir del día actual
+        model.addAttribute("fechas", fechas);
         model.addAttribute("doctores", doctorRepository.findAll());
         model.addAttribute("todayDate", today);
         model.addAttribute("tomorrowDate", tomorrow);
@@ -79,6 +87,13 @@ public class CitaController
     @PostMapping("/form")
     public ResponseEntity<?> form(@Valid Cita cita, BindingResult result)
     {
+        // Verificar que la fecha elegida no sea una fecha pasada
+        LocalDate curDate = LocalDate.now(); // Obtenemos el día actual
+        if(cita.getFecha().isBefore(curDate)) // Verificamos si la fecha elegida para la cita es pasada a la fecha actual
+        {
+            result.rejectValue("fecha", "cita.fecha", "No es posible agendar una cita en una fecha pasada");
+        }
+
         // Verificar disponibilidad de la cita
         Optional<Cita> checkDate = citaRepository.findByFechaAndHora(cita.getFecha(), cita.getHora());
         if(checkDate.isPresent() && checkDate.get().getId() != cita.getId()) // La fecha y hora ya está reservada
