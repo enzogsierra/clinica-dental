@@ -12,32 +12,37 @@
             
             <!-- Contenido -->
             <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Citas</h2>
+                <h2 class="text-center text-lg-start">Turnos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Cita')">
-                    <i class="bi bi-plus-circle"></i>
-                    Agendar cita
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Turno')">
+                    <i class="bi bi-calendar-plus"></i>
+                    Agendar turno
                 </button>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Próximas citas programadas</p>
+                    <p class="text-muted">Próximos turnos programados</p>
 
-                    <div th:each="fecha: ${fechas}" class="mb-5">
-                        <h3 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy')}">
-                            Hoy
-                        </h3>
-                        <h3 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
-                            Mañana
-                        </h3>
-                        <h3 th:unless="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy') || #temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
-                            <span th:text="${#temporals.format(fecha, 'EEEE')}"></span>,
+                    <!-- <div th:each="fecha: ${fechas}" class="mb-5"> -->
+                    <div th:each="fecha, iter: ${fechas}" th:class="${iter.index != 0 ? 'my-5 pt-5 border-top' : ''}">
+                        <h4 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy')}">
+                            <span>Hoy</span>,
                             <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
                             <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
-                        </h3>
+                        </h4>
+                        <h4 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}" id="mañana">
+                            <span>Mañana</span>,
+                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
+                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
+                        </h4>
+                        <h4 th:unless="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy') || #temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
+                            <span th:text="${#strings.capitalize(#temporals.format(fecha, 'EEEE'))}"></span>,
+                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
+                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
+                        </h4>
 
                         <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3 g-4">
-                            <div th:each="entity: ${citas}" th:if="${fecha == entity.fecha}" class="col">
-                                <div class="p-4 shadow border">
+                            <div th:each="entity: ${turnos}" th:if="${fecha == entity.fecha}" class="col">
+                                <div class="p-4 shadow border rounded">
                                     <div class="d-flex justify-content-between">
                                         <div>
                                             <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
@@ -52,6 +57,11 @@
                                                 <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
                                             </p>
 
+                                            <p class="mb-0" th:if="${entity.tratamiento != null}">
+                                                <i class="fs-5 bi bi-card-checklist"></i>
+                                                <span th:text="${entity.tratamiento.nombre}"></span>
+                                            </p>
+
                                             <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
                                                 <i class="fs-5 bi bi-chat-dots"></i>
                                                 <span th:text="${entity.observaciones}"></span>
@@ -61,10 +71,10 @@
                                         <div>
                                             <div class="btn-group dropstart">
                                                 <i class="fs-5 bi bi-three-dots-vertical" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
-                                                
+
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">Editar</button></li>
-                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">Eliminar</button></li>
+                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Turno')">Editar</button></li>
+                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity(event, '/turnos/delete', 'Turno')">Eliminar</button></li>
                                                     <li>
                                                         <button class="dropdown-item" type="button">
                                                             <i class="text-success bi bi-whatsapp"></i>
@@ -74,20 +84,17 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                          
-    
-                                        <!-- <div class="text-nowrap">
-                                            <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/citas/get', 'Cita')">
-                                                <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar cita" onclick="onDeleteEntity(event, '/citas/delete', 'Cita')">
-                                                <i class="bi bi-trash" style="pointer-events: none;"></i>
-                                            </button>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div>
+                        <a th:href="@{/turnos/historial}" class="btn btn-outline-secondary">
+                            <i class="bi bi-clock"></i> 
+                            Ver historial de turnos
+                        </a>
                     </div>
                 </div>
 
@@ -96,12 +103,12 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Citas</h5>
+                                <h4 class="modal-title" id="entityLabel">Turnos</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body ui-front">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/citas/form', 'Cita')">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/turnos/form', 'Turnos')">
                                     <input type="hidden" name="id">
                                     <input type="hidden" name="createdAt">
                         
@@ -139,6 +146,21 @@
                                             </option>
                                         </select>
                                         <div class="invalid-feedback" id="error-doctor"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="tratamiento">Tratamiento</label>
+                                        <select name="tratamiento" id="tratamiento" class="form-select">
+                                            <option value="0" selected>-- Seleccionar tratamiento --</option>
+                        
+                                            <option
+                                                th:each="tratamiento: ${tratamientos}"
+                                                th:value="${tratamiento.id}"
+                                                th:text="${tratamiento.nombre}"
+                                            >
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback" id="error-tratamiento"></div>
                                     </div>
 
                                     <div class="mb-3">

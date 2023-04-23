@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -24,10 +25,10 @@ import lombok.ToString;
 
 
 @Entity
-@Table(name = "citas")
+@Table(name = "turnos")
 @Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
-public class Cita 
+public class Turno 
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,8 +52,19 @@ public class Cita
     @ManyToOne(fetch = FetchType.LAZY)
     private Doctor doctor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Tratamiento tratamiento;
+
     private String observaciones;
     
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(columnDefinition = "DATETIME")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
+
+    
+    @PrePersist
+    private void defaultValues()
+    {
+        if(this.createdAt == null) this.createdAt = LocalDateTime.now();
+    }
 }

@@ -1,4 +1,4 @@
-package ar.com.compustack.clinicadental.config;
+package ar.com.compustack.clinicadental.service;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,19 +12,126 @@
             
             <!-- Contenido -->
             <main class="container-fluid p-4">
-                <h1 th:text="${clinica.nombre}" class="text-center"></h1>
+                <h1 th:text="${clinica.nombre}" class="mb-5 text-center"></h1>
 
                 <section> 
-                    <h2>Citas</h2>
+                    
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6 col-xl-7">
+                            <h2>Turnos de hoy</h2>
 
-                    <div class="row g-2">
-                        <div class="col-12 col-lg-4">
                             <div class="p-4 bg-white rounded-1 shadow-sm">
-                                <p class="text-muted">Citas programadas para hoy</p>
+                                <!-- Sin turnos -->
+                                <div th:if="${turnosToday.size() == 0}" class="text-center">
+                                    <p class="text-muted">No hay turnos programados para hoy</p>
+
+                                    <a th:href="@{/turnos/}" class="btn btn-primary">
+                                        <i class="bi bi-calendar-plus"></i>
+                                        Agendar turno
+                                    </a>
+                                </div>
+
+                                <!-- Con turnos -->
+                                <div th:unless="${turnosToday.size() == 0}">
+                                    <p class="text-muted"> 
+                                        <span th:text="${#strings.capitalize(#temporals.format(todayDate, 'EEEE'))}"></span>,
+                                        <span th:text="${#temporals.format(todayDate, 'dd')}"></span> de
+                                        <span th:text="${#temporals.format(todayDate, 'MMMM')}"></span>
+                                    </p>
+                                
+                                    <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
+                                                
+                                                <p class="mb-0">
+                                                    <i class="fs-5 text-primary bi bi-person"></i>
+                                                    <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
+                                                </p>
+        
+                                                <p class="mb-0">
+                                                    <i class="fs-5 text-success bi bi-clipboard-check"></i>
+                                                    <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
+                                                </p>
+
+                                                <p class="mb-0" th:if="${entity.tratamiento != null}">
+                                                    <i class="fs-5 bi bi-card-checklist"></i>
+                                                    <span th:text="${entity.tratamiento.nombre}"></span>
+                                                </p>
+
+                                                <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
+                                                    <i class="fs-5 bi bi-chat-dots"></i>
+                                                    <span th:text="${entity.observaciones}"></span>
+                                                </p>
+                                            </div>
+
+                                            <div class="d-flex align-items-center">
+                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank">
+                                                    <i class="fs-3 text-success bi bi-whatsapp"></i>
+                                                </a>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-8">
-                            <div class="p-4 bg-white rounded-1 shadow-sm"></div>
+                        <div class="col-12 col-md-6 col-xl-5">
+                            <h2>Turnos para mañana</h2>
+
+                            <div class="p-4 bg-white rounded-1 shadow-sm">
+                                <!-- Sin turnos -->
+                                <div th:if="${turnosTomorrow.size() == 0}" class="text-center">
+                                    <p class="text-muted">No hay turnos programados para mañana</p>
+
+                                    <a th:href="@{/turnos/}" class="btn btn-primary">
+                                        <i class="bi bi-calendar-plus"></i>
+                                        Agendar turno
+                                    </a>
+                                </div>
+
+                                <!-- Con turnos -->
+                                <div th:unless="${turnosTomorrow.size() == 0}">
+                                    <p class="text-muted"> 
+                                        <span th:text="${#strings.capitalize(#temporals.format(todayDate, 'EEEE'))}"></span>,
+                                        <span th:text="${#temporals.format(todayDate, 'dd')}"></span> de
+                                        <span th:text="${#temporals.format(todayDate, 'MMMM')}"></span>
+                                    </p>
+                                
+                                    <div th:each="entity, iter: ${turnosTomorrow}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
+                                                
+                                                <p class="mb-0">
+                                                    <i class="fs-5 text-primary bi bi-person"></i>
+                                                    <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
+                                                </p>
+        
+                                                <p class="mb-0">
+                                                    <i class="fs-5 text-success bi bi-clipboard-check"></i>
+                                                    <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
+                                                </p>
+
+                                                <p class="mb-0" th:if="${entity.tratamiento != null}">
+                                                    <i class="fs-5 bi bi-card-checklist"></i>
+                                                    <span th:text="${entity.tratamiento.nombre}"></span>
+                                                </p>
+
+                                                <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
+                                                    <i class="fs-5 bi bi-chat-dots"></i>
+                                                    <span th:text="${entity.observaciones}"></span>
+                                                </p>
+                                            </div>
+
+                                            <div class="d-flex align-items-center">
+                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank">
+                                                    <i class="fs-3 text-success bi bi-whatsapp"></i>
+                                                </a>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

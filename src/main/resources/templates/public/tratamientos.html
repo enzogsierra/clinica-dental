@@ -26,7 +26,7 @@
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Nombre</th>
-                                <th>Descripción</th>
+                                <th>Detalles</th>
                                 <th>Precio</th>
                                 <th></th>
                             </tr>
@@ -34,7 +34,10 @@
                         <tbody>
                             <tr th:each="entity: ${tratamientos}">
                                 <td th:text="${entity.nombre}"></td>
-                                <td th:text="${entity.descripcion}"></td>
+                                <td>
+                                    <span th:if="${entity.detalles.isEmpty()}" class="text-muted">(Sin detalles)</span>
+                                    <span th:unless="${entity.detalles.isEmpty()}" th:text="${entity.detalles}"></span>
+                                </td>
                                 <td th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
                                 <td>
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Tratamiento')">
@@ -70,9 +73,9 @@
                                     </div>
                         
                                     <div class="mb-3">
-                                        <label class="form-label" for="descripcion">Descripción *</label>
-                                        <input class="form-control" type="tel" name="descripcion" id="descripcion" required>
-                                        <div class="invalid-feedback" id="error-descripcion"></div>
+                                        <label class="form-label" for="detalles">Detalles</label>
+                                        <input class="form-control" type="tel" name="detalles" id="detalles">
+                                        <div class="invalid-feedback" id="error-detalles"></div>
                                     </div>
 
                                     <div class="mb-3">

@@ -37,8 +37,7 @@ public class Tratamiento
     @NotBlank(message = "Debes asignar un nombre")
     private String nombre;
 
-    @NotBlank(message = "Debes asignar una descripcion")
-    private String descripcion;
+    private String detalles;
 
     @NotNull(message = "Debes asignar un precio")
     @NumberFormat(pattern = "#,##0.00", style = Style.CURRENCY)

@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
-public class CitaDTO 
+public class TurnoDTO 
 {
     private Integer id;
     private LocalDate fecha;
@@ -22,6 +22,7 @@ public class CitaDTO
     private String pacienteNombre;
     private Integer doctor;
     private String doctorNombre;
+    private Integer tratamiento;
     private String observaciones;
     private LocalDateTime createdAt;
 }

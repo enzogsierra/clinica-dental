@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Historial de turnos</h2>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-muted">Turnos de los últimos 30 </p>
+                        </div>
+
+                        <div>
+                            <form th:action="@{/turnos/historial}">
+                                <div class="d-flex" style="gap: .5rem;">
+                                    <div>
+                                        <label class="form-label" for="from">Desde</label>
+                                        <input class="form-control" type="date" name="from" id="from">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" for="to">Hasta</label>
+                                        <input class="form-control" type="date" name="to" id="to">
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Aplicar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Fecha y hora</th>
+                                <th>Paciente</th>
+                                <th>Médico</th>
+                                <th>Observaciones</th>
+                                <th>Creado el</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entity: ${turnos}">
+                                <td th:text="${#temporals.format(entity.fecha, 'dd/MM/yyyy') + ' - ' + #temporals.format(entity.hora, 'HH:mm')}"></td>
+                                <td th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
+                                <td th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></td>
+                                <td th:text="${entity.observaciones}"></td>
+                                <td th:text="${#temporals.format(entity.createdAt, 'dd/MM/yyyy') + ' - ' + #temporals.format(entity.createdAt, 'HH:mm')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+    </body>
+</html>
