@@ -15,16 +15,18 @@
                 <h2 class="text-center text-lg-start">Información de la clínica</h2>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <form th:action="@{/configuracion}" th:object="${clinica}" method="POST" enctype="multipart/form-data">
+                    <form th:action="@{/configuracion/form}" th:object="${clinica}" method="POST" enctype="multipart/form-data">
                         <div class="mb-5 text-center">
                             <img th:if="*{logoUrl}" th:src="@{/assets/{logo} (logo = *{logoUrl})}" style="max-height: 8rem;">
                             <img th:unless="*{logoUrl}" th:src="@{/assets/default-logo.png}" style="max-height: 8rem;">
                         </div>
 
                         <div class="row row-cols-1 row-cols-lg-2">
+                            <input type="hidden" th:field="*{id}">
+
                             <div class="mb-3">
-                                <label class="form-label" for="nombre">Nombre de la clínica</label>
-                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" id="nombre">
+                                <label class="form-label" for="nombre">Nombre de la clínica *</label>
+                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{nombre}" id="nombre" required>
                                 <div th:errors="*{nombre}" class="invalid-feedback" id="nombre"></div>
                             </div>
 
@@ -35,26 +37,26 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="telefono1">Número de teléfono principal</label>
-                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{telefono1}" id="telefono1">
+                                <label class="form-label" for="telefono1">Número de teléfono principal *</label>
+                                <input class="form-control" th:errorclass="is-invalid" type="tel" th:field="*{telefono1}" id="telefono1" required>
                                 <div th:errors="*{telefono1}" class="invalid-feedback" id="telefono1"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="telefono2">Número de teléfono secundario</label>
-                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{telefono2}" id="telefono2">
+                                <input class="form-control" th:errorclass="is-invalid" type="tel" th:field="*{telefono2}" id="telefono2">
                                 <div th:errors="*{telefono2}" class="invalid-feedback" id="telefono2"></div>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="direccion">Dirección</label>
-                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{direccion}" id="direccion" placeholder="Calle Ejemplo, 200 - Juan José Castelli, Chaco">
+                                <label class="form-label" for="direccion">Dirección *</label>
+                                <input class="form-control" th:errorclass="is-invalid" type="text" th:field="*{direccion}" id="direccion" placeholder="Calle Ejemplo, 200 - Juan José Castelli, Chaco" required>
                                 <div th:errors="*{direccion}" class="invalid-feedback" id="direccion"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="logo">Logo</label>
-                                <input class="form-control" type="file" name="logoFile" id="logo">
+                                <input class="form-control" type="file" name="logoFile" id="logo" accept="image/*">
                             </div>
                         </div>
                         

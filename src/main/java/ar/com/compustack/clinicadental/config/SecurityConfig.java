@@ -27,8 +27,8 @@ public class SecurityConfig
             .authorizeHttpRequests(auth ->
             {
                 auth.antMatchers("/admin/**").hasAuthority("ADMIN");
-                auth.antMatchers("/assets/logo.**").permitAll();
-                auth.antMatchers("/css/**").permitAll();
+                auth.antMatchers("/assets/**").permitAll(); // Permitir que se muestren todos los recursos - evita falsos redirects al hacer login
+                auth.antMatchers("/css/**").permitAll(); // ^
                 auth.anyRequest().authenticated();
             })
             .formLogin(form ->

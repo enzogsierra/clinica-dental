@@ -79,6 +79,21 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <div>
+                                            <label class="form-label" for="detalles">Duración</label>
+
+                                            <i 
+                                                class="bi bi-question-circle"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Tiempo total estimado que dura el tratamiento">
+                                            </i>
+                                        </div>
+                                        <input class="form-control" type="tel" name="detalles" id="detalles" placeholder="30 minutos, 1 hora, 6 meses...">
+                                        <div class="invalid-feedback" id="error-detalles"></div>
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label class="form-label" for="precio">Precio *</label>
                                         <input class="form-control" type="number" name="precio" id="precio" min="0" required>
                                         <div class="invalid-feedback" id="error-precio"></div>

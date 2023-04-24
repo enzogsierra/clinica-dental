@@ -44,6 +44,8 @@ public class Tratamiento
     @Min(value = 0, message = "El precio no puede ser menor a $0")
     private Double precio;
 
+    private String duracion;
+
     @Column(columnDefinition = "DATE")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate createdAt;

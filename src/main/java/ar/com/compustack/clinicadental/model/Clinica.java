@@ -11,9 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 
 @Entity
-@Getter @Setter
+@Getter @Setter @ToString
 @NoArgsConstructor @AllArgsConstructor
 public class Clinica 
 {
@@ -34,6 +36,6 @@ public class Clinica
     @NotBlank(message = "Debes indicar una dirección")
     private String direccion;
 
-    @Column(columnDefinition = "VARCHAR(32) DEFAULT 'logo.png'")
-    private String logoUrl = "logo.png";
+    @Column(columnDefinition = "VARCHAR DEFAULT 'logo.png'")
+    private String logoUrl;
 }
