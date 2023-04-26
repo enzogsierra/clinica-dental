@@ -1,16 +1,22 @@
 package ar.com.compustack.clinicadental.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.TemporalType;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Temporal;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,22 +61,39 @@ public class TurnoController
 
 
     @GetMapping("/")
-    public String home(Model model)
+    public String home(Model model, @RequestParam(name = "from", defaultValue = "") String pFrom) throws Exception
     {
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
+        LocalDate today = LocalDate.now(); // Fecha actual
+        LocalDate from = (pFrom.isBlank()) ? (today) : (LocalDate.parse(pFrom)); // Fecha desde la cual empezara a obtener turnos...
+        LocalDate to = from.plusDays(6); // ...hasta esta fecha
 
-        //
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        List<String> fechasList = turnoRepository.findAllAfterFechaGroupByFecha(); // Agrupamos las fechas de todos los turnos en una lista
-        List<LocalDate> fechas = fechasList.stream().map(fecha -> LocalDate.parse(fecha, formatter)).collect(Collectors.toList()); // Convertimos las fechas de String a LocalDate
+        List<LocalDate> semana = new ArrayList<>();
+        for(int i = 0; from.plusDays(i - 1).isBefore(to); i++)
+        {
+            semana.add(from.plusDays(i));
+        }
 
-        model.addAttribute("turnos", turnoRepository.findAllAfterFechaOrderByHoraAsc(today)); // Obtenemos todos los turnos a partir del día actual
-        model.addAttribute("fechas", fechas);
+        LocalTime apertura = LocalTime.of(8, 0, 0);
+        LocalTime cierre = LocalTime.of(22, 0, 0);
+        List<LocalTime> horarios = new ArrayList<>();
+        while(apertura.isBefore(cierre))
+        {
+            horarios.add(apertura);
+            apertura = apertura.plusMinutes(30);
+        }
+
+        //model.addAttribute("turnos", turnoRepository.findAllAfterFechaOrderByHoraAsc(today)); // Obtenemos todos los turnos a partir del día actual
+        model.addAttribute("turnos", turnoRepository.findAllInRangeFecha(from, to));
         model.addAttribute("doctores", doctorRepository.findAll());
         model.addAttribute("tratamientos", tratamientoRepository.findAll());
+        
+        model.addAttribute("semana", semana);
+        model.addAttribute("horarios", horarios);
         model.addAttribute("todayDate", today);
-        model.addAttribute("tomorrowDate", tomorrow);
+        model.addAttribute("fromDate", from);
+        model.addAttribute("toDate", to);
+        model.addAttribute("prevWeek", from.minusDays(7));
+        model.addAttribute("nextWeek", from.plusDays(7));
         return "public/turnos";
     }
 
@@ -153,10 +176,12 @@ public class TurnoController
             dto.setFecha(data.getFecha());
             dto.setHora(data.getHora());
             dto.setPaciente(data.getPaciente().getId());
-            dto.setPacienteNombre(data.getPaciente().getNombre());
+            dto.setPacienteNombre(data.getPaciente().getNombre() + " " + data.getPaciente().getApellido());
+            dto.setPacienteTelefono(data.getPaciente().getTelefono());
             dto.setDoctor(data.getDoctor().getId());
-            dto.setDoctorNombre(data.getDoctor().getNombre());
+            dto.setDoctorNombre(data.getDoctor().getNombre() + " " + data.getDoctor().getApellido());
             dto.setTratamiento(data.getTratamiento() == null ? 0 : data.getTratamiento().getId());
+            dto.setTratamientoNombre(data.getTratamiento() == null ? ("") : data.getTratamiento().getNombre());
             dto.setObservaciones(data.getObservaciones());
             dto.setCreatedAt(data.getCreatedAt());
         }

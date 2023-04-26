@@ -25,6 +25,36 @@ body
 }
 
 
+/* Turnos */
+#turnos-calendar-turno {
+    vertical-align: middle;
+}
+
+#turnos-calendar-turno__addBtn {
+    display: none;
+    opacity: 0;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+#turnos-calendar-turno:not(:has(#turnos-calendar-turno__card)) #turnos-calendar-turno__addBtn {
+    display: block;
+}
+#turnos-calendar-turno:not(:has(#turnos-calendar-turno__card)):hover #turnos-calendar-turno__addBtn {
+    opacity: 100;
+}
+
+#turnos-calendar-turno__card
+{
+    cursor: pointer;
+    transition: all .15s ease;
+}
+#turnos-calendar-turno__card:hover
+{
+    transform: scale(1.05);
+}
+
+
 /* Scrollbar */
 *::-webkit-scrollbar-track
 {
@@ -57,3 +87,13 @@ body
     background-color: white;
     color: black;
 }
+
+.ls-1 { letter-spacing: 1px; }
+.ls-2 { letter-spacing: 2px; }
+.ls-3 { letter-spacing: 4px; }
+.ls-4 { letter-spacing: 6px; }
+.ls-5 { letter-spacing: 10px; }
+
+.pointer-event-none {pointer-events: none;}
+
+.vertical-align-middle {vertical-align: middle;}

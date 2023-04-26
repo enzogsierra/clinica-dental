@@ -47,10 +47,10 @@
                                 </td>
                                 <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Paciente')">
-                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                        <i class="bi bi-pencil-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
-                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                        <i class="bi bi-trash pointer-event-none"></i>
                                     </button>
                                 </td>
                             </tr>

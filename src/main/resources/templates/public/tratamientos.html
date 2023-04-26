@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Detalles</th>
+                                <th>Duración</th>
                                 <th>Precio</th>
                                 <th></th>
                             </tr>
@@ -38,6 +39,7 @@
                                     <span th:if="${entity.detalles.isEmpty()}" class="text-muted">(Sin detalles)</span>
                                     <span th:unless="${entity.detalles.isEmpty()}" th:text="${entity.detalles}"></span>
                                 </td>
+                                <td th:text="${entity.duracion}"></td>
                                 <td th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
                                 <td>
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Tratamiento')">
@@ -80,7 +82,7 @@
 
                                     <div class="mb-3">
                                         <div>
-                                            <label class="form-label" for="detalles">Duración</label>
+                                            <label class="form-label" for="duracion">Duración</label>
 
                                             <i 
                                                 class="bi bi-question-circle"
@@ -89,8 +91,8 @@
                                                 title="Tiempo total estimado que dura el tratamiento">
                                             </i>
                                         </div>
-                                        <input class="form-control" type="tel" name="detalles" id="detalles" placeholder="30 minutos, 1 hora, 6 meses...">
-                                        <div class="invalid-feedback" id="error-detalles"></div>
+                                        <input class="form-control" type="tel" name="duracion" id="duracion" placeholder="30 minutos, 1 hora, 6 meses...">
+                                        <div class="invalid-feedback" id="error-duracion"></div>
                                     </div>
 
                                     <div class="mb-3">

@@ -23,27 +23,33 @@
 <!--  -->
 <header th:fragment="header" class="header">
     <div class="py-4 px-5 text-center">
-        <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="max-height: 6rem; object-fit: contain;">
+        <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="width: 100%; max-height: 6rem; object-fit: contain;">
     </div>
 
     <nav class="d-flex flex-row justify-content-center flex-wrap flex-lg-column">
         <a th:href="@{/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Inicio">
-            <i class="fs-4 bi bi-house"></i> <span class="ps-2 d-none d-sm-inline">Inicio</span>
+            <i class="fs-4 bi bi-house"></i>
+            <span class="ps-2 d-none d-sm-inline">Inicio</span>
         </a>
         <a th:href="@{/turnos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Turnos">
-            <i class="fs-4 bi bi-calendar3"></i> <span class="ps-2 d-none d-sm-inline">Turnos</span>
+            <i class="fs-4 bi bi-calendar3"></i>
+            <span class="ps-2 d-none d-sm-inline">Turnos</span>
         </a>
         <a th:href="@{/doctores/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Doctores">
-            <i class="fs-4 bi bi-clipboard-check"></i> <span class="ps-2 d-none d-sm-inline">Doctores</span>
+            <i class="fs-4 bi bi-clipboard-check"></i>
+            <span class="ps-2 d-none d-sm-inline">Doctores</span>
         </a>
         <a th:href="@{/pacientes/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Pacientes">
-            <i class="fs-4 bi bi-person"></i> <span class="ps-2 d-none d-sm-inline">Pacientes</span>
+            <i class="fs-4 bi bi-person"></i>
+            <span class="ps-2 d-none d-sm-inline">Pacientes</span>
         </a>
         <a th:href="@{/tratamientos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Tratamientos">
-            <i class="fs-4 bi bi-card-checklist"></i> <span class="ps-2 d-none d-sm-inline">Tratamientos</span>
+            <i class="fs-4 bi bi-card-checklist"></i>
+            <span class="ps-2 d-none d-sm-inline">Tratamientos</span>
         </a>
         <a th:href="@{/configuracion/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Configuración">
-            <i class="fs-4 bi bi-gear"></i> <span class="ps-2 d-none d-sm-inline">Configuración</span>
+            <i class="fs-4 bi bi-gear"></i>
+            <span class="ps-2 d-none d-sm-inline">Configuración</span>
         </a>
     </nav>
 </header>
