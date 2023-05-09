@@ -15,34 +15,92 @@
                 <h2 class="text-center text-lg-start">Historial de turnos</h2>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-muted">Turnos de los últimos 30 </p>
-                        </div>
+                    <form th:action="@{/turnos/historial}">
+                        <label class="form-label">Selecciona una fecha</label>
+                        
+                        <div class="d-flex align-items-center" style="gap: .5rem;">
+                            <div>
+                                <select name="month" class="form-select" required>
+                                    <option value="0" disabled>-- Seleccionar mes --</option>
+                
+                                    <option value="1" th:selected="${month == 1}">Enero</option>
+                                    <option value="2" th:selected="${month == 2}">Febrero</option>
+                                    <option value="3" th:selected="${month == 3}">Marzo</option>
+                                    <option value="4" th:selected="${month == 4}">Abril</option>
+                                    <option value="5" th:selected="${month == 5}">Mayo</option>
+                                    <option value="6" th:selected="${month == 6}">Junio</option>
+                                    <option value="7" th:selected="${month == 7}">Julio</option>
+                                    <option value="8" th:selected="${month == 8}">Agosto</option>
+                                    <option value="9" th:selected="${month == 9}">Septiembre</option>
+                                    <option value="10" th:selected="${month == 10}">Octubre</option>
+                                    <option value="11" th:selected="${month == 11}">Noviembre</option>
+                                    <option value="12" th:selected="${month == 12}">Diciembre</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <form th:action="@{/turnos/historial}">
-                                <div class="d-flex" style="gap: .5rem;">
-                                    <div>
-                                        <label class="form-label" for="from">Desde</label>
-                                        <input class="form-control" type="date" name="from" id="from">
-                                    </div>
-                                    <div>
-                                        <label class="form-label" for="to">Hasta</label>
-                                        <input class="form-control" type="date" name="to" id="to">
-                                    </div>
-                                    <div>
-                                        <button type="submit" class="btn btn-primary">Aplicar</button>
-                                    </div>
-                                </div>
-                            </form>
+                            <div>
+                                <input class="form-control" type="number" name="year" th:value="${year}" placeholder="Año" min="2023" required>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
                         </div>
+                    </form>
+
+                    <!--  -->
+                    <div th:each="fecha, iterFecha: ${fechas}" th:classappend="${iterFecha.last ? 'pt-4' : 'py-4 border-bottom'}">
+                        <table class="table table-bordered table-striped table-hover caption-top">
+                            <caption>
+                                <span th:text="${#temporals.format(fecha, 'EEEE')}" class="text-capitalize"></span>,
+                                <span th:text="${#temporals.format(fecha, 'd')}"></span> de
+                                <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
+                            </caption>
+    
+                            <thead class="text-bg-secondary">
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Paciente</th>
+                                    <th>Médico</th>
+                                    <th>Observaciones</th>
+                                    <th>Creado el</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entity: ${turnos}" th:if="${entity.fecha == fecha}">
+                                    <td th:text="${#temporals.format(entity.hora, 'HH:mm')}"></td>
+                                    <td th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
+                                    <td th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></td>
+                                    <td th:text="${entity.observaciones}"></td>
+                                    <td th:text="${#temporals.format(entity.createdAt, 'dd/MM/yyyy') + ' - ' + #temporals.format(entity.createdAt, 'HH:mm')}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                    <!-- <th:block th:each="tmp, iter: ${turnos}">
+                        <div th:if="${!iter.first && tmp.fecha != turnos[iter.index - 1].fecha}" class="mb-4 p-4 text-bg-white shadow-sm rounded border">
+                            <span th:text="${tmp.fecha}"></span>
 
-                    <table class="table table-bordered table-striped table-hover">
+                            <th:block th:each="entity: ${turnos}" th:if="${entity.fecha == tmp.fecha}">
+                                <p th:text="${entity.paciente.nombre}"></p>
+                            </th:block>
+                        </div>
+
+                    </th:block> -->
+
+                    <!-- <table class="table table-bordered table-striped table-hover caption-top">
+                        <caption>
+                            Turnos de
+                            <span th:text="${#temporals.format(dateFormat, 'MMMM')}" class="text-capitalize"></span>,
+                            <span th:text="${#temporals.format(dateFormat, 'yyyy')}" class="text-capitalize"></span>
+                        </caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
-                                <th>Fecha y hora</th>
+                                <th>Día</th>
+                                <th>Hora</th>
                                 <th>Paciente</th>
                                 <th>Médico</th>
                                 <th>Observaciones</th>
@@ -51,14 +109,15 @@
                         </thead>
                         <tbody>
                             <tr th:each="entity: ${turnos}">
-                                <td th:text="${#temporals.format(entity.fecha, 'dd/MM/yyyy') + ' - ' + #temporals.format(entity.hora, 'HH:mm')}"></td>
+                                <td th:text="${#temporals.format(entity.fecha, 'dd')}"></td>
+                                <td th:text="${#temporals.format(entity.hora, 'HH:mm')}"></td>
                                 <td th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
                                 <td th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></td>
                                 <td th:text="${entity.observaciones}"></td>
                                 <td th:text="${#temporals.format(entity.createdAt, 'dd/MM/yyyy') + ' - ' + #temporals.format(entity.createdAt, 'HH:mm')}"></td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
                 </div>
             </main>
         </div>

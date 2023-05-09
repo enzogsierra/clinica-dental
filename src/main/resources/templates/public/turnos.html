@@ -19,28 +19,15 @@
                 </button>
 
                 <div class="my-4 bg-white border rounded-2 shadow-sm">
-                    <div class="p-4">
-                        <!-- <div th:if="${todayDate == fromDate}">
-                            <p class="text-muted">Turnos programados para esta semana</p>
-                        </div>
-                        <div th:unless="${todayDate == fromDate}">
-                            <p class="text-muted">
-                                <span>Turnos programados desde el </span>
-                                <span th:text="${#temporals.format(fromDate, 'dd/MM/yyyy')}" class="fw-semibold"></span>
-                                <span>hasta</span>
-                                <span th:text="${#temporals.format(toDate.minusDays(1), 'dd/MM/yyyy')}" class="fw-semibold"></span>
-                            </p>
-                        </div> -->
-                            
+                    <div class="p-4 d-flex justify-content-between">
                         <div class="d-flex align-items-center gap-2">
                             <div>
                                 <a th:href="@{/turnos/}" class="btn btn-outline-primary">Hoy</a>
-                                
                             </div>
 
                             <div>
-                                <a th:href="@{/turnos/?from={date} (date = ${prevWeek})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-left-fill"></i></a>
-                                <a th:href="@{/turnos/?from={date} (date = ${nextWeek})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-right-fill"></i></a>
+                                <a th:href="@{/turnos/?from={date} (date = ${fromDate.minusDays(7)})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-left-fill"></i></a>
+                                <a th:href="@{/turnos/?from={date} (date = ${fromDate.plusDays(7)})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-right-fill"></i></a>
                             </div>
                             
                             <div>
@@ -62,6 +49,13 @@
                                 </div>
 
                             </div>
+                        </div>
+
+                        <div>
+                            <a th:href="@{/turnos/historial}" class="btn btn-outline-secondary">
+                                <i class="bi bi-clock"></i> 
+                                Historial de turnos
+                            </a>
                         </div>
                     </div>
 

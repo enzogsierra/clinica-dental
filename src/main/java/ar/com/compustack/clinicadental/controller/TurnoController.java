@@ -92,19 +92,32 @@ public class TurnoController
         model.addAttribute("todayDate", today);
         model.addAttribute("fromDate", from);
         model.addAttribute("toDate", to);
-        model.addAttribute("prevWeek", from.minusDays(7));
-        model.addAttribute("nextWeek", from.plusDays(7));
         return "public/turnos";
     }
 
     @GetMapping("/historial")
-    public String history(Model model)
+    public String history(Model model, @RequestParam(name = "month", defaultValue = "") String pMonth, @RequestParam(name = "year", defaultValue = "") String pYear)
     {
-        LocalDate from = LocalDate.now().minusDays(30);
-        LocalDate to = LocalDate.now();
-        List<Turno> turnos = turnoRepository.findAllInRangeFecha(from, to);
+        LocalDate today = LocalDate.now();
+        Integer month = (pMonth.isBlank()) ? (today.getMonthValue()) : (Integer.parseInt(pMonth));
+        Integer year = (pYear.isBlank()) ? (today.getYear()) : (Integer.parseInt(pYear));
 
+        List<Turno> turnos = turnoRepository.findByMonthAndYear(month, year);
+
+        // Crear una lista de fechas que contengan al menos 1 turno
+        List<LocalDate> fechas = new ArrayList<>(); // Lista que almacenara las fechas
+        turnos.forEach(turno -> // Iteramos en la lista de turnos
+        {
+            if(!fechas.contains(turno.getFecha())) fechas.add(turno.getFecha()); // Si la fecha del turno no está en la lista de fechas, añadimos la fecha a la lista
+        });
+
+        
         model.addAttribute("turnos", turnos);
+        model.addAttribute("fechas", fechas);
+        model.addAttribute("todayDate", today);
+        model.addAttribute("month", month);
+        model.addAttribute("year", year);
+        model.addAttribute("dateFormat", LocalDate.of(year, month, 1));
         return "public/turnosHistorial";
     }
 
