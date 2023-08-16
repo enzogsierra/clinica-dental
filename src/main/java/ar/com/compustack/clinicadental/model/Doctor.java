@@ -2,15 +2,14 @@ package ar.com.compustack.clinicadental.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -44,14 +43,7 @@ public class Doctor
     @NotBlank(message = "Debes especificar la especialidad")
     private String especialidad;
 
-    @Column(columnDefinition = "DATE")
+    @CreationTimestamp
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate createdAt;
-
-    
-    @PrePersist
-    private void defaultValues()
-    {
-        if(this.createdAt == null) this.createdAt = LocalDate.now();
-    }
 }

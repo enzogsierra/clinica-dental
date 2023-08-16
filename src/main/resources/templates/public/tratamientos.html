@@ -26,27 +26,28 @@
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Nombre</th>
-                                <th>Detalles</th>
-                                <th>Duración</th>
+                                <th>Descripcion</th>
                                 <th>Precio</th>
+                                <th>Último cambio de precio</th>
                                 <th></th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <tr th:each="entity: ${tratamientos}">
                                 <td th:text="${entity.nombre}"></td>
                                 <td>
-                                    <span th:if="${entity.detalles.isEmpty()}" class="text-muted">(Sin detalles)</span>
-                                    <span th:unless="${entity.detalles.isEmpty()}" th:text="${entity.detalles}"></span>
+                                    <span th:if="${entity.descripcion.isEmpty()}" class="text-muted">(Sin descripción)</span>
+                                    <span th:unless="${entity.descripcion.isEmpty()}" th:text="${entity.descripcion}"></span>
                                 </td>
-                                <td th:text="${entity.duracion}"></td>
-                                <td th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
-                                <td>
+                                <td class="text-nowrap" th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
+                                <td th:text="${#temporals.format(entity.precioLastUpdate, 'dd/MM/yyyy')}"></td>
+                                <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Editar tratamiento')">
-                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                        <i class="bi bi-pencil-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre}" onclick="onDeleteEntity(event, '/tratamientos/delete', 'Tratamiento')">
-                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                        <i class="bi bi-trash pointer-event-none"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -64,35 +65,15 @@
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/tratamientos/form', 'Tratamiento')">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/tratamientos/form', 'Tratamiento')" novalidate>
                                     <input type="hidden" name="id">
+                                    <input type="hidden" name="precioLastUpdate">
                                     <input type="hidden" name="createdAt">
                         
                                     <div class="mb-3">
                                         <label class="form-label" for="nombre">Nombre *</label>
                                         <input class="form-control" type="tel" name="nombre" id="nombre" required>
                                         <div class="invalid-feedback" id="error-nombre"></div>
-                                    </div>
-                        
-                                    <div class="mb-3">
-                                        <label class="form-label" for="detalles">Detalles</label>
-                                        <input class="form-control" type="tel" name="detalles" id="detalles">
-                                        <div class="invalid-feedback" id="error-detalles"></div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div>
-                                            <label class="form-label" for="duracion">Duración</label>
-
-                                            <i 
-                                                class="bi bi-question-circle"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="right"
-                                                title="Tiempo total estimado que dura el tratamiento">
-                                            </i>
-                                        </div>
-                                        <input class="form-control" type="tel" name="duracion" id="duracion" placeholder="30 minutos, 1 hora, 6 meses...">
-                                        <div class="invalid-feedback" id="error-duracion"></div>
                                     </div>
 
                                     <div class="mb-3">
@@ -101,6 +82,10 @@
                                         <div class="invalid-feedback" id="error-precio"></div>
                                     </div>
 
+                                    <div class="mb-3">
+                                        <label class="form-label" for="precio">Descripcion *</label>
+                                        <textarea class="form-control" name="descripcion" id="descripcion" placeholder="Información detallada sobre el tratamiento, tales como la duración, opciones de financiamiento, etc..." rows="5"></textarea>
+                                    </div>
                                 
                                     <button type="submit" class="btn btn-primary w-100">Guardar</button>
                                 </form>

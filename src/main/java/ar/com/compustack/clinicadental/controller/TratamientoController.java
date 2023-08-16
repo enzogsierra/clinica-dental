@@ -1,5 +1,6 @@
 package ar.com.compustack.clinicadental.controller;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -64,6 +65,15 @@ public class TratamientoController
         }
 
         // Validacion correcta
+        if(tratamiento.getId() != null) // Verificar que es una entidad que está siendo editada
+        {
+            Optional<Tratamiento> tmp = tratamientoRepository.findById(tratamiento.getId()); // Buscar la entidad
+            if(tmp.isPresent() && Double.compare(tmp.get().getPrecio(), tratamiento.getPrecio()) != 0) // Verificar si se encontró a la entidad y si está cambiando el precio
+            {
+                tratamiento.setPrecioLastUpdate(LocalDate.now()); // Establecer la fecha cuando se cambió el precio del tratamiento
+            }
+        }
+
         tratamientoRepository.save(tratamiento);
 
         return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente

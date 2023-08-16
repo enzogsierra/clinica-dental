@@ -12,10 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -64,14 +64,7 @@ public class Turno
 
     private String observaciones;
     
-    @Column(columnDefinition = "DATETIME")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @CreationTimestamp
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDateTime createdAt;
-
-    
-    @PrePersist
-    private void defaultValues()
-    {
-        if(this.createdAt == null) this.createdAt = LocalDateTime.now();
-    }
 }

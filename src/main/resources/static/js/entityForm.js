@@ -31,6 +31,7 @@ async function onFormSubmit(event, url, text1)
     else if(api.status == 400) // Ocurrió un error de validación
     {
         const validations = await api.json(); // Convertimos los mensajes de validaciones a json
+        console.log(validations);
 
         for(const key in validations) // Iteramos sobre cada mensaje de validacion
         {

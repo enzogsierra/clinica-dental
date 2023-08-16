@@ -41,7 +41,7 @@
                                 
                                     <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
                                         <div class="d-flex justify-content-between">
-                                            <div th:classappend="${entity.completado ? 'text-secondary' : ''}">
+                                            <div th:classappend="${entity.completado == true ? 'text-secondary' : ''}">
                                                 <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
                                                 
                                                 <p class="mb-0">
