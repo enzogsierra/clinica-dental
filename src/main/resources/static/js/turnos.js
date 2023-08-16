@@ -5,7 +5,7 @@ function onNewDate(event)
     const fecha = btn.getAttribute("turno-fecha"); // Obtener la fecha seleccionada
     const hora = btn.getAttribute("turno-hora"); // ^
     
-    onNewEntity('Turno'); // Mostrar el modal para crear un turno
+    onNewEntity("Agendar turno"); // Mostrar el modal para crear un turno
     form.elements["fecha"].value = fecha; // Cambiar el valor del input de la hora
     form.elements["hora"].value = hora; // ...
 }

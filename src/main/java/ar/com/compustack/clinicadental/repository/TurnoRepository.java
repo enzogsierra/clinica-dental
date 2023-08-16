@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import ar.com.compustack.clinicadental.model.Paciente;
 import ar.com.compustack.clinicadental.model.Turno;
 
 
@@ -21,6 +22,9 @@ public interface TurnoRepository extends JpaRepository<Turno, Integer>
 
     // Busca un turno en una fecha y hora especifica
     Optional<Turno> findByFechaAndHora(LocalDate fecha, LocalTime hora);
+
+    // Buscar turnos de un paciente
+    List<Turno> findByPacienteOrderByFechaDesc(Paciente paciente);
 
     // Devuelve todas los turnos a partir de cierta fecha
     @Query("SELECT turno FROM Turno turno WHERE turno.fecha >= :fecha ORDER BY turno.hora")

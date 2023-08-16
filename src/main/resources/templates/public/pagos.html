@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Pagos y financiamientos</h2>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Registrar pago')">
+                    <i class="bi bi-currency-dollar"></i>
+                    Registrar pago
+                </button>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Pagos de los últimos 30 días</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Emisor</th>
+                                <th>Detalles</th>
+                                <th>Método de pago</th>
+                                <th class="text-end">Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entity: ${pagos}">
+                                <td th:text="${#temporals.format(entity.fechaPago, 'dd/MM/yyyy')}"></td>
+                                <td th:if="${entity.paciente}" th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
+                                <td th:unless="${entity.paciente}">(No especificado)</td>
+                                <td th:text="${entity.detalles}"></td>
+                                <td th:text="${entity.metodoPago}"></td>
+                                <td th:text="'$ ' + ${#numbers.formatDecimal(entity.monto, 0, 'POINT', 0, 'DEFAULT')}" class="fs-5 fw-medium text-end text-nowrap"></td>
+                            </tr>
+                            <!-- <tr th:each="entity: ${pacientes}" class="clickable-row cursor-pointer" th:data-href="@{/pacientes/{id} (id = ${entity.id})}" title="Ver perfil">
+                                <td>
+                                    <span class="text-uppercase" th:text="${entity.apellido}"></span>,
+                                    <span th:text="${entity.nombre}"></span>
+                                </td>
+                                <td th:text="${entity.telefono}"></td>
+                                <td th:text="${entity.direccion}"></td>
+                                <td th:text="${entity.historialMedico}"></td>
+                                <td th:text="${entity.alergias}"></td>
+                                <td>
+                                    <span th:text="${#temporals.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                    (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
+                                </td>
+                            </tr> -->
+                        </tbody>
+                        <tfoot class="text-bg-light">
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="fs-4 text-end text-nowrap">
+                                    Total <strong th:text="'$ ' + ${#numbers.formatDecimal(#aggregates.sum(pagos.?[monto != null].![monto]), 0, 'POINT', 0, 'DEFAULT')}"></strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="entityLabel">Pagos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body ui-front">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pagos/form', 'Pago')">
+                                    <input type="hidden" name="id">
+                                    <input type="hidden" name="createdAt">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label" for="monto">Monto *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input class="form-control" type="number" name="monto" id="monto" min="0" placeholder="0" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="error-monto"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="metodoPago">Método de pago *</label>
+                                        <select name="metodoPago" id="metodoPago" class="form-select">
+                                            <option value="Efectivo" selected>Efectivo</option>
+                                            <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                                            <option value="Tarjeta de debito">Tarjeta de debito</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                        <div class="invalid-feedback" id="error-metodoPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="pacienteNombre">Paciente (emisor del pago)</label>
+                                        <input class="form-control" type="text" name="pacienteNombre" id="pacienteNombre">
+                                        <div class="invalid-feedback" id="error-paciente"></div>
+                                        
+                                        <input type="hidden" name="paciente" id="paciente">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fechaPago">Fecha del pago *</label>
+                                        <input class="form-control" type="date" name="fechaPago" id="fechaPago" th:value="${todayDate}" required>
+                                        <div class="invalid-feedback" id="error-fechaPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="detalles">Detalles adicionales</label>
+                                        <input class="form-control" type="text" name="detalles" id="detalles">
+                                        <div class="invalid-feedback" id="error-detalles"></div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Registrar pago</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+        <script th:src="@{/js/pagos.js}"></script>
+    </body>
+</html>

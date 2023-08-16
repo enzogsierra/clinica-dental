@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -45,15 +46,21 @@ public class Turno
     private LocalTime hora;
     
     @NotNull(message = "Debes seleccionar una paciente")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Paciente paciente;
     
     @NotNull(message = "Debes seleccionar un doctor")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Doctor doctor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Tratamiento tratamiento;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Pago pago;
+
+    @Column(columnDefinition = "BIT DEFAULT 0")
+    private Boolean completado;
 
     private String observaciones;
     

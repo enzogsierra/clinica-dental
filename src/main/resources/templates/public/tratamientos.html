@@ -14,7 +14,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Tratamientos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Tratamiento')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir tratamiento')">
                     <i class="bi bi-plus-circle"></i>
                     Añadir tratamiento
                 </button>
@@ -42,7 +42,7 @@
                                 <td th:text="${entity.duracion}"></td>
                                 <td th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Tratamiento')">
+                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/tratamientos/get', 'Editar tratamiento')">
                                         <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre}" onclick="onDeleteEntity(event, '/tratamientos/delete', 'Tratamiento')">

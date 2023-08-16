@@ -14,7 +14,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Doctores</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Doctor')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir doctor')">
                     <i class="bi bi-clipboard-plus"></i>
                     Añadir doctor
                 </button>
@@ -39,7 +39,7 @@
                                 <td th:text="${entity.direccion}"></td>
                                 <td th:text="${entity.especialidad}"></td>
                                 <td class="text-nowrap">
-                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/doctores/get', 'Doctor')">
+                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/doctores/get', 'Editar doctor')">
                                         <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/doctores/delete', 'Doctor')">

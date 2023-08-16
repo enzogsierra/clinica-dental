@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Información acerca del paciente</h2>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <div class="row">
+                        <div class="col-12 col-xxl-5">
+                            <div class="d-flex justify-content-between">
+                                <h3>Datos generales</h3>
+
+                                <div class="text-nowrap">
+                                    <button type="button" class="btn btn-sm btn-warning" th:entity-id="${paciente.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Editar paciente')">
+                                        <i class="bi bi-pencil-square pointer-event-none"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" th:entity-id="${paciente.id}" id="deleteEntityBtn" th:entity-text="${paciente.nombre + ' ' + paciente.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
+                                        <i class="bi bi-trash pointer-event-none"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="px-4 bg-light border rounded">
+                                <div class="py-3 border-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4">Nombre completo</div>
+                                        <div class="col col-auto fw-medium" th:text="${paciente.nombre + ' ' + paciente.apellido}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="py-3 border-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4">Fecha de nacimiento</div>
+                                        <div class="col col-auto fw-medium">
+                                            <span th:text="${#temporals.format(paciente.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                            (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(paciente.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span> años)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="py-2 border-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4 mt-2">Teléfono</div>
+                                        <div class="col col-auto fw-medium">
+                                            <a th:href="|https://wa.me/54${paciente.telefono}|" class="btn btn-success" target="_blank">
+                                                <i class="bi bi-whatsapp"></i>
+                                                <span class="ms-1 fw-medium" th:text="${paciente.telefono}"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="py-3 border-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4">Dirección</div>
+                                        <div class="col col-auto fw-medium" th:text="${paciente.direccion}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="py-3 border-bottom">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4">Historial médico</div>
+                                        <div class="col col-auto fw-medium" th:if="${!paciente.historialMedico.isBlank()}" th:text="${paciente.historialMedico}"></div>
+                                        <div class="col col-auto fw-medium text-muted" th:unless="${!paciente.historialMedico.isBlank()}">(Sin datos)</div>
+                                    </div>
+                                </div>
+
+                                <div class="py-3">
+                                    <div class="row row-cols-2">
+                                        <div class="col col-4">Alergias</div>
+                                        <div class="col col-auto fw-medium" th:if="${!paciente.alergias.isBlank()}" th:text="${paciente.alergias}"></div>
+                                        <div class="col col-auto fw-medium text-muted" th:unless="${!paciente.alergias.isBlank()}">(Sin datos)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xxl-7">
+                            <h3>Historial de turnos del paciente</h3>
+                            
+                            <div class="p-4 bg-light border rounded">
+                                <p th:if="${turnos.isEmpty}" class="text-center">Este paciente no tiene un historial de turnos</p>
+
+                                <div th:unless="${turnos.isEmpty}">
+                                    <div th:each="turno, turnosIter: ${turnos}" class="text-bg-white shadow-sm border rounded" th:classappend="${turnosIter.last ? 'mb-0' : 'mb-3'}">
+                                        <div class="p-2 border-bottom rounded-top" th:classappend="${turno.fecha.isAfter(todayDate) ? 'text-bg-primary' : 'bg-secondary-subtle'}">
+                                            <p class="mb-0 fw-semibold">
+                                                <span th:text="${#temporals.format(turno.fecha, 'EEEE')}" class="text-capitalize"></span>,
+                                                <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
+                                                <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span> de
+                                                <span th:text="${#temporals.format(turno.fecha, 'yyyy')}"></span>
+                                            </p>
+                                        </div>
+
+                                        <div class="py-3 px-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="w-100 mx-2">
+                                                    <p class="mb-0 fs-4" th:text="${#temporals.format(turno.hora, 'HH:mm')}"></p>
+                                                </div>
+
+                                                <div class="w-100 mx-2">
+                                                    <p class="mb-0">Doctor</p>
+                                                    <p class="mb-0 fs-5" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></h>
+                                                </div>
+
+                                                <div class="w-100 mx-2">
+                                                    <p class="mb-0">Observaciones</p>
+                                                    <p class="mb-0 fs-5" th:if="${!turno.observaciones.isBlank()}" th:text="${turno.observaciones}"></p>
+                                                    <p class="mb-0 fs-5 text-muted" th:unless="${!turno.observaciones.isBlank()}">(Sin observaciones)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="entityLabel">Pacientes</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pacientes/form', 'Paciente')">
+                                    <input type="hidden" name="id">
+                                    <input type="hidden" name="createdAt">
+                        
+                                    <div class="mb-3 d-flex" style="gap: .5rem;">
+                                        <div class="w-100">
+                                            <label class="form-label" for="nombre">Nombre *</label>
+                                            <input class="form-control" type="text" name="nombre" id="nombre" required>
+                                            <div class="invalid-feedback" id="error-nombre"></div>
+                                        </div>
+                                        <div class="w-100">
+                                            <label class="form-label" for="apellido">Apellido *</label>
+                                            <input class="form-control" type="text" name="apellido" id="apellido" required>
+                                            <div class="invalid-feedback" id="error-apellido"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="telefono">Teléfono *</label>
+                                        <input class="form-control" type="tel" name="telefono" id="telefono" required>
+                                        <div class="invalid-feedback" id="error-telefono"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="direccion">Dirección</label>
+                                        <input class="form-control" type="text" name="direccion" id="direccion">
+                                        <div class="invalid-feedback" id="error-direccion"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div>
+                                            <label class="form-label" for="historialMedico">Historial médico</label>
+
+                                            <i 
+                                                class="bi bi-question-circle"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Incluya todo el historial médico relevante sobre el paciente">
+                                            </i>
+                                        </div>
+                                        <input class="form-control" type="text" name="historialMedico" id="historialMedico">
+                                        <div class="invalid-feedback" id="error-historialMedico"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div>
+                                            <label class="form-label" for="alergias">Alergias</label>
+
+                                            <i 
+                                                class="bi bi-question-circle"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Lista de las alergias del paciente, si amerita">
+                                            </i>
+                                        </div>
+                                        <input class="form-control" type="text" name="alergias" id="alergias" placeholder="Alergia al polen, látex, etc...">
+                                        <div class="invalid-feedback" id="error-alergias"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fechaNacimiento">Fecha de nacimiento *</label>
+                                        <input class="form-control" type="date" name="fechaNacimiento" id="fechaNacimiento" required>
+                                        <div class="invalid-feedback" id="error-fechaNacimiento"></div>
+                                    </div>
+                                
+                                    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+    </body>
+</html>

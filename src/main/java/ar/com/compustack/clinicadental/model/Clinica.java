@@ -36,6 +36,6 @@ public class Clinica
     @NotBlank(message = "Debes indicar una dirección")
     private String direccion;
 
-    @Column(columnDefinition = "VARCHAR DEFAULT 'logo.png'")
+    @Column(columnDefinition = "VARCHAR(32) DEFAULT 'logo.png'")
     private String logoUrl;
 }

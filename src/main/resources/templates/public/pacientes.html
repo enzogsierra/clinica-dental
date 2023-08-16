@@ -14,7 +14,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Pacientes</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Paciente')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir paciente')">
                     <i class="bi bi-person-plus"></i>
                     Añadir paciente
                 </button>
@@ -31,12 +31,16 @@
                                 <th>Historial médico</th>
                                 <th>Alergias</th>
                                 <th>Fecha de nacimiento (edad)</th>
-                                <th style="width: min-content;"></th>
+                                <!-- <th style="width: min-content;"></th> -->
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="entity: ${pacientes}">
-                                <td th:text="${entity.nombre + ' ' + entity.apellido}"></td>
+                            <tr th:each="entity: ${pacientes}" class="clickable-row cursor-pointer" th:data-href="@{/pacientes/{id} (id = ${entity.id})}" title="Ver perfil">
+                                <td>
+                                    <span class="text-uppercase" th:text="${entity.apellido}"></span>,
+                                    <span th:text="${entity.nombre}"></span>
+                                    <!-- <a th:href="@{/pacientes/{id} (id = ${entity.id})}" th:text="${entity.nombre + ' ' + entity.apellido}"></a> -->
+                                </td>
                                 <td th:text="${entity.telefono}"></td>
                                 <td th:text="${entity.direccion}"></td>
                                 <td th:text="${entity.historialMedico}"></td>
@@ -45,14 +49,14 @@
                                     <span th:text="${#temporals.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
                                     (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
                                 </td>
-                                <td class="text-nowrap">
+                                <!-- <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Paciente')">
                                         <i class="bi bi-pencil-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
                                         <i class="bi bi-trash pointer-event-none"></i>
                                     </button>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>

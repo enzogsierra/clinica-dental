@@ -95,5 +95,6 @@ body
 .ls-5 { letter-spacing: 10px; }
 
 .pointer-event-none {pointer-events: none;}
+.cursor-pointer { cursor: pointer; }
 
 .vertical-align-middle {vertical-align: middle;}

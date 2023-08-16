@@ -13,7 +13,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Turnos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Turno')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Agendar turno')">
                     <i class="bi bi-calendar-plus"></i>
                     Agendar turno
                 </button>
@@ -47,19 +47,18 @@
                                         <span th:if="${#temporals.format(todayDate, 'yyyy') != #temporals.format(toDate, 'yyyy')}" th:text="${#temporals.format(toDate, 'yyyy')}"></span>
                                     </p>
                                 </div>
-
                             </div>
                         </div>
 
                         <div>
-                            <a th:href="@{/turnos/historial}" class="btn btn-outline-secondary">
+                            <a th:href="@{/turnos/historial}" class="btn btn-secondary">
                                 <i class="bi bi-clock"></i> 
                                 Historial de turnos
                             </a>
                         </div>
                     </div>
 
-                    <table class="table border-top table-striped-columns">
+                    <table class="table border-top table-striped-columns caption-top">
                         <thead>
                             <tr>
                                 <th class="vertical-align-middle text-center">
@@ -71,6 +70,7 @@
                                 </th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <tr th:each="hora, iterHorarios: ${horarios}">
                                 <td class="text-center text-muted ls-1" th:text="${#temporals.format(hora, 'HH:mm')}" style="vertical-align: middle;"></td>
@@ -83,8 +83,7 @@
                                     <th:block th:each="turno, iterTurnos: ${turnos}" th:if="${turno.fecha == dia}">
                                         <!-- Turnos en horarios anteriores al horario de apertura -->
                                         <th:block th:if="${iterHorarios.first && turno.hora <= hora}">
-                                            <!-- <div class="my-1 p-2 text-bg-primary rounded" id="turnos-calendar-turno__card" th:entity-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Turno')"> -->
-                                            <div class="my-1 p-2 text-bg-primary rounded" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
+                                            <div class="my-1 p-2 rounded" th:classappend="${turno.completado ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
                                                 <div class="pointer-event-none">
                                                     <p class="mb-0 fw-bold">
                                                         <!-- <i class="bi bi-person"></i> -->
@@ -105,7 +104,7 @@
 
                                         <!-- Turnos en horarios posteriores al horario de cierre -->
                                         <th:block th:if="${iterHorarios.last && turno.hora >= hora}">
-                                            <div class="my-1 p-2 text-bg-primary rounded" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
+                                            <div class="my-1 p-2 rounded" th:classappend="${turno.completado ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
                                                 <div class="pointer-event-none">
                                                     <p class="mb-0 fw-bold">
                                                         <!-- <i class="bi bi-person"></i> -->
@@ -127,7 +126,7 @@
                                         <!-- Turnos en horarios entre el horario de apertura y cierre -->
                                         <th:block th:unless="${iterHorarios.first || iterHorarios.last}">
                                             <th:block th:if="${turno.hora >= hora && turno.hora < horarios[iterHorarios.index + 1]}">
-                                                <div class="my-1 p-2 text-bg-primary rounded" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
+                                                <div class="my-1 p-2 rounded" th:classappend="${turno.completado ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
                                                     <div class="pointer-event-none">
                                                         <p class="mb-0 fw-bold">
                                                             <!-- <i class="bi bi-person"></i> -->
@@ -152,97 +151,7 @@
                         </tbody>
                     </table>
                 </div>
-            </main>
-            
-            <!-- Contenido -->
-            <!-- <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Turnos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Turno')">
-                    <i class="bi bi-calendar-plus"></i>
-                    Agendar turno
-                </button>
-
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Próximos turnos programados</p>
-
-                    <!-- <div th:each="fecha: ${fechas}" class="mb-5"> --
-                    <div th:each="fecha, iter: ${fechas}" th:class="${iter.index != 0 ? 'my-5 pt-5 border-top' : ''}">
-                        <h4 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy')}">
-                            <span>Hoy</span>,
-                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
-                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
-                        </h4>
-                        <h4 th:if="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}" id="mañana">
-                            <span>Mañana</span>,
-                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
-                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
-                        </h4>
-                        <h4 th:unless="${#temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(todayDate, 'dd/MM/yyyy') || #temporals.format(fecha, 'dd/MM/yyyy') == #temporals.format(tomorrowDate, 'dd/MM/yyyy')}">
-                            <span th:text="${#strings.capitalize(#temporals.format(fecha, 'EEEE'))}"></span>,
-                            <span th:text="${#temporals.format(fecha, 'dd')}"></span> de
-                            <span th:text="${#temporals.format(fecha, 'MMMM')}"></span>
-                        </h4>
-
-                        <div class="row row-cols-1 row-cols-xl-2 row-cols-xxl-3 g-4">
-                            <div th:each="entity: ${turnos}" th:if="${fecha == entity.fecha}" class="col">
-                                <div class="p-4 shadow border rounded">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
-                                            
-                                            <p class="mb-0">
-                                                <i class="fs-5 text-primary bi bi-person"></i>
-                                                <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
-                                            </p>
-    
-                                            <p class="mb-0">
-                                                <i class="fs-5 text-success bi bi-clipboard-check"></i>
-                                                <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
-                                            </p>
-
-                                            <p class="mb-0" th:if="${entity.tratamiento != null}">
-                                                <i class="fs-5 bi bi-card-checklist"></i>
-                                                <span th:text="${entity.tratamiento.nombre}"></span>
-                                            </p>
-
-                                            <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
-                                                <i class="fs-5 bi bi-chat-dots"></i>
-                                                <span th:text="${entity.observaciones}"></span>
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <div class="btn-group dropstart">
-                                                <i class="fs-5 bi bi-three-dots-vertical" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
-
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Turno')">Editar</button></li>
-                                                    <li><button class="dropdown-item" type="button" th:entity-id="${entity.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity(event, '/turnos/delete', 'Turno')">Eliminar</button></li>
-                                                    <li>
-                                                        <button class="dropdown-item" type="button">
-                                                            <i class="text-success bi bi-whatsapp"></i>
-                                                            <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank">Enviar mensaje</a>
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a th:href="@{/turnos/historial}" class="btn btn-outline-secondary">
-                            <i class="bi bi-clock"></i> 
-                            Ver historial de turnos
-                        </a>
-                    </div>
-                </div> -->
-
-                
                 <!-- Modal de informacion -->
                 <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -292,7 +201,7 @@
                                     </div>
 
                                     <div>
-                                        <button type="button" class="btn btn-warning" title="Editar" entity-id="" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Turno')">
+                                        <button type="button" class="btn btn-warning" title="Editar" entity-id="" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Editar turno')">
                                             <i class="bi bi-pencil-square pointer-event-none"></i>
                                         </button>
                                         <button type="button" class="btn btn-danger" title="Eliminar" entity-id="" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity(event, '/turnos/delete', 'Turno')">

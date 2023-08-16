@@ -15,7 +15,7 @@ async function onFormSubmit(event, url, text1)
 
     if(api.status == 200) // El controlador respondió bien, la entidad se creó correctamente
     {
-        const id = form.elements["id"].value ?? 0; // Obtenemos el id de la entidad
+        const id = (form.elements["id"] != undefined) ? form.elements["id"].value : 0; // Obtenemos el id de la entidad
 
         // Mostramos un mensaje de confirmacion
         Swal.fire(
@@ -47,14 +47,16 @@ async function onFormSubmit(event, url, text1)
 function onNewEntity(text1)
 {
     clearForm();
-    setModalTitle(`Crear ${text1.toLowerCase()}`);
+    // setModalTitle(`Crear ${text1.toLowerCase()}`);
+    setModalTitle(text1)
 }
 
 // Cuando se presiona en un <button> para editar una entidad
 async function onEditEntity(event, url, text1)
 {
     clearForm();
-    setModalTitle(`Editar ${text1.toLowerCase()}`);
+    // setModalTitle(`Editar ${text1.toLowerCase()}`);
+    setModalTitle(text1);
 
     const btn = event.target; // Obtenemos el <button> que se presionó para abrir el modal
     const id = btn.getAttribute("entity-id") ?? 0; // Obtenemos el id de la entidad a través del atributo "entity-id", si no tiene, por defecto será 0
@@ -74,7 +76,7 @@ async function onEditEntity(event, url, text1)
 }
 
 // Cuando se presiona en un botón para eliminar una entidad
-function onDeleteEntity(event, url, text1)
+function onDeleteEntity(event, url, name)
 {
     const btn = event.target;
     const text = btn.getAttribute("entity-text"); // Obtener nombre de la entidad
@@ -107,7 +109,7 @@ function onDeleteEntity(event, url, text1)
             Swal.fire(
             {
                 icon: "success",
-                title: `${text1} eliminado correctamente`
+                title: `${name} eliminado correctamente`
             }).then(() =>
             {
                 // Cuando el usuario sale del swal, recargamos la pagina
