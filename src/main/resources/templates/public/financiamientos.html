@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Financiamientos y cuotas</h2>
+
+                <a th:href="@{/financiamientos/form}" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i>
+                    Crear financiamiento
+                </a>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <p class="text-muted">Lista de financiamientos activos</p>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="text-bg-success bg-gradient">
+                            <tr>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
+    </body>
+</html>

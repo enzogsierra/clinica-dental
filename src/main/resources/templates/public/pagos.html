@@ -12,7 +12,7 @@
             
             <!-- Contenido -->
             <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Pagos y financiamientos</h2>
+                <h2 class="text-center text-lg-start">Pagos</h2>
 
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Registrar pago')">
                     <i class="bi bi-currency-dollar"></i>
@@ -22,7 +22,10 @@
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
                     <p class="text-muted">Pagos de los últimos 30 días</p>
 
-                    <table class="table table-bordered table-striped table-hover">
+                    <div th:if="${pagos.size() == 0}">
+                        <h5>Aún no hay pagos registrados</h5>
+                    </div>
+                    <table th:unless="${pagos.size() == 0}" class="table table-bordered table-striped table-hover">
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Fecha</th>

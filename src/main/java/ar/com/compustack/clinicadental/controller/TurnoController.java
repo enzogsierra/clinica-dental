@@ -1,22 +1,16 @@
 package ar.com.compustack.clinicadental.controller;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.persistence.TemporalType;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Temporal;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,16 +22,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import ar.com.compustack.clinicadental.dto.TurnoDTO;
+import ar.com.compustack.clinicadental.model.Doctor;
 import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
-import ar.com.compustack.clinicadental.repository.ClinicaRepository;
 import ar.com.compustack.clinicadental.repository.DoctorRepository;
 import ar.com.compustack.clinicadental.repository.TratamientoRepository;
-import ar.com.compustack.clinicadental.service.PdfService;
 
 
 @Controller
@@ -53,14 +44,8 @@ public class TurnoController
     @Autowired
     private TratamientoRepository tratamientoRepository;
 
-    @Autowired
-    private ClinicaRepository clinicaRepository;
 
-    @Autowired
-    private TemplateEngine templateEngine;
-
-
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model, @RequestParam(name = "from", defaultValue = "") String pFrom) throws Exception
     {
         LocalDate today = LocalDate.now(); // Fecha actual
@@ -82,7 +67,6 @@ public class TurnoController
             apertura = apertura.plusMinutes(30);
         }
 
-        //model.addAttribute("turnos", turnoRepository.findAllAfterFechaOrderByHoraAsc(today)); // Obtenemos todos los turnos a partir del día actual
         model.addAttribute("turnos", turnoRepository.findAllInRangeFecha(from, to));
         model.addAttribute("doctores", doctorRepository.findAll());
         model.addAttribute("tratamientos", tratamientoRepository.findAll());
@@ -93,6 +77,34 @@ public class TurnoController
         model.addAttribute("fromDate", from);
         model.addAttribute("toDate", to);
         return "public/turnos";
+    }
+
+    @GetMapping("/{id}")
+    public String turno(Model model, @PathVariable Integer id)
+    {
+        Optional<Turno> tmp = turnoRepository.findById(id);
+        if(!tmp.isPresent()) return "redirect:/turnos";
+
+        Turno turno = tmp.get();
+        LocalDate todayDate = LocalDate.now();
+
+        model.addAttribute("turno", turno);
+        model.addAttribute("doctores", doctorRepository.findAll());
+        model.addAttribute("tratamientos", tratamientoRepository.findAll());
+        model.addAttribute("todayDate", todayDate);
+        model.addAttribute("title", "TURNO_" + id);
+        return "public/turno";
+    }
+
+    @GetMapping("/print/{id}")
+    public String printTurno(Model model, @PathVariable Integer id)
+    {
+        Optional<Turno> tmp = turnoRepository.findById(id);
+        if(!tmp.isPresent()) return "redirect:/turnos";
+
+        Turno turno = tmp.get();
+        model.addAttribute("turno", turno);
+        return "print/turno";
     }
 
     @GetMapping("/historial")
@@ -121,7 +133,91 @@ public class TurnoController
         return "public/turnosHistorial";
     }
 
-    
+    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
+    @GetMapping("/get/{id}")
+    public @ResponseBody Turno get(@PathVariable Integer id)
+    {
+        Optional<Turno> turno = turnoRepository.findById(id);
+        return (turno.isPresent()) ? (turno.get()) : (new Turno());
+    }
+
+
+    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
+    // @GetMapping("/get/{id}")
+    // public @ResponseBody TurnoDTO get(@PathVariable Integer id)
+    // {
+    //     Optional<Turno> turno = turnoRepository.findById(id);
+    //     TurnoDTO dto = new TurnoDTO();
+
+    //     if(turno.isPresent())
+    //     {
+    //         Turno data = turno.get();
+    //         dto.setId(data.getId());
+    //         dto.setFecha(data.getFecha());
+    //         dto.setHora(data.getHora());
+    //         dto.setPaciente(data.getPaciente().getId());
+    //         dto.setPacienteNombre(data.getPaciente().getNombre() + " " + data.getPaciente().getApellido());
+    //         dto.setPacienteTelefono(data.getPaciente().getTelefono());
+    //         dto.setDoctor(data.getDoctor().getId());
+    //         dto.setDoctorNombre(data.getDoctor().getNombre() + " " + data.getDoctor().getApellido());
+    //         dto.setTratamiento(data.getTratamiento() == null ? 0 : data.getTratamiento().getId());
+    //         dto.setTratamientoNombre(data.getTratamiento() == null ? ("") : data.getTratamiento().getNombre());
+    //         dto.setPago(data.getPago() == null ? null : data.getPago().getId());
+    //         dto.setCompletado(data.getCompletado());
+    //         dto.setObservaciones(data.getObservaciones());
+    //         dto.setCreatedAt(data.getCreatedAt());
+    //     }
+    //     return dto;
+    // }
+
+    // Crea/edita datos de una entidad
+    @PostMapping("/form")
+    public ResponseEntity<?> form(@Valid Turno turno, BindingResult result)
+    {
+        // Verificar que la fecha elegida no sea una fecha pasada
+        LocalDate curDate = LocalDate.now(); // Obtenemos el día actual
+        if(turno.getFecha().isBefore(curDate)) // Verificamos si la fecha elegida para el turno es pasada a la fecha actual
+        {
+            result.rejectValue("fecha", "turno.fecha", "No es posible agendar un turno en una fecha pasada");
+        }
+
+        // Verificar disponibilidad del turno
+        Optional<Turno> checkDate = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
+        if(checkDate.isPresent() && checkDate.get().getId() != turno.getId()) // La fecha y hora ya está reservada
+        {
+            result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para otro turno, elige otro");
+        }
+
+        // Verificar errores de validacion
+        if(result.hasErrors())
+        {
+            Map<String, String> errors = new HashMap<>(); // Esta variable almacenará los errores en forma de map
+            result.getFieldErrors().forEach(error -> // Recorrer todos los errores
+            {
+                errors.put(error.getField(), error.getDefaultMessage()); // Añadir errores al map
+            });
+            return ResponseEntity.badRequest().body(errors); // Devolver con un status 400 junto con los mensajes de validaciones
+        }
+
+        // Validacion correcta
+        turnoRepository.save(turno);
+
+        return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente
+    }
+
+    // Elimina una entidad
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam Integer id)
+    {
+        try {
+            turnoRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+
     // @GetMapping("/pdf")
     // public String pdf() throws InterruptedException
     // {
@@ -172,79 +268,4 @@ public class TurnoController
 
     //     return ResponseEntity.ok().body(response); // Solicitud correcta
     // }
-
-
-
-    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
-    @GetMapping("/get/{id}")
-    public @ResponseBody TurnoDTO get(@PathVariable Integer id)
-    {
-        Optional<Turno> turno = turnoRepository.findById(id);
-        TurnoDTO dto = new TurnoDTO();
-
-        if(turno.isPresent())
-        {
-            Turno data = turno.get();
-            dto.setId(data.getId());
-            dto.setFecha(data.getFecha());
-            dto.setHora(data.getHora());
-            dto.setPaciente(data.getPaciente().getId());
-            dto.setPacienteNombre(data.getPaciente().getNombre() + " " + data.getPaciente().getApellido());
-            dto.setPacienteTelefono(data.getPaciente().getTelefono());
-            dto.setDoctor(data.getDoctor().getId());
-            dto.setDoctorNombre(data.getDoctor().getNombre() + " " + data.getDoctor().getApellido());
-            dto.setTratamiento(data.getTratamiento() == null ? 0 : data.getTratamiento().getId());
-            dto.setTratamientoNombre(data.getTratamiento() == null ? ("") : data.getTratamiento().getNombre());
-            dto.setObservaciones(data.getObservaciones());
-            dto.setCreatedAt(data.getCreatedAt());
-        }
-        return dto;
-    }
-
-    // Crea/edita datos de una entidad
-    @PostMapping("/form")
-    public ResponseEntity<?> form(@Valid Turno turno, BindingResult result)
-    {
-        // Verificar que la fecha elegida no sea una fecha pasada
-        LocalDate curDate = LocalDate.now(); // Obtenemos el día actual
-        if(turno.getFecha().isBefore(curDate)) // Verificamos si la fecha elegida para el turno es pasada a la fecha actual
-        {
-            result.rejectValue("fecha", "turno.fecha", "No es posible agendar un turno en una fecha pasada");
-        }
-
-        // Verificar disponibilidad del turno
-        Optional<Turno> checkDate = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
-        if(checkDate.isPresent() && checkDate.get().getId() != turno.getId()) // La fecha y hora ya está reservada
-        {
-            result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para otro turno, elige otro");
-        }
-
-        // Verificar errores de validacion
-        if(result.hasErrors())
-        {
-            Map<String, String> errors = new HashMap<>(); // Esta variable almacenará los errores en forma de map
-            result.getFieldErrors().forEach(error -> // Recorrer todos los errores
-            {
-                errors.put(error.getField(), error.getDefaultMessage()); // Añadir errores al map
-            });
-            return ResponseEntity.badRequest().body(errors); // Devolver con un status 400 junto con los mensajes de validaciones
-        }
-
-        // Validacion correcta
-        turnoRepository.save(turno);
-
-        return ResponseEntity.ok().build(); // Retornar un 200 - entidad creada correctamente
-    }
-
-    // Elimina una entidad
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam Integer id)
-    {
-        try {
-            turnoRepository.deleteById(id);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-        return ResponseEntity.ok().build();
-    }
 }

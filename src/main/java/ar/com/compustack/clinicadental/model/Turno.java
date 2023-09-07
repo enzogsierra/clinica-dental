@@ -65,6 +65,6 @@ public class Turno
     private String observaciones;
     
     @CreationTimestamp
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
 }

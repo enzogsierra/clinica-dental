@@ -25,6 +25,8 @@ public class TurnoDTO
     private String doctorNombre;
     private Integer tratamiento;
     private String tratamientoNombre;
+    private Integer pago;
+    private Boolean completado;
     private String observaciones;
     private LocalDateTime createdAt;
 }

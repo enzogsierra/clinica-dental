@@ -71,7 +71,15 @@ async function onEditEntity(event, url, text1)
         // "key" es el nombre del atributo que está siendo iterado actualmente ("id", "nombre", etc...)
         if(form.elements[key]) // Verificamos que el form tenga un elemento (<input>, etc) con el mismo name que "key" (por ejemplo, name="id")
         {
-            form.elements[key].value = entity[key]; // Cambiamos el valor del elemento
+            if(form.elements[key].type == "checkbox") // Si el input es tipo "checkbox"
+            {
+                // Los inputs de tipo "checkbox" no trabajan con el atributo "value", sino con el "checked"
+                form.elements[key].checked = entity[key]; // Cambiamos el atributo "checked" del input (<input checked="checked">)
+            }
+            else // Si no es tipo checkbox
+            {
+                form.elements[key].value = entity[key]; // Cambiamos el atributo "value" del input (<input value="...">)
+            }
         }
     }
 }

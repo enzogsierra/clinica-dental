@@ -4,14 +4,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Clínica Dental</title>
+    <title th:if="${#strings.isEmpty(title)}" th:text="${clinica.nombre}"></title>
+    <title th:unless="${#strings.isEmpty(title)}" th:text="${title}"></title>
     <link rel="shortcut icon" th:href="@{/assets/{logo} (logo = ${clinica.logoUrl})}" type="image/x-icon">
     
     <!-- CSS -->
-    <!-- <link href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" rel="stylesheet"> -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" rel="stylesheet"> -->
-    <!-- <link href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet"> -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet">
     <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
@@ -39,6 +36,10 @@
             <i class="fs-4 bi bi-credit-card"></i>
             <span class="ps-2 d-none d-sm-inline">Pagos</span>
         </a>
+        <a th:href="@{/financiamientos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Financiamientos">
+            <i class="fs-4 bi bi-receipt"></i>
+            <span class="ps-2 d-none d-sm-inline">Financiamientos</span>
+        </a>
         <a th:href="@{/doctores/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Doctores">
             <i class="fs-4 bi bi-clipboard-check"></i>
             <span class="ps-2 d-none d-sm-inline">Doctores</span>
@@ -60,7 +61,7 @@
 
             
 <!--  -->
-<footer th:fragment="footer" class="py-4 bg-dark text-white">
+<footer th:fragment="footer" class="py-4 bg-dark text-white footer">
     <div class="container">
         <p class="m-0 text-center"><a href="http://compustack.com.ar/" class="text-white" target="_blank">Compustack</a> &copy; 2023</p>   
     </div>
@@ -69,5 +70,6 @@
     <script th:src="@{/js/jquery-ui.js}"></script>
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js/sweetalert2.js}"></script>
+    <script th:src="@{/js/mask.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </footer>

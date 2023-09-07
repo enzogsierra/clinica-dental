@@ -55,6 +55,36 @@ body
 }
 
 
+/* Vista de imprimir */
+/* main .print-card
+{
+    display: block !important;
+}
+
+@media print 
+{
+    @page
+    {
+        size: 10cm landscape;
+    }
+    body > div, footer, header, main, section
+    {
+        display: none;
+    }
+    body > .print-card
+    {
+        display: block !important;
+    }
+} */
+@media print
+{
+    @page
+    {
+        size: landscape;
+    }
+}
+
+
 /* Scrollbar */
 *::-webkit-scrollbar-track
 {
@@ -86,6 +116,12 @@ body
 {
     background-color: white;
     color: black;
+}
+
+.text-decoration-dashed 
+{
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
 }
 
 .ls-1 { letter-spacing: 1px; }

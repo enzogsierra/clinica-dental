@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex gap-5">
+            <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo" style="width: 20%; max-width: 12rem; object-fit: contain;">
+
+            <div class="w-100 d-flex flex-column justify-content-between">
+                <div>
+                    <p th:text="${clinica.nombre}" class="mb-0 fs-1 text-uppercase fw-bold"></p>
+                    <p th:text="${clinica.eslogan}" class="fs-3"></p>
+                </div>
+                
+                <div>
+                    <p class="fs-4 mb-0" th:text="${clinica.direccion}"></p>
+                    <p class="fs-4 mb-0">
+                        Teléfono:
+                        <span th:text="${clinica.telefono1}"></span>
+
+                        <span th:if="${!#strings.isEmpty(clinica.telefono2)}">
+                            -
+                            <span th:text="${clinica.telefono2}"></span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="my-4 border-bottom"></div>
+    
+        <div>
+            <h2 th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}" class="mb-4 fs-bold text-center text-uppercase ls-1"></h2>
+            
+    
+            <div class="p-4 border rounded">
+                <div class="d-flex justify-content-between">
+                    <p class="fs-5 text-muted">Datos de tu próximo turno</p>
+                    <p class="fs-5 text-muted fw-light">#<span th:text="${turno.id}"></span></p>
+                </div>
+
+                <div class="d-flex justify-content-start gap-4">
+                    <div>
+                        <p class="fs-3">Fecha:</p>
+                        <p class="mb-0 fs-3">Hora:</p>
+                    </div>
+                    
+                    <div class="w-100">
+                        <p class="fs-3 border-bottom">
+                            <span>
+                                <span th:text="${#temporals.format(turno.fecha, 'EEEE')}" class="text-capitalize"></span>,
+                                <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
+                                <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span>
+                            </span>
+                        </p>
+
+                        <p class="mb-0 fs-3 border-bottom">
+                            <span th:text="${#temporals.format(turno.hora, 'HH:mm')}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
