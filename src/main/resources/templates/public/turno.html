@@ -15,8 +15,8 @@
                 <h2 class="text-center text-lg-start">Información del turno</h2>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <div class="row">
-                        <div class="col-12 col-xxl-5">
+                    <div class="row row-cols-1 row-cols-xxl-2">
+                        <div class="col-12 col-xxl-6">
                             <div class="d-flex justify-content-between">
                                 <h3>Datos generales</h3>
 
@@ -26,10 +26,10 @@
                                         Imprimir
                                     </button>
 
-                                    <button type="button" class="btn btn-sm btn-warning" th:entity-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#editTurnoModal" onclick="onEditEntity(event, '/turnos/get', 'Editar turno')">
+                                    <button type="button" class="btn btn-sm btn-warning" th:entity-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onEditEntity('/turnos/get', 'Editar turno')">
                                         <i class="bi bi-pencil-square pointer-event-none"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger" th:entity-id="${turno.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity(event, '/turnos/delete', 'Turno')">
+                                    <button type="button" class="btn btn-sm btn-danger" th:entity-id="${turno.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity('/turnos/delete', 'Turno')">
                                         <i class="bi bi-trash pointer-event-none"></i>
                                     </button>
                                 </div>
@@ -103,7 +103,7 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-xxl-7">
+                        <div class="col-12 col-xxl-6">
                             <h3>Estado</h3>
                             
                             <div class="p-4 bg-light border rounded">
@@ -118,9 +118,11 @@
                                         <p class="fs-5 ls-1 text-muted">Pago</p>
                                         <div th:if="${turno.pago == null}">
                                             <p class="fs-5">No hay pago registrado</p>
+
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago de turno')">Registrar pago</button>
                                         </div>
                                         <div th:unless="${turno.pago == null}">
-                                            <button type="button" class="btn btn-primary">Ver pago</button>
+                                            <a th:href="@{/pagos/{id} (id = ${turno.pago.id})}" class="btn btn-primary">Ver pago</a>
                                         </div>
                                     </div>
                                 </div>
@@ -130,21 +132,17 @@
                 </div>
                 
                 <!-- Modal de entidad -->
-                <div class="modal fade" id="editTurnoModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="turnoModal" tabindex="-1" aria-labelledby="turnoLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Turnos</h5>
+                                <h4 class="modal-title" id="turnoLabel">Turno</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body ui-front">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/turnos/form', 'Turno')">
-                                    <input type="hidden" name="id">
-                                    <input type="hidden" name="pago">
-                                    <input type="hidden" name="createdAt">
-                        
-                                    <div class="mb-3 d-flex" style="gap: .5rem;">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/turnos/form', 'Turno')">
+                                    <div class="mb-3 d-flex gap-2">
                                         <div class="w-100">
                                             <label class="form-label" for="fecha">Fecha *</label>
                                             <input class="form-control" type="date" name="fecha" id="fecha" required>
@@ -158,11 +156,12 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label" for="pacienteNombre">Paciente *</label>
-                                        <input class="form-control" type="text" name="pacienteNombre" id="pacienteNombre" required>
-                                        <div class="invalid-feedback" id="error-paciente"></div>
-                                        
-                                        <input type="hidden" name="paciente" id="paciente">
+                                        <label class="form-label">Paciente (nombre y apellido)</label>
+
+                                        <div class="d-flex gap-2">
+                                            <input class="form-control" type="text" id="paciente_nombre" disabled>
+                                            <input class="form-control" type="text" id="paciente_apellido" disabled>
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
@@ -211,6 +210,66 @@
                                     </div>
                                 
                                     <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
+
+
+                <!-- Modal de pago -->
+                <div class="modal fade" id="pagoModal" tabindex="-1" aria-labelledby="pagoLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="pagoLabel">Pagos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body ui-front">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pagos/form', 'Pago')">
+                                    <input type="number" class="d-none" name="turno" th:value="${turno.id}">
+                                    <input type="number" class="d-none" name="paciente" th:value="${turno.paciente.id}">
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="monto">Monto *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input class="form-control" type="number" name="monto" id="monto" th:value="${turno.tratamiento.precio}" min="0" placeholder="0" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="error-monto"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="metodoPago">Método de pago *</label>
+                                        <select name="metodoPago" id="metodoPago" class="form-select">
+                                            <option value="Efectivo" selected>Efectivo</option>
+                                            <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                                            <option value="Tarjeta de debito">Tarjeta de debito</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                        <div class="invalid-feedback" id="error-metodoPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Paciente (emisor del pago)</label>
+                                        <input class="form-control" type="text" th:value="${turno.paciente.nombre + ' ' + turno.paciente.apellido}" disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fechaPago">Fecha del pago *</label>
+                                        <input class="form-control" type="date" name="fechaPago" id="fechaPago" th:value="${todayDate}" required>
+                                        <div class="invalid-feedback" id="error-fechaPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="detalles">Detalles adicionales</label>
+                                        <input class="form-control" type="text" name="detalles" id="detalles">
+                                        <div class="invalid-feedback" id="error-detalles"></div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Registrar pago</button>
                                 </form>
                             </div>
                         </div>

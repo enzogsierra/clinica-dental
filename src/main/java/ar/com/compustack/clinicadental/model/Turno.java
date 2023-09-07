@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -62,6 +63,7 @@ public class Turno
     @Column(columnDefinition = "BIT DEFAULT 0")
     private Boolean completado;
 
+    @Size(max = 255, message = "El texto no debe superar los 255 caracteres")
     private String observaciones;
     
     @CreationTimestamp

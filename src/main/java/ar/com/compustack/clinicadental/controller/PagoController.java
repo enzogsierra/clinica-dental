@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ar.com.compustack.clinicadental.model.Pago;
+import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.PagoRepository;
+import ar.com.compustack.clinicadental.repository.TurnoRepository;
 
 
 @Controller
@@ -30,6 +32,9 @@ public class PagoController
 {
     @Autowired
     private PagoRepository pagoRepository;
+
+    @Autowired
+    private TurnoRepository turnoRepository;
 
 
     @GetMapping("/")
@@ -68,6 +73,16 @@ public class PagoController
 
         // Validacion correcta
         pagoRepository.save(pago);
+
+        // Relacionar el turno con el pago
+        Integer turnoId = (pago.getTurno() != null) ? pago.getTurno().getId() : null; // Obtener el turno asociado al pago
+        if(turnoId != null) // El pago tiene un turno asociado
+        {
+            Turno turno = turnoRepository.findById(turnoId).get(); // Obtener la entidad de turno
+            turno.setPago(pago); // Asociar el turno con el pago
+            turno.setCompletado(true);
+            turnoRepository.save(turno); // Guardar entidad del turno
+        }
 
         return ResponseEntity.ok().build(); // Retornar un status 200 - entidad creada correctamente
     }

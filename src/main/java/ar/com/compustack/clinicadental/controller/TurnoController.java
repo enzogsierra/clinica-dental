@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ar.com.compustack.clinicadental.dto.TurnoDTO;
-import ar.com.compustack.clinicadental.model.Doctor;
 import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
 import ar.com.compustack.clinicadental.repository.DoctorRepository;
@@ -185,7 +183,7 @@ public class TurnoController
         Optional<Turno> checkDate = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
         if(checkDate.isPresent() && checkDate.get().getId() != turno.getId()) // La fecha y hora ya está reservada
         {
-            result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para otro turno, elige otro");
+            result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para un turno, selecciona otro horario");
         }
 
         // Verificar errores de validacion

@@ -13,7 +13,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Turnos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Agendar turno')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewEntity('Agendar turno')">
                     <i class="bi bi-calendar-plus"></i>
                     Agendar turno
                 </button>
@@ -76,20 +76,13 @@
                                 <td class="text-center text-muted ls-1" th:text="${#temporals.format(hora, 'HH:mm')}" style="vertical-align: middle;"></td>
 
                                 <td th:each="dia: ${semana}" id="turnos-calendar-turno" th:turno-fecha="${dia}" th:turno-hora="${hora}">
-                                    <div id="turnos-calendar-turno__addBtn" th:turno-fecha="${dia}" th:turno-hora="${hora}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewDate(event)">
+                                    <div id="turnos-calendar-turno__addBtn" th:turno-fecha="${dia}" th:turno-hora="${hora}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewDate('Agendar turno')">
                                         <i class="bi bi-plus-lg fs-2 text-muted pointer-event-none"></i>
                                     </div>
                                     
                                     <th:block th:each="turno, iterTurnos: ${turnos}" th:if="${turno.fecha == dia}">
                                         <!-- Turnos en horarios anteriores al horario de apertura -->
                                         <th:block th:if="${iterHorarios.first && turno.hora <= hora}">
-                                            <!-- <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
-                                                <div class="pointer-event-none">
-                                                    <p class="mb-0 fw-bold"><span th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></span></p>
-                                                    <p class="mb-0"><span th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></span></p>
-                                                    <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning"><span th:text="${turno.hora}"></span></p>
-                                                </div>
-                                            </div> -->
                                             <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
                                                 <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
                                                     <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
@@ -101,20 +94,6 @@
 
                                         <!-- Turnos en horarios posteriores al horario de cierre -->
                                         <th:block th:if="${iterHorarios.last && turno.hora >= hora}">
-                                            <!-- <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
-                                                <div class="pointer-event-none">
-                                                    <p class="mb-0 fw-bold">
-                                                        <span th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></span>
-                                                    </p>
-                                                    <p class="mb-0">
-                                                        <span th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></span>
-                                                    </p>
-
-                                                    <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning">
-                                                        <span th:text="${turno.hora}"></span>
-                                                    </p>
-                                                </div>
-                                            </div> -->
                                             <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
                                                 <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
                                                     <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
@@ -127,20 +106,6 @@
                                         <!-- Turnos en horarios entre el horario de apertura y cierre -->
                                         <th:block th:unless="${iterHorarios.first || iterHorarios.last}">
                                             <th:block th:if="${turno.hora >= hora && turno.hora < horarios[iterHorarios.index + 1]}">
-                                                <!-- <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card" th:turno-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="onShowDateInfo(event)">
-                                                    <div class="pointer-event-none">
-                                                        <p class="mb-0 fw-bold">
-                                                            <span th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></span>
-                                                        </p>
-                                                        <p class="mb-0">
-                                                            <span th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></span>
-                                                        </p>
-    
-                                                        <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning">
-                                                            <span th:text="${turno.hora}"></span>
-                                                        </p>
-                                                    </div>
-                                                </div> -->
                                                 <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
                                                     <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
                                                         <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
@@ -157,71 +122,9 @@
                     </table>
                 </div>
 
-                <!-- Modal de informacion -->
-                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h2 class="modal-title fs-5" id="infoLabel">Información del turno</h2>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                <div class="mb-3 d-flex gap-2">
-                                    <div class="w-100">
-                                        <label class="form-label">Fecha</label>
-                                        <input class="form-control" type="date" id="fecha" disabled>
-                                    </div>
-                                    <div class="w-100">
-                                        <label class="form-label">Hora</label>
-                                        <input class="form-control" type="time" id="hora" disabled>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Paciente</label>
-                                    <input class="form-control" type="text" id="pacienteNombre" disabled>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Doctor</label>
-                                    <input class="form-control" type="text" id="doctorNombre" disabled>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Tratamiento</label>
-                                    <input class="form-control" type="text" id="tratamientoNombre" placeholder="(No especificado)" disabled>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Observaciones</label>
-                                    <input class="form-control" type="text" id="observaciones" placeholder="(Sin observaciones)" disabled>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <div class="w-100 d-flex justify-content-between gap-2">
-                                    <div>
-                                        <a href="#" class="btn btn-success" id="pacienteTelefono" target="_blank"><i class="bi bi-whatsapp"></i> Enviar mensaje</a>
-                                    </div>
-
-                                    <div>
-                                        <button type="button" class="btn btn-warning" title="Editar" entity-id="" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/turnos/get', 'Editar turno')">
-                                            <i class="bi bi-pencil-square pointer-event-none"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger" title="Eliminar" entity-id="" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity(event, '/turnos/delete', 'Turno')">
-                                            <i class="bi bi-trash pointer-event-none"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
                 <!-- Modal de entidad -->
-                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="turnoModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -230,10 +133,7 @@
                             </div>
 
                             <div class="modal-body ui-front">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/turnos/form', 'Turnos')">
-                                    <input type="hidden" name="id">
-                                    <input type="hidden" name="createdAt">
-                        
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/turnos/form', 'Turnos')">
                                     <div class="mb-3 d-flex" style="gap: .5rem;">
                                         <div class="w-100">
                                             <label class="form-label" for="fecha">Fecha *</label>

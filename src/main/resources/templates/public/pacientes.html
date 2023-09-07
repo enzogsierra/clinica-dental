@@ -31,7 +31,6 @@
                                 <th>Historial médico</th>
                                 <th>Alergias</th>
                                 <th>Fecha de nacimiento (edad)</th>
-                                <!-- <th style="width: min-content;"></th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +38,6 @@
                                 <td>
                                     <span class="text-uppercase" th:text="${entity.apellido}"></span>,
                                     <span th:text="${entity.nombre}"></span>
-                                    <!-- <a th:href="@{/pacientes/{id} (id = ${entity.id})}" th:text="${entity.nombre + ' ' + entity.apellido}"></a> -->
                                 </td>
                                 <td th:text="${entity.telefono}"></td>
                                 <td th:text="${entity.direccion}"></td>
@@ -49,14 +47,6 @@
                                     <span th:text="${#temporals.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
                                     (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
                                 </td>
-                                <!-- <td class="text-nowrap">
-                                    <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Paciente')">
-                                        <i class="bi bi-pencil-square pointer-event-none"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
-                                        <i class="bi bi-trash pointer-event-none"></i>
-                                    </button>
-                                </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -72,7 +62,7 @@
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pacientes/form', 'Paciente')">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pacientes/form', 'Paciente')">
                                     <input type="hidden" name="id">
                                     <input type="hidden" name="createdAt">
                         

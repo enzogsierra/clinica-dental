@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", () =>
 
 function onCompleteDate(e)
 {
-    
-    
     Swal.fire(
     {
         title: '¿Archivar turno?',
@@ -39,7 +37,18 @@ function onCompleteDate(e)
                     window.location.reload();
                 });
             }
-
+            else // Ocurrió un error
+            {
+                Swal.fire(
+                {
+                    icon: "error",
+                    title: 'Ocurrió un error al archivar el turno. Intenta otra vez'
+                }).then(() =>
+                {
+                    // El usuario salio del mensaje, recargamos la pagina
+                    window.location.reload();
+                });
+            }
         }
     });
 }

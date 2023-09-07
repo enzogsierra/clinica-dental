@@ -1,11 +1,17 @@
 // Cuando el usuario hace click en un turno vacio de la tabla de turnos
-function onNewDate(event)
+function onNewDate(title)
 {
-    const btn = event.target; // Obtener el elemento que llamó el evento
+    const btn = this.event.target; // Obtener el elemento que llamó el evento
     const fecha = btn.getAttribute("turno-fecha"); // Obtener la fecha seleccionada
     const hora = btn.getAttribute("turno-hora"); // ^
     
-    onNewEntity("Agendar turno"); // Mostrar el modal para crear un turno
+    onNewEntity(title); // Mostrar el modal para crear un turno
+
+    // Editar form para que tenga la fecha y hora seleccionada
+    const modalTarget = btn.getAttribute("data-bs-target");
+    const modal = document.querySelector(modalTarget);
+    const form = modal.querySelector("form");
+
     form.elements["fecha"].value = fecha; // Cambiar el valor del input de la hora
     form.elements["hora"].value = hora; // ...
 }
@@ -46,7 +52,7 @@ $(document).ready(function()
     });
 });
 
-
+/*
 // Cuando abre un card de un turno
 async function onShowDateInfo(event)
 {
@@ -73,8 +79,4 @@ async function onShowDateInfo(event)
     const actionBtns = div.querySelectorAll("button[entity-id]");
     actionBtns.forEach(btn => btn.setAttribute("entity-id", id));
 }
-
-//
-// $(document).ready(function(){
-//     $("#infoModal").modal('show');
-// });
+*/

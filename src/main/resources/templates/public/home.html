@@ -40,9 +40,11 @@
                                     </p>
                                 
                                     <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
-                                        <div class="d-flex justify-content-between">
-                                            <div th:classappend="${entity.completado == true ? 'text-secondary' : ''}">
-                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <div>
+                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none">
+                                                    <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
+                                                </a>
                                                 
                                                 <p class="mb-0">
                                                     <i class="fs-5 text-primary bi bi-person"></i>
@@ -66,11 +68,19 @@
                                             </div>
 
                                             <div class="d-flex align-items-start gap-2">
+                                                <div th:if="${entity.completado}">
+                                                    <i class="fs-3 text-secondary bi bi-bookmark-check-fill" title="Turno completado"></i>
+                                                </div>
+
+                                                <div th:if="${entity.pago}">
+                                                    <i class="fs-3 text-success bi bi-receipt-cutoff" title="Turno pagado"></i>
+                                                </div>
+
                                                 <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank" title="Enviar mensaje">
                                                     <i class="fs-3 text-success bi bi-whatsapp"></i>
                                                 </a>
 
-                                                <button th:if="${entity.completado}" type="button" class="btn btn-dark" disabled title="Archivado">
+                                                <!-- <button th:if="${entity.completado}" type="button" class="btn btn-dark" disabled title="Archivado">
                                                     <i class="bi bi-bookmark-check" style="pointer-events: none;"></i>
                                                 </button>
                                                 <button th:unless="${entity.completado}" type="button" class="btn btn-outline-dark" id="completeDateBtn" th:turno-id="${entity.id}" title="Archivar">
@@ -80,9 +90,9 @@
                                                 <button th:if="${entity.pago}" type="button" class="btn btn-dark" disabled title="Pagado">
                                                     <i class="bi bi-receipt-cutoff" style="pointer-events: none;"></i>
                                                 </button>
-                                                <button th:unless="${entity.pago}" type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/getTurnoPago', 'Registrar pago')" title="Añadir pago">
+                                                <button th:unless="${entity.pago}" type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#turnoPagoModal" onclick="onNewEntity('Registrar pago')" title="Pagar turno">
                                                     <i class="bi bi-receipt-cutoff" style="pointer-events: none;"></i>
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -152,16 +162,16 @@
 
 
                 <!-- Modal para agregar un pago a un turno -->
-                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="turnoPagoModal" tabindex="-1" aria-labelledby="turnoPagoLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Registrar pago</h5>
+                                <h4 class="modal-title" id="turnoPagoLabel">Registrar pago</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pagarTurno', 'Pago')" novalidate>
+                                <form method="POST" onsubmit="onFormSubmit('/pagarTurno', 'Pago')" novalidate>
                                     <div class="d-flex gap-4">
                                         <div class="w-100 pe-4 border-end">
                                             <p class="text-muted">Datos del turno</p>

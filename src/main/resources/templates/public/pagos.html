@@ -14,7 +14,7 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-lg-start">Pagos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Registrar pago')">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago')">
                     <i class="bi bi-currency-dollar"></i>
                     Registrar pago
                 </button>
@@ -74,16 +74,16 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="pagoModal" tabindex="-1" aria-labelledby="pagoLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Pagos</h5>
+                                <h4 class="modal-title" id="pagoLabel">Pagos</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body ui-front">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pagos/form', 'Pago')">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pagos/form', 'Pago')">
                                     <input type="hidden" name="id">
                                     <input type="hidden" name="createdAt">
                         

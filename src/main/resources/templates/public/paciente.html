@@ -21,10 +21,10 @@
                                 <h3>Datos generales</h3>
 
                                 <div class="text-nowrap">
-                                    <button type="button" class="btn btn-sm btn-warning" th:entity-id="${paciente.id}" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onEditEntity(event, '/pacientes/get', 'Editar paciente')">
+                                    <button type="button" class="btn btn-sm btn-warning" th:entity-id="${paciente.id}" data-bs-toggle="modal" data-bs-target="#pacienteModal" onclick="onEditEntity('/pacientes/get', 'Editar paciente')">
                                         <i class="bi bi-pencil-square pointer-event-none"></i>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger" th:entity-id="${paciente.id}" id="deleteEntityBtn" th:entity-text="${paciente.nombre + ' ' + paciente.apellido}" onclick="onDeleteEntity(event, '/pacientes/delete', 'Paciente')">
+                                    <button type="button" class="btn btn-sm btn-danger" th:entity-id="${paciente.id}" id="deleteEntityBtn" th:entity-text="${paciente.nombre + ' ' + paciente.apellido}" onclick="onDeleteEntity('/pacientes/delete', 'Paciente')">
                                         <i class="bi bi-trash pointer-event-none"></i>
                                     </button>
                                 </div>
@@ -128,16 +128,16 @@
                 </div>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Pacientes</h5>
+                                <h4 class="modal-title" id="pacienteLabel">Pacientes</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit(event, '/pacientes/form', 'Paciente')">
+                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pacientes/form', 'Paciente')">
                                     <input type="hidden" name="id">
                                     <input type="hidden" name="createdAt">
                         
