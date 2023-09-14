@@ -19,16 +19,17 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 
 @Entity
 @Table(name = "turnos")
-@Getter @Setter @ToString
+@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Turno 
 {
@@ -57,7 +58,8 @@ public class Turno
     @ManyToOne(fetch = FetchType.EAGER)
     private Tratamiento tratamiento;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Pago pago;
 
     @Column(columnDefinition = "BIT DEFAULT 0")

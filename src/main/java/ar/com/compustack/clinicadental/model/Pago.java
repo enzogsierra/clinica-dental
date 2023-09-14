@@ -18,18 +18,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 
 @Entity
 @Table(name = "pagos")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@ToString
 public class Pago 
 {
     @Id
@@ -48,10 +48,12 @@ public class Pago
     @ManyToOne(fetch = FetchType.LAZY)
     private Paciente paciente;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
     private Cuota cuota;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
     private Turno turno;
 
     @NotNull(message = "Debes elegir la fecha del pago")

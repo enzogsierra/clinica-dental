@@ -12,26 +12,30 @@
             
             <!-- Contenido -->
             <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Editar financiamiento</h2>
+                <h2 class="text-center text-lg-start"><span th:text="${financiamiento.id == null ? 'Crear' : 'Editar'}"></span> financiamiento</h2>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <form th:action="@{/financiamientos/}" th:object="${financiamiento}" method="POST" id="financingForm" novalidate>
+                    <form th:object="${financiamiento}" method="POST" onsubmit="onFinancingFormSubmit(event)">
+                        <input type="hidden" th:field="*{id}">
+                        
                         <div class="d-flex flex-column flex-xxl-row gap-4">
                             <div class="w-100">
                                 <h4 class="mb-4">Datos generales</h4>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="pacienteNombre">Paciente *</label>
-                                    <input class="form-control" type="text" name="pacienteNombre" id="pacienteNombre" required>
-                                    <div class="invalid-feedback" id="error-paciente"></div>
+
+                                    <input th:if="*{paciente == null}" class="form-control" th:classappend="${#fields.hasErrors('paciente')} ? is-invalid" type="text" name="pacienteNombre" id="pacienteNombre" required>
+                                    <input th:unless="*{paciente == null}" class="form-control is-valid" type="text" th:value="*{paciente.nombre + ' ' + paciente.apellido}" disabled>
                                     
-                                    <input type="hidden" th:field="*{paciente}" id="paciente">
+                                    <input type="hidden" th:field="*{paciente}">
+                                    <div class="invalid-feedback" th:errors="*{paciente}"></div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="tratamiento">Tratamiento *</label>
-                                    <select th:field="*{tratamiento}" id="tratamiento" class="form-select">
-                                        <option value="0" selected>-- Seleccionar tratamiento --</option>
+                                    <select th:field="*{tratamiento}" th:errorclass="is-invalid" class="form-select" required>
+                                        <option value="" selected>-- Seleccionar tratamiento --</option>
                     
                                         <option
                                             th:each="tratamiento: ${tratamientos}"
@@ -40,12 +44,12 @@
                                         >
                                         </option>
                                     </select>
-                                    <div class="invalid-feedback" id="error-tratamiento"></div>
+                                    <div class="invalid-feedback" th:errors="*{tratamiento}"></div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label" for="detalles">Detalles</label>
-                                    <textarea class="form-control" th:field="*{detalles}" id="detalles" placeholder="Información adicional sobre el financiamiento" rows="3"></textarea>
+                                    <textarea class="form-control" th:errorclass="is-invalid" th:field="*{detalles}" placeholder="Información adicional sobre el financiamiento" rows="3"></textarea>
                                 </div>
                             </div>
 
@@ -54,173 +58,124 @@
 
                                 <div class="mb-3 d-flex justify-content-between gap-3">
                                     <div class="w-100">
-                                        <label class="form-label" for="financing_Value">Valor del financiamiento *</label>
+                                        <label class="form-label" for="valor">Valor del financiamiento *</label>
                                         <div class="input-group">
                                             <span class="input-group-text">$</span>
-                                            <input class="form-control" type="number" min="0" id="financing_Value" placeholder="0" required>
+                                            <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{valor}" min="0" step="any" placeholder="0" th:readonly="*{id != null}" required>
                                         </div>
                                     </div>
 
                                     <div class="w-100">
-                                        <label class="form-label" for="financing_MonthlyInt">Interés mensual *</label>
+                                        <label class="form-label" for="interesMensual">Interés mensual *</label>
                                         <div class="input-group">
-                                            <input class="form-control" type="number" min="0" id="financing_MonthlyInt" placeholder="0" required>
                                             <span class="input-group-text">%</span>
+                                            <input class="form-control" th:errorclass="is-invalid" type="number" th:field="*{interesMensual}" min="0" step="any" placeholder="0" th:readonly="*{id != null}" required>
                                         </div>
+                                        <div class="invalid-feedback" th:errors="*{interesMensual}"></div>
                                     </div>
 
                                     <div>
                                         <label class="form-label" for="fechaInicio">Fecha de inicio *</label>
-                                        <input class="form-control" type="date" th:field="*{fechaInicio}" id="fechaInicio" required>
-                                        <div class="invalid-feedback" id="error-fechaInicio"></div>
+                                        <input class="form-control" th:errorclass="is-invalid" type="date" th:field="*{fechaInicio}" th:readonly="*{id != null}" required>
+                                        <div class="invalid-feedback" th:errors="*{fechaInicio}"></div>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label" for="financing_feesAmount">Cantidad de cuotas *</label>
-                                    
-                                    <div class="d-flex justify-content-between gap-3">
-                                        <select id="financing_feesAmount" class="form-select" required>
-                                            <option value="" selected disabled>-- Seleccionar cantidad --</option>
-                                            <option value="2">2 cuotas</option>
-                                            <option value="3">3 cuotas</option>
-                                            <option value="6">6 cuotas</option>
-                                            <option value="9">9 cuotas</option>
-                                            <option value="12">12 cuotas</option>
-                                            <option value="18">18 cuotas</option>
-                                            <option value="24">24 cuotas</option>
-                                        </select>
+                                    <label class="form-label" for="cantidadCuotas">Cantidad de cuotas *</label>
 
-                                        <div th:if="*{cuotas.size() == 0}" class="text-nowrap">
-                                            <button type="submit" class="btn btn-success" id="generateFeeBtn">Generar cuotas</button>
+                                    <div th:if="*{id == null}">
+                                        <div class="d-flex justify-content-between gap-3">
+                                            <select class="form-select" th:field="*{cantidadCuotas}" required>
+                                                <option value="" selected disabled>-- Seleccionar cantidad --</option>
+                                                <option value="2">2 cuotas</option>
+                                                <option value="3">3 cuotas</option>
+                                                <option value="6">6 cuotas</option>
+                                                <option value="9">9 cuotas</option>
+                                                <option value="12">12 cuotas</option>
+                                                <option value="18">18 cuotas</option>
+                                                <option value="24">24 cuotas</option>
+                                            </select>
+
+                                            <div class="text-nowrap">
+                                                <button type="submit" class="btn btn-success" id="generateFeeBtn">Generar cuotas</button>
+                                            </div>
                                         </div>
+                                        <div class="invalid-feedback" th:errors="*{cantidadCuotas}"></div>
+                                    </div>
+                                    <div th:unless="*{id == null}">
+                                        <select class="form-select" disabled>
+                                            <option><span th:text="*{cantidadCuotas}"></span> cuotas</option>
+                                        </select>
+                                        <input type="hidden" th:field="*{cantidadCuotas}">
                                     </div>
                                 </div>
 
                                 <!-- Nuevo financiamiento -->
-                                <div th:if="*{id == null}">
-                                    
+                                <div th:if="*{cuotas.size() != 0}" class="border rounded text-bg-light">
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap">N° de cuota</th>
+                                                <th class="w-100">Valor de la cuota</th>
+                                                <th class="text-nowrap">Fecha de cobro</th>
+                                            </tr>
+                                        </thead>
 
-                                    <!-- 
-                                        <input class="form-control" type="number" disabled="" id="cuotas1.nroCuota" name="cuotas[1].nroCuota" value="">
-                                    -->
+                                        <tbody>
+                                            <tr th:each="cuota, iter: *{cuotas}">
+                                                <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">#</span>
+                                                        <input
+                                                            class="form-control"
+                                                            th:errorrclass="is-invalid"
+                                                            type="number"
+                                                            th:field="*{cuotas[__${iter.index}__].nroCuota}"
+                                                            readonly
+                                                        >
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input 
+                                                            class="form-control"
+                                                            th:errorclass="is-invalid"
+                                                            type="number"
+                                                            th:field="*{cuotas[__${iter.index}__].monto}"
+                                                            placeholder="0"
+                                                            min="0"
+                                                            step="any"
+                                                            oninput="calculateFinalCost()"
+                                                        >
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input 
+                                                        class="form-control"
+                                                        th:errorclass="is-invalid"
+                                                        type="date"
+                                                        th:field="*{cuotas[__${iter.index}__].fechaCobro}"
+                                                    >
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                    <div class="p-4 border rounded text-bg-light d-none" id="feeList">
-                                        <p class="text-muted">Cuotas</p>
-    
-                                        <div th:each="i: ${#numbers.sequence(0, 23)}" class="mb-3 d-flex gap-3 d-none" id="feeList_item" th:fee-id="${i}">
-                                            <div>
-                                                <label th:if="${i == 0}" class="form-label">N° de cuota</label>
-    
-                                                <div class="input-group">
-                                                    <span class="input-group-text">#</span>
-    
-                                                    <input 
-                                                        class="form-control" 
-                                                        type="number" 
-                                                        disabled
-                                                        id="nroCuota"
-                                                        name
-                                                        th:value="${i + 1}"
-                                                    >
-                                                </div>
-                                            </div>
-    
-                                            <div class="w-100">
-                                                <label th:if="${i == 0}" class="form-label">Monto</label>
-    
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    <input 
-                                                        class="form-control" 
-                                                        type="number" 
-                                                        placeholder="0"
-                                                        min="0"
-                                                        id="monto"
-                                                        data-mask="#.##0,00"
-                                                    >
-                                                </div>
-                                            </div>
-    
-                                            <div>
-                                                <label th:if="${i == 0}" class="form-label">Fecha de cobro</label>
-    
-                                                <input 
-                                                    class="form-control" 
-                                                    type="date"
-                                                    id="fechaCobro"
-                                                >
-                                            </div>
+                                    <div class="mb-4 px-4 text-end">
+                                        <div class="mb-4 border-bottom">
+                                            <h5>Costo final del financiamiento</h5>
+                                            <h2>$ <span th:text="*{#numbers.formatDecimal(getFinalCost(), 0, 'POINT', 0, 'DEFAULT')}" id="financing_finalCost"></span></h2>
                                         </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg">Generar financiamiento</button>
                                     </div>
                                 </div>
-
-                                <!-- Editar financiamiento -->
-                                <div th:unless="*{id == null}">
-                                    
-                                </div>
-
-                                <!-- <div th:if="*{cuotas.size() == 0}" class="mb-4 text-end">
-                                    <button type="submit" class="btn btn-success" id="generateFeeBtn">Generar cuotas</button>
-                                </div>
-
-                                <div class="p-4 border rounded text-bg-light" th:classappend="*{cuotas.size() == 0 ? 'd-none' : ''}" id="feeList">
-                                    <p class="text-muted">Cuotas</p>
-
-                                    <div th:each="i: ${#numbers.sequence(1, 24)}" id="feeList_item" class="mb-3 d-flex gap-3">
-                                        <div>
-                                            <label th:if="${i == 1}" class="form-label">N° de cuota</label>
-
-                                            <div class="input-group">
-                                                <span class="input-group-text">#</span>
-
-                                                <input 
-                                                    class="form-control" 
-                                                    type="number" 
-                                                    disabled
-                                                    th:field="*{cuotas[__${i - 1}__].nroCuota}"
-                                                >
-                                            </div>
-                                        </div>
-
-                                        <div class="w-100">
-                                            <label th:if="${i == 1}" class="form-label">Monto</label>
-
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input 
-                                                    class="form-control" 
-                                                    type="number" 
-                                                    placeholder="0"
-                                                    min="0"
-                                                    required
-                                                    th:field="*{cuotas[__${i - 1}__].monto}"
-                                                >
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label th:if="${i == 1}" class="form-label">Fecha de cobro</label>
-
-                                            <input 
-                                                class="form-control" 
-                                                type="date"
-                                                required
-                                                th:field="*{cuotas[__${i - 1}__].fechaCobro}"
-                                            >
-                                        </div>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
-                        
-                        <!-- <div class="text-end">
-                            <button type="submit" class="btn btn-primary d-block">Guardar</button>
-                        </div> -->
                     </form>
                 </div>
-
-                <button class="btn btn-primary btn-print">Imprimir</button>
             </main>
         </div>
 

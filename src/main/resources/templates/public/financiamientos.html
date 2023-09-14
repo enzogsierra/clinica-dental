@@ -15,21 +15,55 @@
                 <h2 class="text-center text-lg-start">Financiamientos y cuotas</h2>
 
                 <a th:href="@{/financiamientos/form}" class="btn btn-primary">
-                    <i class="bi bi-person-plus"></i>
+                    <i class="bi bi-receipt"></i>
                     Crear financiamiento
                 </a>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Lista de financiamientos activos</p>
+                    <div th:if="${financiamientos.size() == 0}" class="text-center">
+                        <p class="text-muted">No hay financiamientos activos</p>
 
-                    <table class="table table-bordered table-striped table-hover">
+                        <a th:href="@{/financiamientos/form}" class="btn btn-primary">
+                            <i class="bi bi-receipt"></i>
+                            Crear financiamiento
+                        </a>
+
+                        <a th:href="@{/financiamientos/historial}" class="btn btn-secondary">
+                            <i class="bi bi-clock"></i>
+                            Historial de financiamientos
+                        </a>
+                    </div>
+
+                    <table th:unless="${financiamientos.size() == 0}" class="table table-striped table-hover table-bordered caption-top">
+                        <caption>Lista de financiamientos activos</caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
-                                
+                                <th scope="col">#</th>
+                                <th scope="col">Paciente</th>
+                                <th scope="col">Tratamiento</th>
+                                <th scope="col">Detalles</th>
+                                <th scope="col">Cuotas pagadas</th>
+                                <th scope="col">Último pago</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            <tr th:each="entity: ${financiamientos}" class="clickable-row cursor-pointer" th:data-href="@{/financiamientos/{id} (id = ${entity.id})}" title="Ver financiamiento">
+                                <th th:text="${entity.id}" scope="row"></th>
+                                <td th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
+                                <td th:text="${entity.tratamiento.nombre}"></td>
+                                <td>
+                                    <span th:if="${#strings.isEmpty(entity.detalles)}" class="text-muted">(Sin detalles)</span>
+                                    <span th:unless="${#strings.isEmpty(entity.detalles)}" th:text="${entity.detalles}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${entity.getRemainingPayments()}"></span>/<span th:text="${entity.cuotas.size()}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${entity.getLastPayment() == null}" class="text-muted">(Sin datos)</span>
+                                    <span th:unless="${entity.getLastPayment() == null}" th:text="${#temporals.format(entity.getLastPayment(), 'dd/MM/yyyy')}">(Sin datos)</span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

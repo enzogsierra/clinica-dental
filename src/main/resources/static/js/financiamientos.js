@@ -1,74 +1,19 @@
-const financingForm = document.querySelector("form#financingForm");
-
-document.addEventListener("DOMContentLoaded", () =>
+// Cuando se hace submit del form del financiamiento
+function onFinancingFormSubmit(event)
 {
-    financingForm.addEventListener("submit", onFinancingFormSubmit);
-});
+    const form = event.target; // Obtenemos el form
+    const src = event.submitter; // Obtenemos el elemento que disparó el evento
 
-
-function onFinancingFormSubmit(e)
-{
-    const btn = e.submitter;
-    
-    if(btn.id == "generateFeeBtn")
+    if(src.tagName == "BUTTON" && src.id == "generateFeeBtn") // Si el elemento que disparó el submit fue el button de generar cuotas
     {
-        e.preventDefault();
-        generateFee();
+        form.action = "/financiamientos/generarCuotas"; // Cambiamos el endpoint del action
+    }
+    else
+    {
+        form.action = "/financiamientos/form";
     }
 }
 
-
-function generateFee()
-{
-    // Mostrar la lista de cuotas
-    const feeList = document.querySelector("#feeList");
-    feeList.classList.remove("d-none");
-
-    //
-    const financingValue = document.querySelector("input#financing_Value").value;
-    const monthlyInt = document.querySelector("input#financing_MonthlyInt").value;
-    const feesAmount = document.querySelector("select#financing_feesAmount").value;
-
-
-    // Ocultar todas las cuotas por default, y quitar los "name" de todos sus inputs
-    const feeList_items = feeList.querySelectorAll("#feeList_item"); // Seleccionamos todos los divs que contienen una cuota
-    feeList_items.forEach(item =>
-    {
-        item.classList.add("d-none"); // Añadimos esta clase para ocultar el div
-
-        const inputs = item.querySelectorAll("input"); // Seleccionamos todos los inputs de la cuota
-        inputs.forEach(input =>
-        {
-            input.removeAttribute("name"); // Le quitamos el atributo "name" para evitar que los datos de esta cuota sean enviados al controlador
-        });
-    });
-
-    let totalCost = 0;
-
-    // Mostrar las cuotas segun la cantidad de cuotas seleccionadas
-    for(let i = 0; i < feesAmount; i++)
-    {
-        const fee = feeList.querySelector(`#feeList_item[fee-id="${i}"]`); // Buscar el div contenedor de la cuota
-        fee.classList.remove("d-none"); // Quitamos esta clase del div, para que así se muestre en el documento
-
-        // Seleccionamos los inputs que contienen informacion sobre la cuota
-        const nroCuota = fee.querySelector("input#nroCuota"); 
-        const monto = fee.querySelector("input#monto"); 
-        const fechaCobro = fee.querySelector("input#fechaCobro");
-
-        // Añadimos el atributo "name" a los inputs de esta cuota, así se enviarán esos datos al controlador
-        nroCuota.setAttribute("name", `cuotas${i}.nroCuota`);
-        monto.setAttribute("name", `cuotas${i}.monto`);
-        fechaCobro.setAttribute("name", `cuotas${i}.fechaCobro`);
-
-        // Establecer el monto de la cuota y la fecha de cobro
-        const feeCost = (financingValue / feesAmount) * (1 + (monthlyInt / 12));
-        monto.value = feeCost.toFixed(0);
-        totalCost += feeCost;
-    }
-
-    console.log(totalCost);
-}
 
 
 // Autocomplete - cuando el usuario busca al paciente que se le hará el financiamiento

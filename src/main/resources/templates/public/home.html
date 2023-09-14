@@ -67,32 +67,14 @@
                                                 </p>
                                             </div>
 
-                                            <div class="d-flex align-items-start gap-2">
-                                                <div th:if="${entity.completado}">
-                                                    <i class="fs-3 text-secondary bi bi-bookmark-check-fill" title="Turno completado"></i>
-                                                </div>
-
-                                                <div th:if="${entity.pago}">
-                                                    <i class="fs-3 text-success bi bi-receipt-cutoff" title="Turno pagado"></i>
-                                                </div>
+                                            <div class="d-flex align-items-start gap-3">
+                                                <a th:if="${entity.pago}" th:href="@{/pagos/{id} (id = ${entity.pago.id})}" class="fs-3 text-success text-decoration-none">
+                                                    <i class="bi bi-currency-dollar" title="Ver pago"></i>
+                                                </a>
 
                                                 <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank" title="Enviar mensaje">
                                                     <i class="fs-3 text-success bi bi-whatsapp"></i>
                                                 </a>
-
-                                                <!-- <button th:if="${entity.completado}" type="button" class="btn btn-dark" disabled title="Archivado">
-                                                    <i class="bi bi-bookmark-check" style="pointer-events: none;"></i>
-                                                </button>
-                                                <button th:unless="${entity.completado}" type="button" class="btn btn-outline-dark" id="completeDateBtn" th:turno-id="${entity.id}" title="Archivar">
-                                                    <i class="bi bi-bookmark" style="pointer-events: none;"></i>
-                                                </button>
-
-                                                <button th:if="${entity.pago}" type="button" class="btn btn-dark" disabled title="Pagado">
-                                                    <i class="bi bi-receipt-cutoff" style="pointer-events: none;"></i>
-                                                </button>
-                                                <button th:unless="${entity.pago}" type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#turnoPagoModal" onclick="onNewEntity('Registrar pago')" title="Pagar turno">
-                                                    <i class="bi bi-receipt-cutoff" style="pointer-events: none;"></i>
-                                                </button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -245,44 +227,6 @@
                                             <button type="submit" class="btn btn-primary w-100">Pagar</button>
                                         </div>
                                     </div>
-
-                                    <!-- <div class="mb-3">
-                                        <label class="form-label" for="doctor">Doctor *</label>
-                                        <select name="doctor" id="doctor" class="form-select" required>
-                                            <option value="" disabled selected>-- Seleccionar doctor --</option>
-                        
-                                            <option
-                                                th:each="doctor: ${doctores}"
-                                                th:value="${doctor.id}"
-                                                th:text="${doctor.nombre + ' ' + doctor.apellido}"
-                                            >
-                                            </option>
-                                        </select>
-                                        <div class="invalid-feedback" id="error-doctor"></div>
-                                    </div> -->
-
-                                    <!-- <div class="mb-3">
-                                        <label class="form-label" for="tratamiento">Tratamiento</label>
-                                        <select name="tratamiento" id="tratamiento" class="form-select">
-                                            <option value="0" selected>-- Seleccionar tratamiento --</option>
-                        
-                                            <option
-                                                th:each="tratamiento: ${tratamientos}"
-                                                th:value="${tratamiento.id}"
-                                                th:text="${tratamiento.nombre}"
-                                            >
-                                            </option>
-                                        </select>
-                                        <div class="invalid-feedback" id="error-tratamiento"></div>
-                                    </div> -->
-
-                                    <!-- <div class="mb-3">
-                                        <label class="form-label" for="observaciones">Observaciones</label>
-                                        <input class="form-control" type="text" name="observaciones" id="observaciones">
-                                        <div class="invalid-feedback" id="error-observaciones"></div>
-                                    </div> -->
-                                
-                                    
                                 </form>
                             </div>
                         </div>

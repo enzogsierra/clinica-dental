@@ -13,12 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +36,8 @@ public class Cuota
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Debes asignar el N° de esta cuota")
+    @NotNull(message = "Debes asignar el N° de esta cuota")
+    @Min(value = 1, message = "El N° de cuota no puede ser menor a 1")
     private Integer nroCuota;
 
     @Column(columnDefinition = "DATE")
@@ -47,7 +49,8 @@ public class Cuota
     @Min(value = 0, message = "El monto de esta cuota no puede ser menor a $0")
     private Double monto;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Pago pago;
 
     @ManyToOne(fetch = FetchType.LAZY)

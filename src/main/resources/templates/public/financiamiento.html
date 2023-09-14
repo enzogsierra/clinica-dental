@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="layout::head">
+
+    </head>
+
+    <body>
+        <div class="d-flex flex-column flex-lg-row">
+            <header th:replace="layout::header">
+                
+            </header>
+            
+            <!-- Contenido -->
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-lg-start">Editar financiamiento</h2>
+
+                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                    <form th:action="@{/financiamientos/form}" th:object="${financiamiento}" method="POST">
+                        <div class="d-flex flex-column flex-xxl-row gap-4">
+                            <div class="w-100">
+                                <h4 class="mb-4">Datos generales</h4>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Paciente *</label>
+                                    <input class="form-control" type="text" th:value="*{paciente.nombre + ' ' + paciente.apellido}" disabled>
+                                    <div class="invalid-feedback" th:errors="*{paciente}"></div>
+                                    
+                                    <input type="hidden" th:field="*{paciente}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="tratamiento">Tratamiento *</label>
+                                    <select th:field="*{tratamiento}" id="tratamiento" class="form-select">
+                                        <option value="0" selected>-- Seleccionar tratamiento --</option>
+                    
+                                        <option
+                                            th:each="tratamiento: ${tratamientos}"
+                                            th:value="${tratamiento.id}"
+                                            th:text="${tratamiento.nombre}"
+                                        >
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:errors="*{tratamiento}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="detalles">Detalles</label>
+                                    <textarea class="form-control" th:field="*{detalles}" id="detalles" placeholder="Información adicional sobre el financiamiento" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="w-100">
+                                <h4 class="mb-4">Financiamiento</h4>
+
+                                <div class="mb-3 d-flex justify-content-between gap-3">
+                                    <div class="w-100">
+                                        <label class="form-label" for="financing_Value">Valor del financiamiento *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input class="form-control" type="number" min="0" id="financing_Value" placeholder="0" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="w-100">
+                                        <label class="form-label" for="financing_MonthlyInt">Interés mensual *</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="number" min="0" id="financing_MonthlyInt" placeholder="0" readonly>
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="form-label" for="fechaInicio">Fecha de inicio *</label>
+                                        <input class="form-control" type="date" th:field="*{fechaInicio}" id="fechaInicio" readonly>
+                                        <div class="invalid-feedback" th:errors="*{fechaInicio}"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="financing_feesAmount">Cantidad de cuotas *</label>
+                                    
+                                    <div class="d-flex justify-content-between gap-3">
+                                        <select class="form-select" disabled>
+                                            <option value="" th:text="*{cuotas.size() + ' cuotas'}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Editar financiamiento -->
+                                <div th:unless="*{id == null}" class="border rounded text-bg-light" id="feeList">
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap">N° de cuota</th>
+                                                <th class="w-100">Monto</th>
+                                                <th class="text-nowrap">Fecha de cobro</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr th:each="cuota, iter: *{cuotas}" id="feeList_item" th:fee-id="${i}">
+                                                <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">#</span>
+                                                        <input class="form-control" type="number" th:name="${'cuotas[' + iter.index + '].nroCuota'}" th:value="*{cuotas[__${iter.index}__].nroCuota}" readonly>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input  class="form-control" type="number" placeholder="0" min="0" id="monto" th:name="${'cuotas[' + iter.index + '].monto'}" th:value="*{cuotas[__${iter.index}__].monto}" oninput="calculateFinalCost()">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" type="date" th:name="${'cuotas[' + iter.index + '].fechaCobro'}" th:value="*{cuotas[__${iter.index}__].fechaCobro}">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div class="mb-4 px-4 text-end">
+                                        <div class="mb-4 border-bottom">
+                                            <h5>Costo final del financiamiento</h5>
+                                            <h2>$ <span id="financing_finalCost"></span></h2>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg">Generar financiamiento</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <button class="btn btn-primary btn-print">Imprimir</button>
+            </main>
+        </div>
+
+        <!-- Footer & scripts -->
+        <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/financiamientos.js}"></script>
+    </body>
+</html>
