@@ -5,21 +5,20 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Pagos</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago')">
-                    <i class="bi bi-currency-dollar"></i>
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Pagos</h2>
+
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago')">
+                    <i class="fa-solid fa-sack-dollar"></i>
                     Registrar pago
                 </button>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
                     <p class="text-muted">Pagos de los últimos 30 días</p>
 
                     <div th:if="${pagos.size() == 0}">

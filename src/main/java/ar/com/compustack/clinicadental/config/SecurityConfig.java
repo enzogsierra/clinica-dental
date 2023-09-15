@@ -29,6 +29,7 @@ public class SecurityConfig
                 auth.antMatchers("/admin/**").hasAuthority("ADMIN");
                 auth.antMatchers("/assets/**").permitAll(); // Permitir que se muestren todos los recursos - evita falsos redirects al hacer login
                 auth.antMatchers("/css/**").permitAll(); // ^
+                auth.antMatchers("/fontawesome/**").permitAll(); // Permite cargar los iconos de fontawesome
                 auth.anyRequest().authenticated();
             })
             .formLogin(form ->

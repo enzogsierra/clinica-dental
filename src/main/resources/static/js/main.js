@@ -1,13 +1,7 @@
-//const printBtn = document.querySelector("button.btn-print"); // Selecciona el boton de "imprimir", si existe
-
-
 document.addEventListener("DOMContentLoaded", () =>
 {
     // Cargar los tooltips de bootstrapp
     loadTooltips(); 
-
-    // Si existe un boton de "imprimir", añadir un eventListener para cuando se haga click
-    //if(printBtn) printBtn.addEventListener("click", onPrintButtonClick);
 });
 
 
@@ -18,6 +12,11 @@ function loadTooltips()
     tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
 }
 
+// Boton que controla el navbar
+function onToggleNavbar()
+{
+    document.querySelector("body").classList.toggle("collapse-navbar");
+}
 
 // Boton "imprimir"
 function onPrintButtonClick() {

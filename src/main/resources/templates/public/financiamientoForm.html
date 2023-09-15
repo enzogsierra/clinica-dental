@@ -5,16 +5,15 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start"><span th:text="${financiamiento.id == null ? 'Crear' : 'Editar'}"></span> financiamiento</h2>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start"><span th:text="${financiamiento.id == null ? 'Crear' : 'Editar'}"></span> financiamiento</h2>
+
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
                     <form th:object="${financiamiento}" method="POST" onsubmit="onFinancingFormSubmit(event)">
                         <input type="hidden" th:field="*{id}">
                         

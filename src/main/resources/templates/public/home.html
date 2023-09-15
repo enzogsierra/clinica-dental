@@ -5,28 +5,26 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
+
             </header>
-            
-            <!-- Contenido -->
+
             <main class="container-fluid p-4">
-                <h1 th:text="${clinica.nombre}" class="mb-5 text-center"></h1>
+                <h1 class="mb-5 text-center" th:text="${clinica.nombre}"></h1>
 
                 <section> 
-                    
-                    <div class="row g-4">
-                        <div class="col-12 col-md-6 col-xl-7">
+                    <div class="row row-cols-1 row-cols-lg-2 g-4">
+                        <div class="col-12 col-lg-6 col-xl-7">
                             <h2>Turnos de hoy</h2>
 
-                            <div class="p-4 bg-white rounded-1 shadow-sm">
+                            <div class="p-4 bg-white rounded-2 shadow">
                                 <!-- Sin turnos -->
                                 <div th:if="${turnosToday.size() == 0}" class="text-center">
                                     <p class="text-muted">No hay turnos programados para hoy</p>
 
                                     <a th:href="@{/turnos/}" class="btn btn-primary">
-                                        <i class="bi bi-calendar-plus"></i>
+                                        <i class="fa-regular fa-calendar-plus"></i>
                                         Agendar turno
                                     </a>
                                 </div>
@@ -42,38 +40,38 @@
                                     <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
                                         <div class="d-flex justify-content-between gap-2">
                                             <div>
-                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none">
+                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
                                                     <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
                                                 </a>
                                                 
                                                 <p class="mb-0">
-                                                    <i class="fs-5 text-primary bi bi-person"></i>
+                                                    <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
                                                 </p>
         
                                                 <p class="mb-0">
-                                                    <i class="fs-5 text-success bi bi-clipboard-check"></i>
+                                                    <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
                                                 </p>
 
                                                 <p class="mb-0" th:if="${entity.tratamiento != null}">
-                                                    <i class="fs-5 bi bi-card-checklist"></i>
+                                                    <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.tratamiento.nombre}"></span>
                                                 </p>
 
                                                 <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
-                                                    <i class="fs-5 bi bi-chat-dots"></i>
+                                                    <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.observaciones}"></span>
                                                 </p>
                                             </div>
 
                                             <div class="d-flex align-items-start gap-3">
-                                                <a th:if="${entity.pago}" th:href="@{/pagos/{id} (id = ${entity.pago.id})}" class="fs-3 text-success text-decoration-none">
-                                                    <i class="bi bi-currency-dollar" title="Ver pago"></i>
+                                                <a th:if="${entity.pago}" th:href="@{/pagos/{id} (id = ${entity.pago.id})}" class="text-decoration-none">
+                                                    <i class="fa-solid fa-circle-dollar-to-slot fa-2xl text-muted" title="Ver pago"></i>
                                                 </a>
 
-                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank" title="Enviar mensaje">
-                                                    <i class="fs-3 text-success bi bi-whatsapp"></i>
+                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
+                                                    <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -81,16 +79,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-xl-5">
+                        
+                        <div class="col-12 col-lg-6 col-xl-5">
                             <h2>Turnos para mañana</h2>
 
-                            <div class="p-4 bg-white rounded-1 shadow-sm">
+                            <div class="p-4 bg-white rounded-2 shadow">
                                 <!-- Sin turnos -->
                                 <div th:if="${turnosTomorrow.size() == 0}" class="text-center">
                                     <p class="text-muted">No hay turnos programados para mañana</p>
 
                                     <a th:href="@{/turnos/}" class="btn btn-primary">
-                                        <i class="bi bi-calendar-plus"></i>
+                                        <i class="fa-regular fa-calendar-plus"></i>
                                         Agendar turno
                                     </a>
                                 </div>
@@ -106,33 +105,35 @@
                                     <div th:each="entity, iter: ${turnosTomorrow}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
                                         <div class="d-flex justify-content-between">
                                             <div>
-                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0"></h4>
+                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
+                                                    <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
+                                                </a>
                                                 
                                                 <p class="mb-0">
-                                                    <i class="fs-5 text-primary bi bi-person"></i>
+                                                    <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
                                                 </p>
         
                                                 <p class="mb-0">
-                                                    <i class="fs-5 text-success bi bi-clipboard-check"></i>
+                                                    <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
                                                 </p>
 
                                                 <p class="mb-0" th:if="${entity.tratamiento != null}">
-                                                    <i class="fs-5 bi bi-card-checklist"></i>
+                                                    <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.tratamiento.nombre}"></span>
                                                 </p>
 
                                                 <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
-                                                    <i class="fs-5 bi bi-chat-dots"></i>
+                                                    <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
                                                     <span th:text="${entity.observaciones}"></span>
                                                 </p>
                                             </div>
 
-                                            <div class="d-flex align-items-center">
-                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-dark text-decoration-none" target="_blank">
-                                                    <i class="fs-3 text-success bi bi-whatsapp"></i>
-                                                </a>   
+                                            <div>
+                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
+                                                    <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

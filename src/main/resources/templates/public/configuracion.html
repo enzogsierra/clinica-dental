@@ -5,16 +5,17 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Información de la clínica</h2>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+            </header>
+
+            <main class="container-fluid p-4">
+                <div class="pb-4">
+                    <h2 class="mb-0 text-center text-muted text-lg-start">Información de la clínica</h2>
+                </div>
+
+                <div class="p-4 bg-white rounded-2 shadow w-100">
                     <form th:action="@{/configuracion/form}" th:object="${clinica}" method="POST" enctype="multipart/form-data">
                         <div class="mb-5 text-center">
                             <img th:if="*{logoUrl}" th:src="@{/assets/{logo} (logo = *{logoUrl})}" style="max-height: 8rem;">

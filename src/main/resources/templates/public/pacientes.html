@@ -5,24 +5,36 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Pacientes</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir paciente')">
-                    <i class="bi bi-person-plus"></i>
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Pacientes</h2>
+
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir paciente')">
+                    <i class="fa-solid fa-user-plus"></i>
                     Añadir paciente
                 </button>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Lista de pacientes</p>
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
+                    <table class="table table-bordered table-striped table-hover caption-top">
+                        <caption>
+                            <div class="d-flex justify-content-between gap-2">
+                                <span>Lista de pacientes</span>
 
-                    <table class="table table-bordered table-striped table-hover">
+                                <div class="d-flex align-items-center gap-2">
+                                    <form th:action="@{/pacientes/buscar}">
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="buscarPaciente" id="buscarPaciente" placeholder="Buscar" autocomplete="off">
+                                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Nombre completo</th>
@@ -139,5 +151,6 @@
         <!-- Footer & scripts -->
         <footer th:replace="layout::footer"></footer>
         <script th:src="@{/js/entityForm.js}"></script>
+        <script th:src="@{/js/pacientes.js}"></script>
     </body>
 </html>

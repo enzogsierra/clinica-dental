@@ -5,16 +5,15 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Información del turno</h2>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Información del turno</h2>
+
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
                     <div class="row row-cols-1 row-cols-xxl-2">
                         <div class="col-12 col-xxl-6">
                             <div class="d-flex justify-content-between">
@@ -22,15 +21,15 @@
 
                                 <div class="text-nowrap">
                                     <button type="button" class="btn btn-sm btn-primary" id="printBtn" th:print-src="@{/turnos/print/{id} (id = ${turno.id})}">
-                                        <i class="bi bi-printer-fill"></i>
+                                        <i class="fa-solid fa-print"></i>
                                         Imprimir
                                     </button>
 
                                     <button type="button" class="btn btn-sm btn-warning" th:entity-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onEditEntity('/turnos/get', 'Editar turno')">
-                                        <i class="bi bi-pencil-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-danger" th:entity-id="${turno.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity('/turnos/delete', 'Turno')">
-                                        <i class="bi bi-trash pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
                                     </button>
                                 </div>
                             </div>
@@ -119,7 +118,10 @@
                                         <div th:if="${turno.pago == null}">
                                             <p class="fs-5">No hay pago registrado</p>
 
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago de turno')">Registrar pago</button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago de turno')">
+                                                <i class="fa-solid fa-sack-dollar"></i>
+                                                Registrar pago
+                                            </button>
                                         </div>
                                         <div th:unless="${turno.pago == null}">
                                             <a th:href="@{/pagos/{id} (id = ${turno.pago.id})}" class="btn btn-primary">Ver pago</a>

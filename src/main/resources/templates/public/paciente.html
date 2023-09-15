@@ -5,16 +5,15 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Información acerca del paciente</h2>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Información del paciente</h2>
+
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
                     <div class="row">
                         <div class="col-12 col-xxl-5">
                             <div class="d-flex justify-content-between">
@@ -22,10 +21,10 @@
 
                                 <div class="text-nowrap">
                                     <button type="button" class="btn btn-sm btn-warning" th:entity-id="${paciente.id}" data-bs-toggle="modal" data-bs-target="#pacienteModal" onclick="onEditEntity('/pacientes/get', 'Editar paciente')">
-                                        <i class="bi bi-pencil-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-danger" th:entity-id="${paciente.id}" id="deleteEntityBtn" th:entity-text="${paciente.nombre + ' ' + paciente.apellido}" onclick="onDeleteEntity('/pacientes/delete', 'Paciente')">
-                                        <i class="bi bi-trash pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
                                     </button>
                                 </div>
                             </div>
@@ -53,7 +52,7 @@
                                         <div class="col col-4 mt-2">Teléfono</div>
                                         <div class="col col-auto fw-medium">
                                             <a th:href="|https://wa.me/54${paciente.telefono}|" class="btn btn-success" target="_blank">
-                                                <i class="bi bi-whatsapp"></i>
+                                                <i class="fa-brands fa-whatsapp"></i>
                                                 <span class="ms-1 fw-medium" th:text="${paciente.telefono}"></span>
                                             </a>
                                         </div>
@@ -171,7 +170,7 @@
                                             <label class="form-label" for="historialMedico">Historial médico</label>
 
                                             <i 
-                                                class="bi bi-question-circle"
+                                                class="fa-regular fa-circle-question"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="right"
                                                 title="Incluya todo el historial médico relevante sobre el paciente">
@@ -186,7 +185,7 @@
                                             <label class="form-label" for="alergias">Alergias</label>
 
                                             <i 
-                                                class="bi bi-question-circle"
+                                                class="fa-regular fa-circle-question"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="right"
                                                 title="Lista de las alergias del paciente, si amerita">

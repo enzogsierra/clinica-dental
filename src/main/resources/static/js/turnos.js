@@ -51,32 +51,3 @@ $(document).ready(function()
         }
     });
 });
-
-/*
-// Cuando abre un card de un turno
-async function onShowDateInfo(event)
-{
-    const btn = event.target; // Obtenemos el <button> que se presionó para abrir el modal
-    const id = btn.getAttribute("turno-id") ?? 0; // Obtenemos el id de la entidad a través del atributo "turno-id", si no tiene, por defecto será 0
-
-    const api = await fetch(`/turnos/get/${id}`); // Hacemos una petición a la url que nos traerá toda la información de la entidad (o una entidad vacía si no se encontró)
-    const entity = await api.json(); // Convertimos la información de la entidad a formato json
-
-    // Rellenar modal
-    const div = document.querySelector("#infoModal"); // Obtener modal de informacion
-    for(const key in entity) // Iteramos sobre cada atributo de la entidad
-    {
-        // Cambiar valor de los inputs
-        const input = div.querySelector(`input#${key}`);
-        if(input) input.value = entity[key];
-
-        // Cambiar href de links
-        const a = div.querySelector(`a#${key}`);
-        if(a) a.href = `https://wa.me/54${entity[key]}`;
-    }
-
-    // Cambiar el entity-id de los botones (editar, eliminar)
-    const actionBtns = div.querySelectorAll("button[entity-id]");
-    actionBtns.forEach(btn => btn.setAttribute("entity-id", id));
-}
-*/

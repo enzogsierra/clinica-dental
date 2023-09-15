@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap'); */
+:root
+{
+    --bs-secondary-color: rgba(33, 37, 41, 0.75);
+}
 
 
 body
@@ -7,21 +12,52 @@ body
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
 }
 
+body.collapse-navbar .header-logo-container, body.collapse-navbar .navbar-link span {
+    display: none;
+}
+
 
 /* Sidebar */
 .header
 {
     background-color: #0e2238;
 }
-.header nav a
+
+#navbar
+{
+    transition: width .3s ease;
+}
+.navbar-toggler
 {
     color: #9EA9B4;
-    transition: all .1s ease;
+    transition: all .3s ease;
 }
-.header nav a:hover
+.navbar-toggler:hover
+{
+    color: white;
+}
+.navbar-link
+{   
+    padding: 1rem 2rem;
+    color: #9EA9B4;
+    text-decoration: none;
+    font-weight: 600;
+    text-wrap: nowrap;
+    transition: color .2s ease;
+}
+.navbar-link:hover
 {
     color: white;
     background-color: #0460c4;
+}
+.navbar-link i
+{
+    text-align: center;
+    width: 16px;
+}
+.navbar-link span
+{
+    padding-left: 1rem;
 }
 
 

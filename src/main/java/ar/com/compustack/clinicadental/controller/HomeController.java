@@ -13,12 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import ar.com.compustack.clinicadental.dto.TurnoPagoDTO;
 import ar.com.compustack.clinicadental.model.Pago;
 import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.PagoRepository;
@@ -35,7 +32,7 @@ public class HomeController
     private PagoRepository pagoRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model)
     {
         LocalDate today = LocalDate.now();
@@ -70,23 +67,23 @@ public class HomeController
     }
 
     // Rellenar formulario del pago de un turno
-    @GetMapping("/getTurnoPago/{id}")
-    public @ResponseBody TurnoPagoDTO getTurnoPago(@PathVariable Integer id)
-    {
-        Turno turno = turnoRepository.findById(id).get();
+    // @GetMapping("/getTurnoPago/{id}")
+    // public @ResponseBody TurnoPagoDTO getTurnoPago(@PathVariable Integer id)
+    // {
+    //     Turno turno = turnoRepository.findById(id).get();
 
-        TurnoPagoDTO turnoPagoDTO = new TurnoPagoDTO();
-        turnoPagoDTO.setTurnoFecha(turno.getFecha());
-        turnoPagoDTO.setTurnoHora(turno.getHora());
-        turnoPagoDTO.setPacienteNombre(turno.getPaciente().getNombre() + ' ' + turno.getPaciente().getApellido());
-        turnoPagoDTO.setDoctorNombre(turno.getDoctor().getNombre() + ' ' + turno.getDoctor().getApellido());
-        turnoPagoDTO.setTurnoTratamiento((turno.getTratamiento() != null) ? turno.getTratamiento().getNombre() : "");
+    //     TurnoPagoDTO turnoPagoDTO = new TurnoPagoDTO();
+    //     turnoPagoDTO.setTurnoFecha(turno.getFecha());
+    //     turnoPagoDTO.setTurnoHora(turno.getHora());
+    //     turnoPagoDTO.setPacienteNombre(turno.getPaciente().getNombre() + ' ' + turno.getPaciente().getApellido());
+    //     turnoPagoDTO.setDoctorNombre(turno.getDoctor().getNombre() + ' ' + turno.getDoctor().getApellido());
+    //     turnoPagoDTO.setTurnoTratamiento((turno.getTratamiento() != null) ? turno.getTratamiento().getNombre() : "");
 
-        turnoPagoDTO.setTurno(id);
-        turnoPagoDTO.setPaciente(turno.getPaciente().getId());
-        turnoPagoDTO.setMonto((turno.getTratamiento() != null) ? turno.getTratamiento().getPrecio() : 0.0);
-        return turnoPagoDTO;
-    }
+    //     turnoPagoDTO.setTurno(id);
+    //     turnoPagoDTO.setPaciente(turno.getPaciente().getId());
+    //     turnoPagoDTO.setMonto((turno.getTratamiento() != null) ? turno.getTratamiento().getPrecio() : 0.0);
+    //     return turnoPagoDTO;
+    // }
 
     // Registrar pago de un turno
     @PostMapping("/pagarTurno")

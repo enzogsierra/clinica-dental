@@ -5,31 +5,30 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Financiamientos y cuotas</h2>
 
-                <a th:href="@{/financiamientos/form}" class="btn btn-primary">
-                    <i class="bi bi-receipt"></i>
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Financiamientos y cuotas</h2>
+
+                <a th:href="@{/financiamientos/form}" class="btn btn-primary fw-semibold">
+                    <i class="fa-solid fa-file-lines"></i>
                     Crear financiamiento
                 </a>
 
-                <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
+                <div class="my-4 p-4 bg-white rounded-2 shadow">
                     <div th:if="${financiamientos.size() == 0}" class="text-center">
                         <p class="text-muted">No hay financiamientos activos</p>
 
-                        <a th:href="@{/financiamientos/form}" class="btn btn-primary">
-                            <i class="bi bi-receipt"></i>
+                        <a th:href="@{/financiamientos/form}" class="btn btn-primary fw-semibold">
+                            <i class="fa-solid fa-file-lines"></i>
                             Crear financiamiento
                         </a>
 
-                        <a th:href="@{/financiamientos/historial}" class="btn btn-secondary">
-                            <i class="bi bi-clock"></i>
+                        <a th:href="@{/financiamientos/historial}" class="btn btn-secondary fw-semibold">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
                             Historial de financiamientos
                         </a>
                     </div>
@@ -57,7 +56,7 @@
                                     <span th:unless="${#strings.isEmpty(entity.detalles)}" th:text="${entity.detalles}"></span>
                                 </td>
                                 <td>
-                                    <span th:text="${entity.getRemainingPayments()}"></span>/<span th:text="${entity.cuotas.size()}"></span>
+                                    <span th:text="${entity.getRemainingPayments()}"></span>/<span th:text="${entity.cantidadCuotas}"></span>
                                 </td>
                                 <td>
                                     <span th:if="${entity.getLastPayment() == null}" class="text-muted">(Sin datos)</span>

@@ -10,56 +10,179 @@
     
     <!-- CSS -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet">
+    <link th:href="@{/css/fontawesome.min.css}" rel="stylesheet">
+    <link th:href="@{/css/fontawesome-regular.min.css}" rel="stylesheet">
+    <link th:href="@{/css/fontawesome-solid.min.css}" rel="stylesheet">
+    <link th:href="@{/css/fontawesome-brands.min.css}" rel="stylesheet">
     <link th:href="@{/css/jquery-ui.css}" rel="stylesheet">
-    <link th:href="@{/css/dataTables.min.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 
 
-<!--  -->
 <header th:fragment="header" class="header">
-    <div class="py-4 px-5 text-center">
-        <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="width: 100%; max-height: 6rem; object-fit: contain;">
+    <div class="d-flex justify-content-between align-items-center gap-3" style="padding: 0 2rem;">
+        <div class="header-logo-container">
+            <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="max-height: 48px; object-fit: contain;">
+        </div>
+
+        <button type="button" class="navbar-toggler py-5" id="navbarTogglerBtn" onclick="onToggleNavbar()" title="Contraer/expandir la navegación">
+            <i class="fa-solid fa-bars fa-xl"></i>
+        </button>
     </div>
 
-    <nav class="d-flex flex-row justify-content-center flex-wrap flex-lg-column">
-        <a th:href="@{/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Inicio">
-            <i class="fs-4 bi bi-house"></i>
-            <span class="ps-2 d-none d-sm-inline">Inicio</span>
+    <nav class="d-flex flex-column" id="navbar">
+        <a th:href="@{/}" class="navbar-link" title="Inicio">
+            <i class="fa-solid fa-house"></i>
+            <span>Inicio</span>
         </a>
-        <a th:href="@{/turnos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Turnos">
-            <i class="fs-4 bi bi-calendar3"></i>
-            <span class="ps-2 d-none d-sm-inline">Turnos</span>
+        <a th:href="@{/turnos}" class="navbar-link" title="Turnos">
+            <i class="fa-regular fa-calendar-days"></i>
+            <span>Turnos</span>
         </a>
-        <a th:href="@{/pagos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Pagos">
-            <i class="fs-4 bi bi-credit-card"></i>
-            <span class="ps-2 d-none d-sm-inline">Pagos</span>
+        <a th:href="@{/pagos}" class="navbar-link" title="Pagos">
+            <i class="fa-solid fa-circle-dollar-to-slot"></i>
+            <span>Pagos</span>
         </a>
-        <a th:href="@{/financiamientos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Financiamientos">
-            <i class="fs-4 bi bi-receipt"></i>
-            <span class="ps-2 d-none d-sm-inline">Financiamientos</span>
+        <a th:href="@{/financiamientos}" class="navbar-link" title="Financiamientos">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Financiamientos</span>
         </a>
-        <a th:href="@{/doctores/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Doctores">
-            <i class="fs-4 bi bi-clipboard-check"></i>
-            <span class="ps-2 d-none d-sm-inline">Doctores</span>
+        <a th:href="@{/doctores}" class="navbar-link" title="Doctores">
+            <i class="fa-solid fa-user-nurse"></i>
+            <span>Doctores</span>
         </a>
-        <a th:href="@{/pacientes/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Pacientes">
-            <i class="fs-4 bi bi-person"></i>
-            <span class="ps-2 d-none d-sm-inline">Pacientes</span>
+        <a th:href="@{/pacientes}" class="navbar-link" title="Pacientes">
+            <i class="fa-solid fa-image-portrait"></i>
+            <span>Pacientes</span>
         </a>
-        <a th:href="@{/tratamientos/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Tratamientos">
-            <i class="fs-4 bi bi-card-checklist"></i>
-            <span class="ps-2 d-none d-sm-inline">Tratamientos</span>
+        <a th:href="@{/tratamientos}" class="navbar-link" title="Tratamientos">
+            <i class="fa-solid fa-rectangle-list"></i>
+            <span>Tratamientos</span>
         </a>
-        <a th:href="@{/configuracion/}" class="px-4 ps-lg-4 pe-lg-5 py-3 text-white text-decoration-none text-nowrap fw-semibold" title="Configuración">
-            <i class="fs-4 bi bi-gear"></i>
-            <span class="ps-2 d-none d-sm-inline">Configuración</span>
+        <a th:href="@{/configuracion}" class="navbar-link" title="Configuración">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configuración</span>
         </a>
     </nav>
 </header>
 
-            
+
+<!--  -->
+<th:block th:fragment="headerOld">
+    <div style="width: 3rem">
+        <button type="button" class="navbar-toggler" id="navbarTogglerBtn">
+            <i class="fa-solid fa-bars fa-xl"></i>
+        </button>
+    </div>
+
+    <div style="width: 12rem;">
+        <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="max-height: 40px; object-fit: contain;">
+    </div>
+</th:block>
+
+<!--  -->
+<div th:fragment="navbarOld" class="d-flex flex-column w-100" style="min-width: 3rem; max-width: 15rem;" id="navbar">
+    <a th:href="@{/}" class="navbar-link" title="Inicio">
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+    </a>
+    <a th:href="@{/turnos}" class="navbar-link" title="Turnos">
+        <i class="fa-regular fa-calendar-days"></i>
+        <span>Turnos</span>
+    </a>
+    <a th:href="@{/pagos}" class="navbar-link" title="Pagos">
+        <i class="fa-solid fa-circle-dollar-to-slot"></i>
+        <span>Pagos</span>
+    </a>
+    <a th:href="@{/financiamientos}" class="navbar-link" title="Financiamientos">
+        <i class="fa-solid fa-receipt"></i>
+        <span>Financiamientos</span>
+    </a>
+    <a th:href="@{/doctores}" class="navbar-link" title="Doctores">
+        <i class="fa-solid fa-user-nurse"></i>
+        <span>Doctores</span>
+    </a>
+    <a th:href="@{/pacientes}" class="navbar-link" title="Pacientes">
+        <i class="fa-solid fa-image-portrait"></i>
+        <span>Pacientes</span>
+    </a>
+    <a th:href="@{/tratamientos}" class="navbar-link" title="Tratamientos">
+        <i class="fa-solid fa-rectangle-list"></i>
+        <span>Tratamientos</span>
+    </a>
+    <a th:href="@{/configuracion}" class="navbar-link" title="Configuración">
+        <i class="fa-solid fa-gear"></i>
+        <span>Configuración</span>
+    </a>
+</div>
+
+<!--  -->
+<div th:fragment="asd" class="header">
+    <div class="py-4 d-flex gap-4">
+        <button type="button" class="navbar-toggler" id="navbarTogglerBtn">
+            <span class="fs-3 bx bx-menu pointer-event-none"></span>
+        </button>
+
+        <div>
+            <img th:src="@{/assets/{logo} (logo = ${clinica.logoUrl})}" alt="Logo de la clínica" style="max-height: 4rem; object-fit: contain;">
+        </div>
+    </div>
+
+    <div class="collapse show" id="navbarCollapseToggle">
+        <div class="d-flex flex-row justify-content-center flex-wrap flex-lg-column gap-2">
+            <a th:href="@{/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Inicio">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="d-none d-sm-inline">Inicio</span>
+                </div>
+            </a>
+            <a th:href="@{/turnos/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Turnos">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bxs-calendar"></i>
+                    <span class="d-none d-sm-inline">Turnos</span>
+                </div>
+            </a>
+            <a th:href="@{/pagos/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Pagos">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bxs-dollar-circle"></i>
+                    <span class="d-none d-sm-inline">Pagos</span>
+                </div>
+            </a>
+            <a th:href="@{/financiamientos/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Financiamientos">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bxs-receipt"></i>
+                    <span class="d-none d-sm-inline">Financiamientos</span>
+                </div>
+            </a>
+            <a th:href="@{/doctores/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Doctores">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bx-clipboard"></i>
+                    <span class="d-none d-sm-inline">Doctores</span>
+                </div>
+            </a>
+            <a th:href="@{/pacientes/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Pacientes">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bxs-user-circle"></i>
+                    <span class="d-none d-sm-inline">Pacientes</span>
+                </div>
+            </a>
+            <a th:href="@{/tratamientos/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Tratamientos">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bx-list-check"></i>
+                    <span class="d-none d-sm-inline">Pacientes</span>
+                </div>
+            </a>
+            <a th:href="@{/configuracion/}" class="text-muted nav-link text-decoration-none text-nowrap fw-semibold" title="Configuración">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bx bxs-cog"></i>
+                    <span class="d-none d-sm-inline">Configuración</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
 <!--  -->
 <footer th:fragment="footer" class="py-4 bg-dark text-white footer">
     <div class="container">
@@ -70,6 +193,5 @@
     <script th:src="@{/js/jquery-ui.js}"></script>
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js/sweetalert2.js}"></script>
-    <script th:src="@{/js/mask.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </footer>

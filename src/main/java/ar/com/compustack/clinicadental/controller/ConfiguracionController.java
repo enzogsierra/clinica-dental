@@ -29,7 +29,7 @@ public class ConfiguracionController
     private FileService fileService;
 
     
-    @GetMapping("/")
+    @GetMapping("")
     public String configuration(Model model)
     {
         return "public/configuracion";

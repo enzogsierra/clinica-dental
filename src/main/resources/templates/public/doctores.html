@@ -5,17 +5,16 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
-            </header>
-            
-            <!-- Contenido -->
-            <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Doctores</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doctorModal" onclick="onNewEntity('Añadir doctor')">
-                    <i class="bi bi-clipboard-plus"></i>
+            </header>
+
+            <main class="container-fluid p-4">
+                <h2 class="text-center text-muted text-lg-start">Doctores</h2>
+
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#doctorModal" onclick="onNewEntity('Añadir doctor')">
+                    <i class="fa-solid fa-notes-medical"></i>
                     Añadir doctor
                 </button>
 
@@ -40,10 +39,10 @@
                                 <td th:text="${entity.especialidad}"></td>
                                 <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#doctorModal" onclick="onEditEntity('/doctores/get', 'Editar doctor')">
-                                        <i class="bi bi-pencil-square" style="pointer-events: none;"></i>
+                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity('/doctores/delete', 'Doctor')">
-                                        <i class="bi bi-trash" style="pointer-events: none;"></i>
+                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
                                     </button>
                                 </td>
                             </tr>

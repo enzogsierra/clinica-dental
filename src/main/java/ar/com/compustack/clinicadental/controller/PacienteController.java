@@ -38,7 +38,7 @@ public class PacienteController
     private TurnoRepository turnoRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model)
     {
         model.addAttribute("pacientes", pacienteRepository.findAll());

@@ -37,7 +37,7 @@ public class PagoController
     private TurnoRepository turnoRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model)
     {
         LocalDate today = LocalDate.now();

@@ -31,7 +31,7 @@ public class DoctorController
     private DoctorRepository doctorRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model)
     {
         model.addAttribute("doctores", doctorRepository.findAll());

@@ -5,56 +5,58 @@
     </head>
 
     <body>
-        <div class="d-flex flex-column flex-lg-row">
+        <div class="d-flex flex-row gap-2">
             <header th:replace="layout::header">
-                
+
             </header>
 
             <main class="container-fluid p-4">
-                <h2 class="text-center text-lg-start">Turnos</h2>
+                <h2 class="text-center text-muted text-lg-start">Información del paciente</h2>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewEntity('Agendar turno')">
-                    <i class="bi bi-calendar-plus"></i>
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewEntity('Agendar turno')">
+                    <i class="fa-solid fa-calendar-plus"></i>
                     Agendar turno
                 </button>
 
-                <div class="my-4 bg-white border rounded-2 shadow-sm">
-                    <div class="p-4 d-flex justify-content-between">
-                        <div class="d-flex align-items-center gap-2">
-                            <div>
-                                <a th:href="@{/turnos/}" class="btn btn-outline-primary">Hoy</a>
+                <div class="my-4 bg-white rounded-2 shadow">
+                    <div class="p-4">
+                        <div class="d-flex justify-content-between gap-2">
+                            <div class="d-flex align-items-center gap-3">
+                                <div>
+                                    <a th:href="@{/turnos/}" class="btn btn-outline-primary btn-sm">Hoy</a>
+                                </div>
+        
+                                <div>
+                                    <a th:href="@{/turnos/?from={date} (date = ${fromDate.minusDays(7)})}" class="text-decoration-none"><i class="fa-solid fa-caret-left fa-2xl"></i></a>
+                                    <a th:href="@{/turnos/?from={date} (date = ${fromDate.plusDays(7)})}" class="text-decoration-none"><i class="fa-solid fa-caret-right fa-2xl"></i></i></a>
+                                </div>
+                                
+                                <div>
+                                    <div th:if="${todayDate == fromDate}">
+                                        <p class="mb-0 fw-semibold text-primary text-uppercase">
+                                            <span>Hoy</span>
+                                            <span> - </span>
+                                            <span th:text="${#temporals.format(toDate, 'dd MMMM')}"></span>
+                                        </p>
+                                    </div>
+                                    <div th:unless="${todayDate == fromDate}">
+                                        <p class="mb-0 fw-semibold text-primary text-uppercase ls-1">
+                                            <span th:text="${#temporals.format(fromDate, 'd MMMM')}"></span>
+                                            <span th:if="${#temporals.format(todayDate, 'yyyy') != #temporals.format(fromDate, 'yyyy')}" th:text="${#temporals.format(fromDate, 'yyyy')}"></span>
+                                            <span> - </span>
+                                            <span th:text="${#temporals.format(toDate, 'd MMMM')}"></span>                                        
+                                            <span th:if="${#temporals.format(todayDate, 'yyyy') != #temporals.format(toDate, 'yyyy')}" th:text="${#temporals.format(toDate, 'yyyy')}"></span>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
-                                <a th:href="@{/turnos/?from={date} (date = ${fromDate.minusDays(7)})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-left-fill"></i></a>
-                                <a th:href="@{/turnos/?from={date} (date = ${fromDate.plusDays(7)})}" class="fs-3 text-decoration-none"><i class="bi bi-caret-right-fill"></i></a>
+                                <a th:href="@{/turnos/historial}" class="btn btn-secondary">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    Historial de turnos
+                                </a>
                             </div>
-                            
-                            <div>
-                                <div th:if="${todayDate == fromDate}">
-                                    <p class="mb-0 fw-semibold text-primary text-uppercase">
-                                        <span>Hoy</span>
-                                        <span> - </span>
-                                        <span th:text="${#temporals.format(toDate, 'dd MMMM')}"></span>
-                                    </p>
-                                </div>
-                                <div th:unless="${todayDate == fromDate}">
-                                    <p class="mb-0 fw-semibold text-primary text-uppercase ls-1">
-                                        <span th:text="${#temporals.format(fromDate, 'd MMMM')}"></span>
-                                        <span th:if="${#temporals.format(todayDate, 'yyyy') != #temporals.format(fromDate, 'yyyy')}" th:text="${#temporals.format(fromDate, 'yyyy')}"></span>
-                                        <span> - </span>
-                                        <span th:text="${#temporals.format(toDate, 'd MMMM')}"></span>                                        
-                                        <span th:if="${#temporals.format(todayDate, 'yyyy') != #temporals.format(toDate, 'yyyy')}" th:text="${#temporals.format(toDate, 'yyyy')}"></span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <a th:href="@{/turnos/historial}" class="btn btn-secondary">
-                                <i class="bi bi-clock"></i> 
-                                Historial de turnos
-                            </a>
                         </div>
                     </div>
 
@@ -62,7 +64,7 @@
                         <thead>
                             <tr>
                                 <th class="vertical-align-middle text-center">
-                                    <i class="bi bi-clock fs-4 text-secondary"></i>
+                                    <i class="fa-regular fa-clock text-muted fa-xl"></i>
                                 </th>
                                 <th th:each="dia: ${semana}" th:style="|width: calc(99% / ${semana.size()});|">
                                     <p th:text="${#temporals.format(dia, 'E')}" class="mb-0 text-center ls-1" th:classappend="${dia == todayDate ? 'text-primary' : 'fw-normal'}"></p>
@@ -76,8 +78,8 @@
                                 <td class="text-center text-muted ls-1" th:text="${#temporals.format(hora, 'HH:mm')}" style="vertical-align: middle;"></td>
 
                                 <td th:each="dia: ${semana}" id="turnos-calendar-turno" th:turno-fecha="${dia}" th:turno-hora="${hora}">
-                                    <div id="turnos-calendar-turno__addBtn" th:turno-fecha="${dia}" th:turno-hora="${hora}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewDate('Agendar turno')">
-                                        <i class="bi bi-plus-lg fs-2 text-muted pointer-event-none"></i>
+                                    <div class="py-3" id="turnos-calendar-turno__addBtn" th:turno-fecha="${dia}" th:turno-hora="${hora}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewDate('Agendar turno')">
+                                        <i class="fa-solid fa-plus fa-2xl text-muted pointer-event-none"></i>
                                     </div>
                                     
                                     <th:block th:each="turno, iterTurnos: ${turnos}" th:if="${turno.fecha == dia}">

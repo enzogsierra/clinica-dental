@@ -32,7 +32,7 @@ public class TratamientoController
     private TratamientoRepository tratamientoRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String home(Model model)
     {
         model.addAttribute("tratamientos", tratamientoRepository.findAll());
