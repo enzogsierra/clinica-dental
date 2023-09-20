@@ -62,6 +62,6 @@ public class ConfiguracionController
         }
         
         clinicaRepository.save(clinica);
-        return "redirect:/configuracion/";
+        return "redirect:/configuracion";
     }
 }

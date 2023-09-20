@@ -1,7 +1,9 @@
 package ar.com.compustack.clinicadental.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
 import ar.com.compustack.clinicadental.repository.DoctorRepository;
+import ar.com.compustack.clinicadental.repository.FinanciamientoRepository;
 import ar.com.compustack.clinicadental.repository.TratamientoRepository;
 
 
@@ -41,6 +44,9 @@ public class TurnoController
 
     @Autowired
     private TratamientoRepository tratamientoRepository;
+
+    @Autowired
+    private FinanciamientoRepository financiamientoRepository;
 
 
     @GetMapping("")
@@ -84,12 +90,13 @@ public class TurnoController
         if(!tmp.isPresent()) return "redirect:/turnos";
 
         Turno turno = tmp.get();
-        LocalDate todayDate = LocalDate.now();
 
         model.addAttribute("turno", turno);
         model.addAttribute("doctores", doctorRepository.findAll());
         model.addAttribute("tratamientos", tratamientoRepository.findAll());
-        model.addAttribute("todayDate", todayDate);
+        model.addAttribute("financiamientos", financiamientoRepository.findByPaciente(turno.getPaciente()));
+        model.addAttribute("todayDate", LocalDate.now());
+        model.addAttribute("todayDateTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         model.addAttribute("title", "TURNO_" + id);
         return "public/turno";
     }
@@ -139,52 +146,37 @@ public class TurnoController
         return (turno.isPresent()) ? (turno.get()) : (new Turno());
     }
 
-
-    // Devuelve datos de una entidad según su id, o una entidad vacia si no se encontró una
-    // @GetMapping("/get/{id}")
-    // public @ResponseBody TurnoDTO get(@PathVariable Integer id)
-    // {
-    //     Optional<Turno> turno = turnoRepository.findById(id);
-    //     TurnoDTO dto = new TurnoDTO();
-
-    //     if(turno.isPresent())
-    //     {
-    //         Turno data = turno.get();
-    //         dto.setId(data.getId());
-    //         dto.setFecha(data.getFecha());
-    //         dto.setHora(data.getHora());
-    //         dto.setPaciente(data.getPaciente().getId());
-    //         dto.setPacienteNombre(data.getPaciente().getNombre() + " " + data.getPaciente().getApellido());
-    //         dto.setPacienteTelefono(data.getPaciente().getTelefono());
-    //         dto.setDoctor(data.getDoctor().getId());
-    //         dto.setDoctorNombre(data.getDoctor().getNombre() + " " + data.getDoctor().getApellido());
-    //         dto.setTratamiento(data.getTratamiento() == null ? 0 : data.getTratamiento().getId());
-    //         dto.setTratamientoNombre(data.getTratamiento() == null ? ("") : data.getTratamiento().getNombre());
-    //         dto.setPago(data.getPago() == null ? null : data.getPago().getId());
-    //         dto.setCompletado(data.getCompletado());
-    //         dto.setObservaciones(data.getObservaciones());
-    //         dto.setCreatedAt(data.getCreatedAt());
-    //     }
-    //     return dto;
-    // }
-
     // Crea/edita datos de una entidad
     @PostMapping("/form")
     public ResponseEntity<?> form(@Valid Turno turno, BindingResult result)
     {
-        // Verificar que la fecha elegida no sea una fecha pasada
-        LocalDate curDate = LocalDate.now(); // Obtenemos el día actual
-        if(turno.getFecha().isBefore(curDate)) // Verificamos si la fecha elegida para el turno es pasada a la fecha actual
-        {
-            result.rejectValue("fecha", "turno.fecha", "No es posible agendar un turno en una fecha pasada");
-        }
+        LocalDate todayDate = LocalDate.now(); // Obtenemos el día actual
 
-        // Verificar disponibilidad del turno
-        Optional<Turno> checkDate = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
-        if(checkDate.isPresent() && checkDate.get().getId() != turno.getId()) // La fecha y hora ya está reservada
+        // Hacer verificaciones según si el turno existe o no
+        if(turno.getId() == null) // El turno no existe
         {
-            result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para un turno, selecciona otro horario");
+            if(turno.getFecha().isBefore(todayDate)) { // Verificamos si la fecha elegida para el turno es pasada a la fecha actual
+                result.rejectValue("fecha", "turno.fecha", "No es posible agendar un turno en una fecha pasada");
+            }
+
+            Optional<Turno> check = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
+            if(check.isPresent()) { // La fecha y hora ya está reservada para otro turno
+                result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para un turno, selecciona otro horario");
+            }
         }
+        else // El turno ya existe
+        {
+            Turno checkFecha = turnoRepository.findById(turno.getId()).get();
+            if(turno.getFecha().isBefore(todayDate) && !turno.getFecha().equals(checkFecha.getFecha())) { // Verificar si trata de agendar en una fecha pasada que no sea igual a la fecha agendada actual del turno
+                result.rejectValue("fecha", "turno.fecha", "No es posible agendar un turno en una fecha pasada");
+            }
+
+            Optional<Turno> check = turnoRepository.findByFechaAndHora(turno.getFecha(), turno.getHora());
+            if(check.isPresent() && check.get().getId() != turno.getId()) { // Verificar si trata de reservar en una fecha y horario ocupada por otro turno
+                result.rejectValue("hora", "turno.hora", "Este horario ya está reservado para un turno, selecciona otro horario");
+            }
+        }
+        
 
         // Verificar errores de validacion
         if(result.hasErrors())

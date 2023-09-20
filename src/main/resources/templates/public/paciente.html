@@ -11,81 +11,196 @@
             </header>
 
             <main class="container-fluid p-4">
-                <h2 class="text-center text-muted text-lg-start">Información del paciente</h2>
+                <h2 class="mb-4 text-center text-muted text-lg-start">Ficha del paciente</h2>
 
-                <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <div class="row">
-                        <div class="col-12 col-xxl-5">
-                            <div class="d-flex justify-content-between">
-                                <h3>Datos generales</h3>
+                <div class="row row-cols-1 row-cols-xl-2 g-4">
+                    <div class="col">
+                        <div class="mb-4 bg-white rounded-2 shadow">
+                            <div class="p-4 d-flex align-items-center justify-content-between gap-2 border-bottom">
+                                <h3 class="mb-0">Datos generales</h3>
 
                                 <div class="text-nowrap">
                                     <button type="button" class="btn btn-sm btn-warning" th:entity-id="${paciente.id}" data-bs-toggle="modal" data-bs-target="#pacienteModal" onclick="onEditEntity('/pacientes/get', 'Editar paciente')">
-                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-danger" th:entity-id="${paciente.id}" id="deleteEntityBtn" th:entity-text="${paciente.nombre + ' ' + paciente.apellido}" onclick="onDeleteEntity('/pacientes/delete', 'Paciente')">
-                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </div>
                             </div>
-                            
-                            <div class="px-4 bg-light border rounded">
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Nombre completo</div>
-                                        <div class="col col-auto fw-medium" th:text="${paciente.nombre + ' ' + paciente.apellido}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Fecha de nacimiento</div>
-                                        <div class="col col-auto fw-medium">
-                                            <span th:text="${#temporals.format(paciente.fechaNacimiento, 'dd/MM/yyyy')}"></span>
-                                            (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(paciente.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span> años)
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="py-2 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4 mt-2">Teléfono</div>
-                                        <div class="col col-auto fw-medium">
-                                            <a th:href="|https://wa.me/54${paciente.telefono}|" class="btn btn-success" target="_blank">
-                                                <i class="fa-brands fa-whatsapp"></i>
-                                                <span class="ms-1 fw-medium" th:text="${paciente.telefono}"></span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Dirección</div>
-                                        <div class="col col-auto fw-medium" th:text="${paciente.direccion}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Historial médico</div>
-                                        <div class="col col-auto fw-medium" th:if="${!paciente.historialMedico.isBlank()}" th:text="${paciente.historialMedico}"></div>
-                                        <div class="col col-auto fw-medium text-muted" th:unless="${!paciente.historialMedico.isBlank()}">(Sin datos)</div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Alergias</div>
-                                        <div class="col col-auto fw-medium" th:if="${!paciente.alergias.isBlank()}" th:text="${paciente.alergias}"></div>
-                                        <div class="col col-auto fw-medium text-muted" th:unless="${!paciente.alergias.isBlank()}">(Sin datos)</div>
-                                    </div>
-                                </div>
+                            <div class="px-4 pt-3 pb-1">
+                                <table class="table table-borderless">
+                                    <thead class="d-none">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Nombre completo</td>
+                                            <td class="fw-medium" th:text="${paciente.nombre + ' ' + paciente.apellido}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Fecha de nacimiento</td>
+                                            <td class="fw-medium">
+                                                <span th:text="${#temporals.format(paciente.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                                                (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(paciente.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span> años)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Teléfono</td>
+                                            <td class="fw-medium">
+                                                <a th:href="|https://wa.me/54${paciente.telefono}|" class="btn btn-success" target="_blank">
+                                                    <i class="fa-brands fa-whatsapp"></i>
+                                                    <span class="ms-1 fw-medium" th:text="${paciente.telefono}"></span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Dirección</td>
+                                            <td class="fw-medium" th:text="${paciente.direccion}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Datos médicos</td>
+                                            <td class="fw-medium">
+                                                <span th:if="${#strings.isEmpty(paciente.historialMedico)}" class="text-muted">(Sin datos)</span>
+                                                <span th:unless="${#strings.isEmpty(paciente.historialMedico)}" th:text="${paciente.historialMedico}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Alergias</td>
+                                            <td class="fw-medium">
+                                                <span th:if="${#strings.isEmpty(paciente.alergias)}" class="text-muted">(Sin datos)</span>
+                                                <span th:unless="${#strings.isEmpty(paciente.alergias)}" th:text="${paciente.alergias}"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
-                        <div class="col-12 col-xxl-7">
+                        <div class="bg-white rounded-2 shadow">
+                            <div class="p-4 pb-0">
+                                <h3>Pagos registrados</h3>
+                                <p class="text-muted small">Haz click sobre un item para ver detalles del pago</p>
+                            </div>
+                            
+                            <p th:if="${pagos.size() == 0}" class="pt-2 pb-4 text-center text-muted">Este paciente no tiene pagos registrados</p>
+                            <table th:unless="${pagos.size() == 0}" class="table table-hover table-borderless align-middle">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4 fw-bold text-muted">Fecha</th>
+                                        <th class="fw-bold text-muted">Monto</th>
+                                        <th class="pe-4 fw-bold text-muted">Concepto</th>
+                                        <th class="pe-4 fw-bold text-muted">Detalles</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="pago, iter: ${pagos}" class="clickable-row cursor-pointer" th:data-href="@{/pagos/{id} (id = ${pago.id})}" title="Ver pago" th:classappend="${!iter.last} ? border-bottom">
+                                        <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}" class="ps-4 py-3 small text-muted"></td>
+                                        <td class="small text-muted">
+                                            $ <span th:text="${#numbers.formatDecimal(pago.monto, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        </td>
+                                        <td class="small text-muted">
+                                            <span th:if="${pago.turno != null}">Turno</span>
+                                            <span th:if="${pago.cuota != null}">Cuota #<span th:text="${pago.cuota.nroCuota}"></span> de financiamiento</span>
+                                        </td>
+                                        <td class="small text-muted">
+                                            <span th:if="${#strings.isEmpty(pago.detalles)}">(Sin detalles)</span>
+                                            <span th:unless="${#strings.isEmpty(pago.detalles)}" th:text="${pago.detalles}"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <div class="bg-white rounded-2 shadow">
+                            <div class="p-4 pb-0">
+                                <h3>Historial de turnos</h3>
+                                <p class="text-muted small">Los turnos se ordenan según la fecha programada. Haz click sobre un item para ver datos del turno</p>
+                            </div>
+                            
+                            <p th:if="${turnos.size() == 0}" class="pt-2 pb-4 text-center text-muted">Este paciente no tiene historial de turnos</p>
+                            <table th:unless="${turnos.size() == 0}" class="table table-hover table-borderless align-middle">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4 fw-bold text-muted">Fecha</th>
+                                        <th class="fw-bold text-muted">Hora</th>
+                                        <th class="pe-4 fw-bold text-muted">Tratamiento</th>
+                                        <th class="pe-4 fw-bold text-muted">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="turno, iter: ${turnos}" class="clickable-row cursor-pointer" th:data-href="@{/turnos/{id} (id = ${turno.id})}" title="Ver turno" th:classappend="${!iter.last} ? border-bottom">
+                                        <td class="ps-4 py-3 small text-muted">
+                                            <span th:text="${#temporals.format(turno.fecha, 'EEEE')}" class="text-capitalize"></span>,
+                                            <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
+                                            <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span> de
+                                            <span th:text="${#temporals.format(turno.fecha, 'yyyy')}"></span>
+                                        </td>
+                                        <td class="small text-muted" th:text="${#temporals.format(turno.hora, 'HH:mm')}"></td>
+                                        <td class="small text-muted" th:text="${turno.tratamiento.nombre}"></td>
+                                        <td class="pe-4 small text-muted">
+                                            <p class="mb-0" th:if="${turno.fecha.isAfter(todayDate)}"></p>
+                                            <p class="mb-0 fw-semibold" th:if="${turno.completado == true}">Completado</p>
+                                            <p class="mb-0 fw-semibold" th:if="${turno.pago != null}">Pagado</p>
+                                        </td>
+                                        <!-- <td class="small text-muted">
+                                            $ <span th:text="${#numbers.formatDecimal(pago.monto, 0, 'POINT', 0, 'DEFAULT')}"></span>
+                                        </td>
+                                        <td class="small text-muted">
+                                            <span th:if="${pago.turno != null}">Turno</span>
+                                            <span th:if="${pago.cuota != null}">Cuota #<span th:text="${pago.cuota.nroCuota}"></span> de financiamiento</span>
+                                        </td>
+                                        <td class="small text-muted">
+                                            <span th:if="${#strings.isEmpty(pago.detalles)}">(Sin detalles)</span>
+                                            <span th:unless="${#strings.isEmpty(pago.detalles)}" th:text="${pago.detalles}"></span>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- <div class="p-4 bg-white rounded-2 shadow">
                             <h3>Historial de turnos del paciente</h3>
+
+                            <div class="accordion" id="turnosAccordion">
+                                <div th:each="turno: ${turnos}" class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button type="button" class="accordion-button collapsed bg-secondary-subtle" data-bs-toggle="collapse" th:data-bs-target="${'#flush-turno' + turno.id}" th:aria-controls="${'flush-turno' + turno.id}">
+                                            <span>
+                                                <span th:text="${#temporals.format(turno.fecha, 'EEEE')}" class="text-capitalize"></span>,
+                                                <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
+                                                <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span> de
+                                                <span th:text="${#temporals.format(turno.fecha, 'yyyy')}"></span>
+                                            </span>
+                                        </button>
+                                    </h2>
+                                    <div th:id="${'flush-turno' + turno.id}" class="accordion-collapse collapse" data-bs-parent="turnosAccordion">
+                                        <div class="accordion-body">
+                                            <div class="d-flex justify-content-around align-items-center gap-2">
+                                                <div>
+                                                    <p class="mb-0 fs-4" th:text="${#temporals.format(turno.hora, 'HH:mm')}"></p>
+                                                </div>
+
+                                                <div>
+                                                    <p class="mb-0">Doctor</p>
+                                                    <p class="mb-0 fs-5" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></h>
+                                                </div>
+
+                                                <div>
+                                                    <p class="mb-0">Observaciones</p>
+                                                    <p class="mb-0 fs-5" th:if="${!turno.observaciones.isBlank()}" th:text="${turno.observaciones}"></p>
+                                                    <p class="mb-0 fs-5 text-muted" th:unless="${!turno.observaciones.isBlank()}">(Sin observaciones)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="p-4 bg-light border rounded">
                                 <p th:if="${turnos.isEmpty}" class="text-center">Este paciente no tiene un historial de turnos</p>
@@ -121,8 +236,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            </div> 
+                        </div> -->
                     </div>
                 </div>
                 

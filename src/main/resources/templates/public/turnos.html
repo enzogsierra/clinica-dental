@@ -11,7 +11,7 @@
             </header>
 
             <main class="container-fluid p-4">
-                <h2 class="text-center text-muted text-lg-start">Información del paciente</h2>
+                <h2 class="text-center text-muted text-lg-start">Turnos agendados</h2>
 
                 <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewEntity('Agendar turno')">
                     <i class="fa-solid fa-calendar-plus"></i>
@@ -60,22 +60,22 @@
                         </div>
                     </div>
 
-                    <table class="table border-top table-striped-columns caption-top">
+                    <table class="table table-sm border-top table-striped-columns">
                         <thead>
                             <tr>
-                                <th class="vertical-align-middle text-center">
+                                <th class="align-middle text-center">
                                     <i class="fa-regular fa-clock text-muted fa-xl"></i>
                                 </th>
-                                <th th:each="dia: ${semana}" th:style="|width: calc(99% / ${semana.size()});|">
-                                    <p th:text="${#temporals.format(dia, 'E')}" class="mb-0 text-center ls-1" th:classappend="${dia == todayDate ? 'text-primary' : 'fw-normal'}"></p>
-                                    <p th:text="${#temporals.format(dia, 'd')}" class="mb-0 fs-2 text-center ls-4" th:classappend="${dia == todayDate ? 'text-primary' : 'fw-normal'}"></p>
+                                <th th:each="dia: ${semana}" th:class="${dia == todayDate ? 'text-primary' : 'fw-normal'}" th:style="|width: calc(99% / ${semana.size()});|">
+                                    <p class="mb-0 text-center ls-1" th:text="${#temporals.format(dia, 'E')}"></p>
+                                    <p class="mb-0 text-center ls-4 fs-2" th:text="${#temporals.format(dia, 'd')}"></p>
                                 </th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr th:each="hora, iterHorarios: ${horarios}">
-                                <td class="text-center text-muted ls-1" th:text="${#temporals.format(hora, 'HH:mm')}" style="vertical-align: middle;"></td>
+                                <td class="px-2 text-center text-muted ls-1 align-middle" th:text="${#temporals.format(hora, 'HH:mm')}"></td>
 
                                 <td th:each="dia: ${semana}" id="turnos-calendar-turno" th:turno-fecha="${dia}" th:turno-hora="${hora}">
                                     <div class="py-3" id="turnos-calendar-turno__addBtn" th:turno-fecha="${dia}" th:turno-hora="${hora}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onNewDate('Agendar turno')">
@@ -85,22 +85,20 @@
                                     <th:block th:each="turno, iterTurnos: ${turnos}" th:if="${turno.fecha == dia}">
                                         <!-- Turnos en horarios anteriores al horario de apertura -->
                                         <th:block th:if="${iterHorarios.first && turno.hora <= hora}">
-                                            <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
+                                            <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none small">
                                                 <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
-                                                    <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
-                                                    <p class="mb-0" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></p>
-                                                    <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning" th:text="${turno.hora}"></p>
+                                                    <p class="mb-0 fw-bold" th:text="${turno.tratamiento.nombre}"></p>
+                                                    <p class="mb-0" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
                                                 </div>
                                             </a>
                                         </th:block>
 
                                         <!-- Turnos en horarios posteriores al horario de cierre -->
                                         <th:block th:if="${iterHorarios.last && turno.hora >= hora}">
-                                            <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
+                                            <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none small">
                                                 <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
-                                                    <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
-                                                    <p class="mb-0" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></p>
-                                                    <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning" th:text="${turno.hora}"></p>
+                                                    <p class="mb-0 fw-bold" th:text="${turno.tratamiento.nombre}"></p>
+                                                    <p class="mb-0" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
                                                 </div>
                                             </a>
                                         </th:block>
@@ -108,11 +106,10 @@
                                         <!-- Turnos en horarios entre el horario de apertura y cierre -->
                                         <th:block th:unless="${iterHorarios.first || iterHorarios.last}">
                                             <th:block th:if="${turno.hora >= hora && turno.hora < horarios[iterHorarios.index + 1]}">
-                                                <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none">
+                                                <a th:href="@{/turnos/{id} (id = ${turno.id})}" class="text-decoration-none small">
                                                     <div class="my-1 p-2 rounded" th:classappend="${turno.completado == true ? 'text-bg-secondary' : 'text-bg-primary'}" id="turnos-calendar-turno__card">
-                                                        <p class="mb-0 fw-bold" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
-                                                        <p class="mb-0" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></p>
-                                                        <p th:if="${turno.hora != hora}" class="mb-0 fw-bold text-warning" th:text="${turno.hora}"></p>
+                                                        <p class="mb-0 fw-bold" th:text="${turno.tratamiento.nombre}"></p>
+                                                        <p class="mb-0" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></p>
                                                     </div>
                                                 </a>
                                             </th:block>
@@ -189,7 +186,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label" for="observaciones">Observaciones</label>
-                                        <input class="form-control" type="text" name="observaciones" id="observaciones">
+                                        <textarea class="form-control" name="observaciones" id="observaciones" rows="3"></textarea>
                                         <div class="invalid-feedback" id="error-observaciones"></div>
                                     </div>
                                 

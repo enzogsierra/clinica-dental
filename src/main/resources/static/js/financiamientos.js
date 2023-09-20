@@ -14,7 +14,36 @@ function onFinancingFormSubmit(event)
     }
 }
 
+// Calcula el costo final sumando el valor de todas las cuotas
+function calculateFinalCost()
+{
+    const inputs = document.querySelectorAll("input[id*='.monto']"); // Seleccionar todos los inputs (cuotas) que contenga ".monto" en su id
+    let total = 0.0; // Almacena el monto final
 
+    inputs.forEach(input =>
+    {
+        total += (input.value) ? parseFloat(input.value) : 0.0; // Obtener el valor de la cuota
+    });
+
+    //
+    document.querySelector("#finalCostText").textContent = total.toLocaleString(); // Cambiar el texto que muestra el costo final
+}
+
+// Pagar cuota
+function onPayFee(title)
+{
+    const btn = this.event.target; // Obtener el boton presionado
+    const cuotaId = btn.getAttribute("cuota-id"); // Obtener la cuota_id
+
+    onNewEntity(title); // Mostrar el modal para pagar la cuota
+
+    // Asignar la cuota_id al form del pago
+    const modalTarget = btn.getAttribute("data-bs-target");
+    const modal = document.querySelector(modalTarget);
+    const form = modal.querySelector("form");
+
+    form.elements["cuota"].value = cuotaId; // Cambiar la cuotaId del input
+}
 
 // Autocomplete - cuando el usuario busca al paciente que se le hará el financiamiento
 $(document).ready(function()

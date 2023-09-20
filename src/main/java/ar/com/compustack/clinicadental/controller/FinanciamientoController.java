@@ -1,5 +1,8 @@
 package ar.com.compustack.clinicadental.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +65,7 @@ public class FinanciamientoController
 
         model.addAttribute("financiamiento", financiamiento);
         model.addAttribute("tratamientos", tratamientoRepository.findAll());
+        model.addAttribute("todayDateTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:ss")));
         return "public/financiamientoForm";
     }
 
@@ -71,8 +75,12 @@ public class FinanciamientoController
     {
         Financiamiento financiamiento = null;
 
-        if(id == null) financiamiento = new Financiamiento(); // Si no se proporciono un id de financiamiento, crear un objeto vacio
-        else 
+        if(id == null) // Nuevo financiamiento
+        {
+            financiamiento = new Financiamiento();
+            financiamiento.setFechaInicio(LocalDate.now());
+        }
+        else // Editando financiamiento
         {
             Optional<Financiamiento> opt = financiamientoRepository.findById(Integer.parseInt(id)); // Buscar entidad
             if(opt.isPresent()) financiamiento = opt.get(); // Cargar datos de la entidad
@@ -132,6 +140,8 @@ public class FinanciamientoController
         // Verificar errores de validación
         if(result.hasErrors())
         {
+            System.out.println(result.getAllErrors().toString());
+            model.addAttribute("tratamientos", tratamientoRepository.findAll());
             return "public/financiamientoForm";
         }
 

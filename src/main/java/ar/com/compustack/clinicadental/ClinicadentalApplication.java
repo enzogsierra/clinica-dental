@@ -44,8 +44,8 @@ public class ClinicadentalApplication
 			Clinica clinica = new Clinica();
 			clinica.setNombre("Clínica Dental");
 			clinica.setLogoUrl("logo.png");
-			clinica.setDireccion("-");
-			clinica.setTelefono1("-");
+			clinica.setDireccion("(Dirección no especificada)");
+			clinica.setTelefono1("(Teléfono no especificado)");
 			clinicaRepository.save(clinica);
 		}
 

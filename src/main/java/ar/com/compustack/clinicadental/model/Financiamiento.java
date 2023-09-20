@@ -78,7 +78,7 @@ public class Financiamiento
     private String detalles;
     
     @CreationTimestamp
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
 
 
@@ -105,13 +105,17 @@ public class Financiamiento
     }
 
     // Retorna la fecha de la última cuota pagada
-    public LocalDate getLastPayment()
+    public LocalDateTime getLastPayment()
     {
-        LocalDate lastPay = null;
+        LocalDateTime lastPay = null;
 
         for(Cuota cuota: this.getCuotas())
         {
-            if(cuota.getPago() != null && cuota.getPago().getFechaPago().isAfter(lastPay)) lastPay = cuota.getPago().getFechaPago();
+            if(cuota.getPago() != null)
+            {
+                if(lastPay == null) lastPay = cuota.getPago().getFechaPago();
+                else if(cuota.getPago().getFechaPago().isAfter(lastPay)) lastPay = cuota.getPago().getFechaPago();
+            }
         }
         return lastPay;
     }

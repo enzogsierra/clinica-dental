@@ -170,3 +170,9 @@ body.collapse-navbar .header-logo-container, body.collapse-navbar .navbar-link s
 .cursor-pointer { cursor: pointer; }
 
 .vertical-align-middle {vertical-align: middle;}
+
+
+/* Fixes */
+button i {
+    pointer-events: none;
+}

@@ -1,6 +1,7 @@
 package ar.com.compustack.clinicadental.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ar.com.compustack.clinicadental.model.Cuota;
 import ar.com.compustack.clinicadental.model.Pago;
 import ar.com.compustack.clinicadental.model.Turno;
+import ar.com.compustack.clinicadental.repository.CuotaRepository;
 import ar.com.compustack.clinicadental.repository.PagoRepository;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
 
@@ -36,15 +39,34 @@ public class PagoController
     @Autowired
     private TurnoRepository turnoRepository;
 
+    @Autowired
+    private CuotaRepository cuotaRepository;
+
 
     @GetMapping("")
     public String home(Model model)
     {
-        LocalDate today = LocalDate.now();
+        LocalDateTime todayDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        String fDateTime = todayDateTime.format(formatter);
 
         model.addAttribute("pagos", pagoRepository.getPagosFromLast30Days());
-        model.addAttribute("todayDate", today);
+        model.addAttribute("todayDateTime", fDateTime);
         return "public/pagos";
+    }
+
+    @GetMapping("/{id}")
+    public String pago(Model model, @PathVariable Integer id)
+    {
+        Optional<Pago> opt = pagoRepository.findById(id);
+        if(!opt.isPresent()) return "redirect:/pagos";
+
+        Pago pago = opt.get();
+
+        model.addAttribute("pago", pago);
+        model.addAttribute("todayDateTime", LocalDateTime.now());
+        model.addAttribute("title", "PAGO_" + pago.getId());
+        return "public/pago";
     }
 
 
@@ -74,7 +96,7 @@ public class PagoController
         // Validacion correcta
         pagoRepository.save(pago);
 
-        // Relacionar el turno con el pago
+        // Relacionar pago-turno
         Integer turnoId = (pago.getTurno() != null) ? pago.getTurno().getId() : null; // Obtener el turno asociado al pago
         if(turnoId != null) // El pago tiene un turno asociado
         {
@@ -82,6 +104,15 @@ public class PagoController
             turno.setPago(pago); // Asociar el turno con el pago
             turno.setCompletado(true);
             turnoRepository.save(turno); // Guardar entidad del turno
+        }
+
+        // Relacionar pago-cuota
+        Integer cuotaId = (pago.getCuota() != null) ? pago.getCuota().getId() : null; // Obtener la cuota asociada al pago
+        if(cuotaId != null) // El pago tiene una cuota asociada
+        {
+            Cuota cuota = cuotaRepository.findById(cuotaId).get(); // Obtener la entidad de cuota
+            cuota.setPago(pago); // Asociar la cuota con el pago
+            cuotaRepository.save(cuota); // Guardar entidad de la cuota
         }
 
         return ResponseEntity.ok().build(); // Retornar un status 200 - entidad creada correctamente

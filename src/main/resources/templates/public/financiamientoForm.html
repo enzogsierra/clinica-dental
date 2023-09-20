@@ -5,57 +5,24 @@
     </head>
 
     <body>
-        <div class="d-flex flex-row gap-2">
+        <div class="d-flex flex-row">
             <header th:replace="layout::header">
 
             </header>
 
             <main class="container-fluid p-4">
-                <h2 class="text-center text-muted text-lg-start"><span th:text="${financiamiento.id == null ? 'Crear' : 'Editar'}"></span> financiamiento</h2>
+                <h2 class="mb-4 text-center text-muted text-lg-start"><span th:text="${financiamiento.id == null ? 'Crear' : 'Editar'}"></span> financiamiento</h2>
 
-                <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <form th:object="${financiamiento}" method="POST" onsubmit="onFinancingFormSubmit(event)">
-                        <input type="hidden" th:field="*{id}">
-                        
-                        <div class="d-flex flex-column flex-xxl-row gap-4">
-                            <div class="w-100">
+                <form th:object="${financiamiento}" method="POST" onsubmit="onFinancingFormSubmit(event)">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{createdAt}">
+
+                    <div class="row row-cols-1 row-cols-xl-2 g-3">
+                        <div class="col">
+                            <div class="p-4 bg-white rounded-2 shadow">
                                 <h4 class="mb-4">Datos generales</h4>
 
-                                <div class="mb-3">
-                                    <label class="form-label" for="pacienteNombre">Paciente *</label>
-
-                                    <input th:if="*{paciente == null}" class="form-control" th:classappend="${#fields.hasErrors('paciente')} ? is-invalid" type="text" name="pacienteNombre" id="pacienteNombre" required>
-                                    <input th:unless="*{paciente == null}" class="form-control is-valid" type="text" th:value="*{paciente.nombre + ' ' + paciente.apellido}" disabled>
-                                    
-                                    <input type="hidden" th:field="*{paciente}">
-                                    <div class="invalid-feedback" th:errors="*{paciente}"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="tratamiento">Tratamiento *</label>
-                                    <select th:field="*{tratamiento}" th:errorclass="is-invalid" class="form-select" required>
-                                        <option value="" selected>-- Seleccionar tratamiento --</option>
-                    
-                                        <option
-                                            th:each="tratamiento: ${tratamientos}"
-                                            th:value="${tratamiento.id}"
-                                            th:text="${tratamiento.nombre}"
-                                        >
-                                        </option>
-                                    </select>
-                                    <div class="invalid-feedback" th:errors="*{tratamiento}"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="detalles">Detalles</label>
-                                    <textarea class="form-control" th:errorclass="is-invalid" th:field="*{detalles}" placeholder="Información adicional sobre el financiamiento" rows="3"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="w-100">
-                                <h4 class="mb-4">Financiamiento</h4>
-
-                                <div class="mb-3 d-flex justify-content-between gap-3">
+                                <div class="mb-3 d-flex flex-column flex-xxl-row justify-content-between gap-3">
                                     <div class="w-100">
                                         <label class="form-label" for="valor">Valor del financiamiento *</label>
                                         <div class="input-group">
@@ -95,10 +62,6 @@
                                                 <option value="18">18 cuotas</option>
                                                 <option value="24">24 cuotas</option>
                                             </select>
-
-                                            <div class="text-nowrap">
-                                                <button type="submit" class="btn btn-success" id="generateFeeBtn">Generar cuotas</button>
-                                            </div>
                                         </div>
                                         <div class="invalid-feedback" th:errors="*{cantidadCuotas}"></div>
                                     </div>
@@ -110,24 +73,69 @@
                                     </div>
                                 </div>
 
-                                <!-- Nuevo financiamiento -->
-                                <div th:if="*{cuotas.size() != 0}" class="border rounded text-bg-light">
+                                <div class="mb-3">
+                                    <label class="form-label" for="pacienteNombre">Paciente *</label>
+
+                                    <input th:if="*{paciente == null}" class="form-control" th:classappend="${#fields.hasErrors('paciente')} ? is-invalid" type="text" name="pacienteNombre" id="pacienteNombre" required>
+                                    <input th:unless="*{paciente == null}" class="form-control is-valid" type="text" th:value="*{paciente.nombre + ' ' + paciente.apellido}" disabled>
+                                    
+                                    <input type="hidden" th:field="*{paciente}">
+                                    <div class="invalid-feedback" th:errors="*{paciente}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="tratamiento">Tratamiento *</label>
+                                    <select th:field="*{tratamiento}" th:errorclass="is-invalid" class="form-select" required>
+                                        <option value="" selected>-- Seleccionar tratamiento --</option>
+                    
+                                        <option
+                                            th:each="tratamiento: ${tratamientos}"
+                                            th:value="${tratamiento.id}"
+                                            th:text="${tratamiento.nombre}"
+                                        >
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:errors="*{tratamiento}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="detalles">Detalles</label>
+                                    <textarea class="form-control" th:errorclass="is-invalid" th:field="*{detalles}" placeholder="Información adicional sobre el financiamiento" rows="3"></textarea>
+                                </div>
+
+                                <div th:if="${id == null}" class="text-end">
+                                    <button type="submit" class="btn btn-success" id="generateFeeBtn">Generar cuotas</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="p-4 bg-white rounded-2 shadow">
+                                <h4 class="mb-4">Financiamiento</h4>
+
+                                <!-- Cuotas -->
+                                <div th:if="*{cuotas.size() != 0}" class="border rounded">
                                     <table class="table table-borderless">
-                                        <thead>
+                                        <thead class="text-bg-primary bg-gradient">
                                             <tr>
                                                 <th class="text-nowrap">N° de cuota</th>
                                                 <th class="w-100">Valor de la cuota</th>
                                                 <th class="text-nowrap">Fecha de cobro</th>
+                                                <th th:if="*{id != null}"></th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
                                             <tr th:each="cuota, iter: *{cuotas}">
+                                                <input type="hidden" th:field="*{cuotas[__${iter.index}__].id}">
+                                                <input type="hidden" th:field="*{cuotas[__${iter.index}__].financiamiento}">
+                                                <input type="hidden" th:field="*{cuotas[__${iter.index}__].pago}">
+
                                                 <td>
                                                     <div class="input-group">
                                                         <span class="input-group-text">#</span>
                                                         <input
-                                                            class="form-control"
+                                                            class="form-control fw-semibold"
                                                             th:errorrclass="is-invalid"
                                                             type="number"
                                                             th:field="*{cuotas[__${iter.index}__].nroCuota}"
@@ -158,6 +166,14 @@
                                                         th:field="*{cuotas[__${iter.index}__].fechaCobro}"
                                                     >
                                                 </td>
+                                                <td th:if="*{id != null}">
+                                                    <button th:if="*{cuotas[__${iter.index}__].pago == null}" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#pagoModal" th:cuota-id="*{cuotas[__${iter.index}__].id}" onclick="onPayFee('Pagar cuota')" title="Pagar cuota">
+                                                        <i class="fa-solid fa-dollar-sign"></i>
+                                                    </button>
+                                                    <a th:unless="*{cuotas[__${iter.index}__].pago == null}" th:href="@{/pagos/{id} (id = *{cuotas[__${iter.index}__].pago.id})}" class="btn btn-success">
+                                                        <i class="fa-solid fa-dollar-sign"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -165,21 +181,82 @@
                                     <div class="mb-4 px-4 text-end">
                                         <div class="mb-4 border-bottom">
                                             <h5>Costo final del financiamiento</h5>
-                                            <h2>$ <span th:text="*{#numbers.formatDecimal(getFinalCost(), 0, 'POINT', 0, 'DEFAULT')}" id="financing_finalCost"></span></h2>
+                                            <h2>$ <span th:text="*{#numbers.formatDecimal(getFinalCost(), 0, 'POINT', 0, 'DEFAULT')}" id="finalCostText"></span></h2>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary btn-lg">Generar financiamiento</button>
+                                        <button th:if="*{id == null}" type="submit" class="btn btn-primary">Generar financiamiento</button>
+                                        <button th:unless="*{id == null}" type="submit" class="btn btn-success">Guardar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
+
+                <!-- Modal de pago -->
+                <div th:if="${financiamiento.id}" class="modal fade" id="pagoModal" tabindex="-1" aria-labelledby="pagoLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="pagoLabel">Pagos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body ui-front">
+                                <form method="POST" onsubmit="onFormSubmit('/pagos/form', 'Pago')">
+                                    <input class="d-none" type="number" name="cuota">
+                                    <input class="d-none" type="number" name="paciente" th:value="${financiamiento.paciente.id}">
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="monto">Monto *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input class="form-control" type="number" name="monto" id="monto" th:value="${financiamiento.tratamiento.precio}" min="0" placeholder="0" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="error-monto"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="metodoPago">Método de pago *</label>
+                                        <select name="metodoPago" id="metodoPago" class="form-select">
+                                            <option value="Efectivo" selected>Efectivo</option>
+                                            <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+                                            <option value="Tarjeta de débito">Tarjeta de débito</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                        <div class="invalid-feedback" id="error-metodoPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Paciente (emisor del pago)</label>
+                                        <input class="form-control" type="text" th:value="${financiamiento.paciente.nombre + ' ' + financiamiento.paciente.apellido}" disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fechaPago">Fecha del pago *</label>
+                                        <input class="form-control" type="datetime-local" name="fechaPago" id="fechaPago" th:value="${todayDateTime}" required>
+                                        <div class="invalid-feedback" id="error-fechaPago"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="detalles">Detalles adicionales</label>
+                                        <textarea class="form-control" name="detalles" id="detalles" placeholder="Entidad bancaria, número de transacción, etc..." rows="3"></textarea>
+                                        <div class="invalid-feedback" id="error-detalles"></div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Registrar pago</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /modal -->
             </main>
         </div>
 
         <!-- Footer & scripts -->
         <footer th:replace="layout::footer"></footer>
+        <script th:src="@{/js/entityForm.js}"></script>
         <script th:src="@{/js/financiamientos.js}"></script>
     </body>
 </html>

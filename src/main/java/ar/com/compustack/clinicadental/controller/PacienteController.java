@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ar.com.compustack.clinicadental.model.Paciente;
+import ar.com.compustack.clinicadental.model.Pago;
 import ar.com.compustack.clinicadental.model.Turno;
 import ar.com.compustack.clinicadental.repository.PacienteRepository;
+import ar.com.compustack.clinicadental.repository.PagoRepository;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
 
 
@@ -36,6 +38,9 @@ public class PacienteController
 
     @Autowired
     private TurnoRepository turnoRepository;
+
+    @Autowired
+    private PagoRepository pagoRepository;
 
 
     @GetMapping("")
@@ -50,13 +55,15 @@ public class PacienteController
     public String paciente(Model model, @PathVariable Integer id)
     {
         Optional<Paciente> tmp = pacienteRepository.findById(id);
-        if(!tmp.isPresent()) return "redirect:/pacientes/"; // Si no se encontró un paciente, simplemente redirigir a la vista de pacientes
+        if(!tmp.isPresent()) return "redirect:/pacientes"; // Si no se encontró un paciente, simplemente redirigir a la vista de pacientes
 
         Paciente paciente = tmp.get();
         List<Turno> turnos = turnoRepository.findByPacienteOrderByFechaDesc(paciente);
+        List<Pago> pagos = pagoRepository.findByPaciente(paciente);
 
         model.addAttribute("paciente", paciente);
         model.addAttribute("turnos", turnos);
+        model.addAttribute("pagos", pagos);
         model.addAttribute("todayDate", LocalDate.now());
         return "public/paciente";
     }

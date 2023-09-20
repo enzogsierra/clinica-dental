@@ -19,9 +19,18 @@
                 </button>
 
                 <div class="my-4 p-4 bg-white border rounded-2 shadow-sm">
-                    <p class="text-muted">Lista de doctores</p>
+                    <div th:if="${doctores.size() == 0}" class="text-center">
+                        <p class="text-muted">Aún no hay doctores creados</p>
 
-                    <table class="table table-bordered table-striped table-hover">
+                        <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#doctorModal" onclick="onNewEntity('Añadir doctor')">
+                            <i class="fa-solid fa-notes-medical"></i>
+                            Añadir doctor
+                        </button>
+                    </div>
+
+                    <table th:unless="${doctores.size() == 0}" class="table table-bordered table-striped table-hover caption-top">
+                        <caption>Lista de doctores</caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Nombre completo</th>
@@ -39,10 +48,10 @@
                                 <td th:text="${entity.especialidad}"></td>
                                 <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#doctorModal" onclick="onEditEntity('/doctores/get', 'Editar doctor')">
-                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre + ' ' + entity.apellido}" onclick="onDeleteEntity('/doctores/delete', 'Doctor')">
-                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -51,19 +60,16 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="doctorModal" tabindex="-1" aria-labelledby="editDoctorLabel" aria-hidden="true">
+                <div class="modal fade" id="doctorModal" tabindex="-1" aria-labelledby="doctorLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="editDoctorLabel">Doctores</h5>
+                                <h4 class="modal-title" id="doctorLabel">Doctores</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/doctores/form', 'Doctor')" novalidate>
-                                    <input type="hidden" name="id">
-                                    <input type="hidden" name="createdAt">
-                        
+                                <form method="POST" onsubmit="onFormSubmit('/doctores/form', 'Doctor')">
                                     <div class="mb-3 d-flex" style="gap: .5rem;">
                                         <div class="w-100">
                                             <label class="form-label" for="nombre">Nombre *</label>
@@ -80,6 +86,7 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="telefono">Teléfono *</label>
                                         <input class="form-control" type="tel" name="telefono" id="telefono" required>
+                                        <div class="form-text">Incluya solo el área y número (ej: <span class="fw-medium">3644778899</span>)</div>
                                         <div class="invalid-feedback" id="error-telefono"></div>
                                     </div>
 

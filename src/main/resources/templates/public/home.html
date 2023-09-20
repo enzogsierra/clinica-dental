@@ -13,226 +13,133 @@
             <main class="container-fluid p-4">
                 <h1 class="mb-5 text-center" th:text="${clinica.nombre}"></h1>
 
-                <section> 
-                    <div class="row row-cols-1 row-cols-lg-2 g-4">
-                        <div class="col-12 col-lg-6 col-xl-7">
-                            <h2>Turnos de hoy</h2>
+                <div class="row row-cols-1 row-cols-lg-2 g-4">
+                    <div class="col-12 col-lg-6 col-xl-7">
+                        <h2>Turnos de hoy</h2>
 
-                            <div class="p-4 bg-white rounded-2 shadow">
-                                <!-- Sin turnos -->
-                                <div th:if="${turnosToday.size() == 0}" class="text-center">
-                                    <p class="text-muted">No hay turnos programados para hoy</p>
+                        <div class="p-4 bg-white rounded-2 shadow">
+                            <!-- Sin turnos -->
+                            <div th:if="${turnosToday.size() == 0}" class="text-center">
+                                <p class="text-muted">No hay turnos programados para hoy</p>
 
-                                    <a th:href="@{/turnos/}" class="btn btn-primary">
-                                        <i class="fa-regular fa-calendar-plus"></i>
-                                        Agendar turno
-                                    </a>
-                                </div>
-
-                                <!-- Con turnos -->
-                                <div th:unless="${turnosToday.size() == 0}">
-                                    <p class="text-muted"> 
-                                        <span th:text="${#strings.capitalize(#temporals.format(todayDate, 'EEEE'))}"></span>,
-                                        <span th:text="${#temporals.format(todayDate, 'dd')}"></span> de
-                                        <span th:text="${#temporals.format(todayDate, 'MMMM')}"></span>
-                                    </p>
-                                
-                                    <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
-                                        <div class="d-flex justify-content-between gap-2">
-                                            <div>
-                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
-                                                    <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
-                                                </a>
-                                                
-                                                <p class="mb-0">
-                                                    <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
-                                                </p>
-        
-                                                <p class="mb-0">
-                                                    <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
-                                                </p>
-
-                                                <p class="mb-0" th:if="${entity.tratamiento != null}">
-                                                    <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.tratamiento.nombre}"></span>
-                                                </p>
-
-                                                <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
-                                                    <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.observaciones}"></span>
-                                                </p>
-                                            </div>
-
-                                            <div class="d-flex align-items-start gap-3">
-                                                <a th:if="${entity.pago}" th:href="@{/pagos/{id} (id = ${entity.pago.id})}" class="text-decoration-none">
-                                                    <i class="fa-solid fa-circle-dollar-to-slot fa-2xl text-muted" title="Ver pago"></i>
-                                                </a>
-
-                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
-                                                    <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-12 col-lg-6 col-xl-5">
-                            <h2>Turnos para mañana</h2>
-
-                            <div class="p-4 bg-white rounded-2 shadow">
-                                <!-- Sin turnos -->
-                                <div th:if="${turnosTomorrow.size() == 0}" class="text-center">
-                                    <p class="text-muted">No hay turnos programados para mañana</p>
-
-                                    <a th:href="@{/turnos/}" class="btn btn-primary">
-                                        <i class="fa-regular fa-calendar-plus"></i>
-                                        Agendar turno
-                                    </a>
-                                </div>
-
-                                <!-- Con turnos -->
-                                <div th:unless="${turnosTomorrow.size() == 0}">
-                                    <p class="text-muted"> 
-                                        <span th:text="${#strings.capitalize(#temporals.format(tomorrowDate, 'EEEE'))}"></span>,
-                                        <span th:text="${#temporals.format(tomorrowDate, 'dd')}"></span> de
-                                        <span th:text="${#temporals.format(tomorrowDate, 'MMMM')}"></span>
-                                    </p>
-                                
-                                    <div th:each="entity, iter: ${turnosTomorrow}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
-                                                    <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
-                                                </a>
-                                                
-                                                <p class="mb-0">
-                                                    <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
-                                                </p>
-        
-                                                <p class="mb-0">
-                                                    <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
-                                                </p>
-
-                                                <p class="mb-0" th:if="${entity.tratamiento != null}">
-                                                    <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.tratamiento.nombre}"></span>
-                                                </p>
-
-                                                <p class="mb-0" th:if="${!entity.observaciones.isEmpty()}">
-                                                    <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
-                                                    <span th:text="${entity.observaciones}"></span>
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
-                                                    <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-
-                <!-- Modal para agregar un pago a un turno -->
-                <div class="modal fade" id="turnoPagoModal" tabindex="-1" aria-labelledby="turnoPagoLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="turnoPagoLabel">Registrar pago</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <a th:href="@{/turnos/}" class="btn btn-primary">
+                                    <i class="fa-regular fa-calendar-plus"></i>
+                                    Agendar turno
+                                </a>
                             </div>
 
-                            <div class="modal-body">
-                                <form method="POST" onsubmit="onFormSubmit('/pagarTurno', 'Pago')" novalidate>
-                                    <div class="d-flex gap-4">
-                                        <div class="w-100 pe-4 border-end">
-                                            <p class="text-muted">Datos del turno</p>
-
-                                            <div class="mb-3 d-flex" style="gap: .5rem;">
-                                                <div class="w-100">
-                                                    <label class="form-label">Fecha</label>
-                                                    <input class="form-control" type="date" name="turnoFecha" disabled>
-                                                </div>
-                                                <div class="w-100">
-                                                    <label class="form-label">Hora</label>
-                                                    <input class="form-control" type="time" name="turnoHora" disabled>
-                                                </div>
-                                            </div>
-        
-                                            <div class="mb-3">
-                                                <label class="form-label">Paciente</label>
-                                                <input class="form-control" type="text" name="pacienteNombre" disabled>
-                                            </div>
-        
-                                            <div class="mb-3">
-                                                <label class="form-label">Doctor</label>
-                                                <input class="form-control" type="text" name="doctorNombre" disabled>
-                                            </div>
-        
-                                            <div class="mb-3">
-                                                <label class="form-label">Tratamiento</label>
-                                                <input class="form-control" type="text" name="turnoTratamiento" placeholder="(No especificado)" disabled>
-                                            </div>
-                                        </div>
-
-                                        <div class="w-100">
-                                            <p class="text-muted">Datos del pago</p>
-
-                                            <input type="hidden" name="turno">
-                                            <input type="hidden" name="paciente">
-
-                                            <div class="mb-3">
-                                                <label class="form-label" for="monto">Monto *</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    <input class="form-control" type="number" name="monto" id="monto" min="0" placeholder="0" required>
-                                                </div>
-                                                <div class="invalid-feedback" id="error-monto"></div>
-                                            </div>
+                            <!-- Con turnos -->
+                            <div th:unless="${turnosToday.size() == 0}">
+                                <p class="text-muted"> 
+                                    <span th:text="${#strings.capitalize(#temporals.format(todayDate, 'EEEE'))}"></span>,
+                                    <span th:text="${#temporals.format(todayDate, 'dd')}"></span> de
+                                    <span th:text="${#temporals.format(todayDate, 'MMMM')}"></span>
+                                </p>
+                            
+                                <div th:each="entity, iter: ${turnosToday}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <div>
+                                            <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
+                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
+                                            </a>
                                             
-                                            <div class="mb-3">
-                                                <label class="form-label" for="metodoPago">Método de pago *</label>
-                                                <select name="metodoPago" id="metodoPago" class="form-select">
-                                                    <option value="Efectivo" selected>Efectivo</option>
-                                                    <option value="Tarjeta de crédito">Tarjeta de crédito</option>
-                                                    <option value="Tarjeta de debito">Tarjeta de debito</option>
-                                                    <option value="Cheque">Cheque</option>
-                                                    <option value="Otro">Otro</option>
-                                                </select>
-                                                <div class="invalid-feedback" id="error-metodoPago"></div>
-                                            </div>
+                                            <p class="mb-0">
+                                                <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
+                                            </p>
+    
+                                            <p class="mb-0">
+                                                <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
+                                            </p>
 
-                                            <div class="mb-3">
-                                                <label class="form-label" for="fechaPago">Fecha del pago *</label>
-                                                <input class="form-control" type="date" name="fechaPago" id="fechaPago" th:value="${todayDate}" required>
-                                                <div class="invalid-feedback" id="error-fechaPago"></div>
-                                            </div>
+                                            <p class="mb-0" th:if="${entity.tratamiento != null}">
+                                                <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.tratamiento.nombre}"></span>
+                                            </p>
 
-                                            <div class="mb-3">
-                                                <label class="form-label" for="detalles">Detalles adicionales</label>
-                                                <input class="form-control" type="text" name="detalles" id="detalles">
-                                                <div class="invalid-feedback" id="error-detalles"></div>
-                                            </div>
+                                            <p class="mb-0" th:if="${!#strings.isEmpty(entity.observaciones)}">
+                                                <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.observaciones}"></span>
+                                            </p>
+                                        </div>
 
-                                            <button type="submit" class="btn btn-primary w-100">Pagar</button>
+                                        <div class="d-flex align-items-start gap-3">
+                                            <a th:if="${entity.pago}" th:href="@{/pagos/{id} (id = ${entity.pago.id})}" class="text-decoration-none">
+                                                <i class="fa-solid fa-circle-dollar-to-slot fa-2xl text-muted" title="Ver pago"></i>
+                                            </a>
+
+                                            <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
+                                                <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- /modal -->
+                    
+                    <div class="col-12 col-lg-6 col-xl-5">
+                        <h2>Turnos para mañana</h2>
+
+                        <div class="p-4 bg-white rounded-2 shadow">
+                            <!-- Sin turnos -->
+                            <div th:if="${turnosTomorrow.size() == 0}" class="text-center">
+                                <p class="text-muted">No hay turnos programados para mañana</p>
+
+                                <a th:href="@{/turnos/}" class="btn btn-primary">
+                                    <i class="fa-regular fa-calendar-plus"></i>
+                                    Agendar turno
+                                </a>
+                            </div>
+
+                            <!-- Con turnos -->
+                            <div th:unless="${turnosTomorrow.size() == 0}">
+                                <p class="text-muted"> 
+                                    <span th:text="${#strings.capitalize(#temporals.format(tomorrowDate, 'EEEE'))}"></span>,
+                                    <span th:text="${#temporals.format(tomorrowDate, 'dd')}"></span> de
+                                    <span th:text="${#temporals.format(tomorrowDate, 'MMMM')}"></span>
+                                </p>
+                            
+                                <div th:each="entity, iter: ${turnosTomorrow}" th:class="${iter.index != 0 ? 'mt-4 pt-4 border-top' : ''}">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <a th:href="@{/turnos/{id} (id = ${entity.id})}" class="text-decoration-none" title="Ver información del turno">
+                                                <h4 th:text="${#temporals.format(entity.hora, 'HH:mm')}" class="mb-0 text-dark"></h4>
+                                            </a>
+                                            
+                                            <p class="mb-0">
+                                                <i class="fa-solid fa-image-portrait text-primary" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></span>
+                                            </p>
+    
+                                            <p class="mb-0">
+                                                <i class="fa-solid fa-user-nurse text-success" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.doctor.nombre + ' ' + entity.doctor.apellido}"></span>
+                                            </p>
+
+                                            <p class="mb-0" th:if="${entity.tratamiento != null}">
+                                                <i class="fa-solid fa-rectangle-list text-muted" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.tratamiento.nombre}"></span>
+                                            </p>
+
+                                            <p class="mb-0" th:if="${!#strings.isEmpty(entity.observaciones)}">
+                                                <i class="fa-regular fa-comment-dots" style="width: 16px; text-align: center;"></i>
+                                                <span th:text="${entity.observaciones}"></span>
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <a th:href="|https://wa.me/54${entity.paciente.telefono}|" class="text-decoration-none" target="_blank" title="Enviar mensaje">
+                                                <i class="fa-brands fa-whatsapp fa-2xl text-success"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
 

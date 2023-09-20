@@ -13,13 +13,22 @@
             <main class="container-fluid p-4">
                 <h2 class="text-center text-muted text-lg-start">Pacientes</h2>
 
-                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#entityModal" onclick="onNewEntity('Añadir paciente')">
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#pacienteModal" onclick="onNewEntity('Añadir paciente')">
                     <i class="fa-solid fa-user-plus"></i>
                     Añadir paciente
                 </button>
 
                 <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <table class="table table-bordered table-striped table-hover caption-top">
+                    <div th:if="${pacientes.size() == 0}" class="text-center">
+                        <p class="text-muted">Aún no hay pacientes creados</p>
+
+                        <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#pacienteModal" onclick="onNewEntity('Añadir paciente')">
+                            <i class="fa-solid fa-user-plus"></i>
+                            Añadir paciente
+                        </button>
+                    </div>
+
+                    <table th:unless="${pacientes.size() == 0}" class="table table-bordered table-striped table-hover caption-top">
                         <caption>
                             <div class="d-flex justify-content-between gap-2">
                                 <span>Lista de pacientes</span>
@@ -27,7 +36,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <form th:action="@{/pacientes/buscar}">
                                         <div class="input-group">
-                                            <input class="form-control" type="text" name="buscarPaciente" id="buscarPaciente" placeholder="Buscar" autocomplete="off">
+                                            <input class="form-control shadow-sm" type="text" name="buscarPaciente" id="buscarPaciente" placeholder="Buscar" autocomplete="off">
                                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
                                         </div>
                                     </form>
@@ -65,25 +74,23 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="entityModal" tabindex="-1" aria-labelledby="entityLabel" aria-hidden="true">
+                <div class="modal fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="entityLabel">Pacientes</h5>
+                                <h4 class="modal-title" id="pacienteLabel">Pacientes</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pacientes/form', 'Paciente')">
-                                    <input type="hidden" name="id">
-                                    <input type="hidden" name="createdAt">
-                        
+                                <form method="POST" onsubmit="onFormSubmit('/pacientes/form', 'Paciente')">
                                     <div class="mb-3 d-flex" style="gap: .5rem;">
                                         <div class="w-100">
                                             <label class="form-label" for="nombre">Nombre *</label>
                                             <input class="form-control" type="text" name="nombre" id="nombre" required>
                                             <div class="invalid-feedback" id="error-nombre"></div>
                                         </div>
+
                                         <div class="w-100">
                                             <label class="form-label" for="apellido">Apellido *</label>
                                             <input class="form-control" type="text" name="apellido" id="apellido" required>
@@ -94,6 +101,7 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="telefono">Teléfono *</label>
                                         <input class="form-control" type="tel" name="telefono" id="telefono" required>
+                                        <div class="form-text">Incluya solo el área y número (ej: <span class="fw-medium">3644778899</span>)</div>
                                         <div class="invalid-feedback" id="error-telefono"></div>
                                     </div>
 
@@ -108,13 +116,13 @@
                                             <label class="form-label" for="historialMedico">Historial médico</label>
 
                                             <i 
-                                                class="bi bi-question-circle"
+                                                class="fa-regular fa-question-circle"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="right"
                                                 title="Incluya todo el historial médico relevante sobre el paciente">
                                             </i>
                                         </div>
-                                        <input class="form-control" type="text" name="historialMedico" id="historialMedico">
+                                        <textarea class="form-control" name="historialMedico" id="historialMedico" rows="3"></textarea>
                                         <div class="invalid-feedback" id="error-historialMedico"></div>
                                     </div>
 
@@ -123,13 +131,13 @@
                                             <label class="form-label" for="alergias">Alergias</label>
 
                                             <i 
-                                                class="bi bi-question-circle"
+                                                class="fa-regular fa-question-circle"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="right"
                                                 title="Lista de las alergias del paciente, si amerita">
                                             </i>
                                         </div>
-                                        <input class="form-control" type="text" name="alergias" id="alergias" placeholder="Alergia al polen, látex, etc...">
+                                        <textarea class="form-control" name="alergias" id="alergias" rows="3" placeholder="Alergia al polen, látex, etc..."></textarea>
                                         <div class="invalid-feedback" id="error-alergias"></div>
                                     </div>
 

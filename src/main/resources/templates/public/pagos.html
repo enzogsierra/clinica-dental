@@ -19,12 +19,18 @@
                 </button>
 
                 <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <p class="text-muted">Pagos de los últimos 30 días</p>
+                    <div th:if="${pagos.size() == 0}" class="text-center">
+                        <p class="mb-0 text-muted">Aún no hay pagos registrados</p>
+                        <p class="text-muted">Puedes registrar pagos luego de finalizar un turno, al pagar la cuota de un financiamiento,<br>o puedes registrar un pago aislado:</p>
 
-                    <div th:if="${pagos.size() == 0}">
-                        <h5>Aún no hay pagos registrados</h5>
+                        <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago')">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                            Registrar pago
+                        </button>
                     </div>
-                    <table th:unless="${pagos.size() == 0}" class="table table-bordered table-striped table-hover">
+                    <table th:unless="${pagos.size() == 0}" class="table table-bordered table-striped table-hover caption-top">
+                        <caption>Pagos de los últimos 30 días</caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Fecha</th>
@@ -35,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="entity: ${pagos}">
+                            <tr th:each="entity: ${pagos}" class="clickable-row cursor-pointer" th:data-href="@{/pagos/{id} (id = ${entity.id})}">
                                 <td th:text="${#temporals.format(entity.fechaPago, 'dd/MM/yyyy')}"></td>
                                 <td th:if="${entity.paciente}" th:text="${entity.paciente.nombre + ' ' + entity.paciente.apellido}"></td>
                                 <td th:unless="${entity.paciente}">(No especificado)</td>
@@ -43,20 +49,6 @@
                                 <td th:text="${entity.metodoPago}"></td>
                                 <td th:text="'$ ' + ${#numbers.formatDecimal(entity.monto, 0, 'POINT', 0, 'DEFAULT')}" class="fs-5 fw-medium text-end text-nowrap"></td>
                             </tr>
-                            <!-- <tr th:each="entity: ${pacientes}" class="clickable-row cursor-pointer" th:data-href="@{/pacientes/{id} (id = ${entity.id})}" title="Ver perfil">
-                                <td>
-                                    <span class="text-uppercase" th:text="${entity.apellido}"></span>,
-                                    <span th:text="${entity.nombre}"></span>
-                                </td>
-                                <td th:text="${entity.telefono}"></td>
-                                <td th:text="${entity.direccion}"></td>
-                                <td th:text="${entity.historialMedico}"></td>
-                                <td th:text="${entity.alergias}"></td>
-                                <td>
-                                    <span th:text="${#temporals.format(entity.fechaNacimiento, 'dd/MM/yyyy')}"></span>
-                                    (<span th:text="${T(java.time.Period).between(T(java.time.LocalDate).parse(entity.fechaNacimiento.toString()), T(java.time.LocalDate).now()).getYears()}"></span>)
-                                </td>
-                            </tr> -->
                         </tbody>
                         <tfoot class="text-bg-light">
                             <tr>
@@ -82,7 +74,7 @@
                             </div>
 
                             <div class="modal-body ui-front">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/pagos/form', 'Pago')">
+                                <form method="POST" onsubmit="onFormSubmit('/pagos/form', 'Pago')">
                                     <input type="hidden" name="id">
                                     <input type="hidden" name="createdAt">
                         
@@ -100,7 +92,7 @@
                                         <select name="metodoPago" id="metodoPago" class="form-select">
                                             <option value="Efectivo" selected>Efectivo</option>
                                             <option value="Tarjeta de crédito">Tarjeta de crédito</option>
-                                            <option value="Tarjeta de debito">Tarjeta de debito</option>
+                                            <option value="Tarjeta de débito">Tarjeta de débito</option>
                                             <option value="Cheque">Cheque</option>
                                             <option value="Otro">Otro</option>
                                         </select>
@@ -116,14 +108,14 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label" for="fechaPago">Fecha del pago *</label>
-                                        <input class="form-control" type="date" name="fechaPago" id="fechaPago" th:value="${todayDate}" required>
+                                        <label class="form-label" for="fechaPago">Fecha y hora del pago *</label>
+                                        <input class="form-control" type="datetime-local" name="fechaPago" id="fechaPago" th:value="${todayDateTime}" required>
                                         <div class="invalid-feedback" id="error-fechaPago"></div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label" for="detalles">Detalles adicionales</label>
-                                        <input class="form-control" type="text" name="detalles" id="detalles">
+                                        <textarea class="form-control" name="detalles" id="detalles" rows="3" placeholder="Entidad bancaria, número de transacción, etc..."></textarea>
                                         <div class="invalid-feedback" id="error-detalles"></div>
                                     </div>
 

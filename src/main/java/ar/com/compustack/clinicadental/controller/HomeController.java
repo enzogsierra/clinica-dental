@@ -1,25 +1,25 @@
 package ar.com.compustack.clinicadental.controller;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.validation.Valid;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import ar.com.compustack.clinicadental.model.Pago;
+import ar.com.compustack.clinicadental.model.Doctor;
+import ar.com.compustack.clinicadental.model.Paciente;
+import ar.com.compustack.clinicadental.model.Tratamiento;
 import ar.com.compustack.clinicadental.model.Turno;
-import ar.com.compustack.clinicadental.repository.PagoRepository;
+import ar.com.compustack.clinicadental.repository.DoctorRepository;
+import ar.com.compustack.clinicadental.repository.PacienteRepository;
+import ar.com.compustack.clinicadental.repository.TratamientoRepository;
 import ar.com.compustack.clinicadental.repository.TurnoRepository;
+
 
 
 @Controller
@@ -29,7 +29,14 @@ public class HomeController
     private TurnoRepository turnoRepository;
 
     @Autowired
-    private PagoRepository pagoRepository;
+    private TratamientoRepository tratamientoRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private PacienteRepository pacienteRepository;
+    
 
 
     @GetMapping("")
@@ -45,74 +52,86 @@ public class HomeController
         return "public/home";
     }
 
-
-    // Archivar turno
-    @PostMapping("/finishDate")
-    public ResponseEntity<?> finishDate(@RequestParam Integer id)
+    //
+    @GetMapping("/generateDefaults")
+    public String generateDefaults()
     {
-        Optional<Turno> opt = turnoRepository.findById(id);
+        Random rand = new Random();
 
-        // El turno no existe
-        if(!opt.isPresent()) 
-        {
-            return ResponseEntity.badRequest().build(); // Devolver un codigo de error
+        // Crear tratamientos
+        List<Tratamiento> tratamientos = new ArrayList<>();
+        Tratamiento tratamiento = null;
+
+        tratamiento = new Tratamiento(null, "Consulta", null, 4000.0, null, null);
+        tratamientos.add(tratamiento);
+        tratamiento = new Tratamiento(null, "Extracción de diente/muela", "Precio por cada diente o muela extraida", 9000.0, null, null);
+        tratamientos.add(tratamiento);
+        tratamiento = new Tratamiento(null, "Limpieza dental inferior", null, 10000.0, null, null);
+        tratamientos.add(tratamiento);
+        tratamiento = new Tratamiento(null, "Limpieza dental superior", null, 8000.0, null, null);
+        tratamientos.add(tratamiento);
+        tratamiento = new Tratamiento(null, "Limpieza dental completa", null, 16000.0, null, null);
+        tratamientos.add(tratamiento);
+        tratamiento = new Tratamiento(null, "Ortodoncia convencional", "Realizar financiamiento a este valor", 150000.0, null, null);
+        tratamientos.add(tratamiento);
+
+        for(Tratamiento entity: tratamientos) {
+            tratamientoRepository.save(entity);
         }
 
-        // El turno existe
-        Turno turno = opt.get();
-        turno.setCompletado(true);
-        turnoRepository.save(turno);
+        // Crear doctores
+        List<Doctor> doctores = new ArrayList<>();
+        Doctor doctor = null;
 
-        return ResponseEntity.ok().build();
-    }
+        doctor = new Doctor(null, "Lionel", "Scaloni", "3644025420", "Calle Qatar, 200", "Rompecolas", null);
+        doctores.add(doctor);
+        doctor = new Doctor(null, "Pablo", "Aimar", "3644934124", "Calle Qatar, 200", "Ayudante de Rompecolas", null);
+        doctores.add(doctor);
 
-    // Rellenar formulario del pago de un turno
-    // @GetMapping("/getTurnoPago/{id}")
-    // public @ResponseBody TurnoPagoDTO getTurnoPago(@PathVariable Integer id)
-    // {
-    //     Turno turno = turnoRepository.findById(id).get();
-
-    //     TurnoPagoDTO turnoPagoDTO = new TurnoPagoDTO();
-    //     turnoPagoDTO.setTurnoFecha(turno.getFecha());
-    //     turnoPagoDTO.setTurnoHora(turno.getHora());
-    //     turnoPagoDTO.setPacienteNombre(turno.getPaciente().getNombre() + ' ' + turno.getPaciente().getApellido());
-    //     turnoPagoDTO.setDoctorNombre(turno.getDoctor().getNombre() + ' ' + turno.getDoctor().getApellido());
-    //     turnoPagoDTO.setTurnoTratamiento((turno.getTratamiento() != null) ? turno.getTratamiento().getNombre() : "");
-
-    //     turnoPagoDTO.setTurno(id);
-    //     turnoPagoDTO.setPaciente(turno.getPaciente().getId());
-    //     turnoPagoDTO.setMonto((turno.getTratamiento() != null) ? turno.getTratamiento().getPrecio() : 0.0);
-    //     return turnoPagoDTO;
-    // }
-
-    // Registrar pago de un turno
-    @PostMapping("/pagarTurno")
-    public ResponseEntity<?> pagarTurno(@Valid Pago pago, BindingResult result)
-    {
-        // Verificar errores de validacion
-        if(result.hasErrors())
-        {
-            Map<String, String> errors = new HashMap<>(); // Esta variable almacenara todos los erroes en forma de map
-            result.getFieldErrors().forEach(error -> // Recorrer todos los errores
-            {
-                errors.put(error.getField(), error.getDefaultMessage()); // Añadir errores al map
-            });
-            return ResponseEntity.badRequest().body(errors); // Devolver con un status 400 junto con los mensajes de validacion
+        for(Doctor entity: doctores) {
+            doctorRepository.save(entity);
         }
 
-        // Validacion correcta
-        pagoRepository.save(pago);
 
-        if(pago.getTurno() != null) // Verificar si el pago tiene un turno asociado
-        {
-            Integer turnoId = pago.getTurno().getId();
+        // Pacientes
+        List<Paciente> pacientes = new ArrayList<>();
+        Paciente paciente = null;
+        LocalDate startDate = LocalDate.of(1994, 1, 1);
 
-            Turno turno = turnoRepository.findById(turnoId).get(); // Obtener el turno
-            turno.setPago(pago); // Relacionar el pago al turno
-            turno.setCompletado(true);
-            turnoRepository.save(turno); // Guardar informacion del turno
+        paciente = new Paciente(null, "Lionel", "Messi", "364434215", "Rosario", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+        paciente = new Paciente(null, "Paulo", "Dybolas", "3644039433", "Calle Campeon y Sexo, 500", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+        paciente = new Paciente(null, "Enzo", "Fernández", "3644340423", "Calle Cince, 100", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+        paciente = new Paciente(null, "Lisando", "Paredes", "3644123094", "Calle Construccion, 600", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+        paciente = new Paciente(null, "Julian", "Alvarez", "3644493032", "B° Silencio e Incomodidad", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+        paciente = new Paciente(null, "Franco", "Armanco", "3644020542", "Av. Sin Manos, 340", null, "Alergico al matrimonio", startDate.plusDays(rand.nextInt(365 * 10)), null);
+        pacientes.add(paciente);
+
+        for(Paciente entity: pacientes) {
+            pacienteRepository.save(entity);
         }
-        
-        return ResponseEntity.ok().build(); // Retornar un status 200 - entidad creada correctamente
+
+        // Turnos
+        startDate = LocalDate.now();
+
+        for(int i = 0; i < 400; i++)
+        {
+            Turno turno = new Turno();
+            turno.setDoctor(doctores.get(rand.nextInt(doctores.size())));
+            turno.setFecha(startDate.plusDays(-30 + rand.nextInt(60)));
+            turno.setHora(LocalTime.of(8 + rand.nextInt(10), 30 * rand.nextInt(2)));
+            turno.setPaciente(pacientes.get(rand.nextInt(pacientes.size())));
+            turno.setTratamiento(tratamientos.get(rand.nextInt(tratamientos.size())));
+            turnoRepository.save(turno);
+        }
+
+        return "redirect:/";
     }
 }
+    
+    
+

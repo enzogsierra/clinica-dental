@@ -5,128 +5,139 @@
     </head>
 
     <body>
-        <div class="d-flex flex-row gap-2">
+        <div class="d-flex flex-row">
             <header th:replace="layout::header">
 
             </header>
 
             <main class="container-fluid p-4">
-                <h2 class="text-center text-muted text-lg-start">Información del turno</h2>
+                <h2 class="mb-4 text-center text-muted text-lg-start">Información del turno</h2>
 
-                <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <div class="row row-cols-1 row-cols-xxl-2">
-                        <div class="col-12 col-xxl-6">
-                            <div class="d-flex justify-content-between">
-                                <h3>Datos generales</h3>
+                <div class="row row-cols-1 row-cols-lg-2">
+                    <div class="col col-lg-9">
+                        <div class="mb-4 bg-white rounded-2 shadow">
+                            <div class="p-4 d-flex align-items-center justify-content-between gap-2 border-bottom">
+                                <h3 class="mb-0">Datos generales</h3>
 
                                 <div class="text-nowrap">
                                     <button type="button" class="btn btn-sm btn-primary" id="printBtn" th:print-src="@{/turnos/print/{id} (id = ${turno.id})}">
                                         <i class="fa-solid fa-print"></i>
                                         Imprimir
                                     </button>
-
                                     <button type="button" class="btn btn-sm btn-warning" th:entity-id="${turno.id}" data-bs-toggle="modal" data-bs-target="#turnoModal" onclick="onEditEntity('/turnos/get', 'Editar turno')">
-                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-danger" th:entity-id="${turno.id}" id="deleteEntityBtn" entity-text="Eliminar turno" onclick="onDeleteEntity('/turnos/delete', 'Turno')">
-                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </div>
                             </div>
-                            
-                            <div class="px-4 bg-light border rounded">
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Fecha</div>
-                                        <div class="col col-auto fw-medium">
-                                            <span> 
-                                                <span th:text="${#strings.capitalize(#temporals.format(turno.fecha, 'EEEE'))}"></span>,
-                                                <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
-                                                <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span> del
-                                                <span th:text="${#temporals.format(turno.fecha, 'yyyy')}"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Hora</div>
-                                        <div class="col col-auto fw-medium" th:text="${#temporals.format(turno.hora, 'HH:mm')}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Paciente</div>
-                                        <div class="col col-auto fw-medium">
-                                            <a th:href="@{/pacientes/{id} (id = ${turno.paciente.id})}" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Doctor</div>
-                                        <div class="col col-auto fw-medium" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Tratamiento</div>
-                                        <div class="col col-auto fw-medium" th:text="${turno.tratamiento.nombre}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3 border-bottom">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Observaciones</div>
-                                        <div th:if="${turno.observaciones.isEmpty()}" class="col col-auto text-muted">(Sin observaciones)</div>
-                                        <div th:unless="${turno.observaciones.isEmpty()}" class="col col-auto fw-medium" th:text="${turno.observaciones}"></div>
-                                    </div>
-                                </div>
-
-                                <div class="py-3">
-                                    <div class="row row-cols-2">
-                                        <div class="col col-4">Fecha de creación</div>
-                                        <div class="col col-auto fw-medium">
-                                            <span th:text="${#temporals.format(turno.createdAt, 'dd/MM/yyyy - HH:mm')}"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-3 text-end">
-                                
+                            <div class="px-4 pt-3 pb-1">
+                                <table class="table table-borderless">
+                                    <thead class="d-none">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Fecha programada</td>
+                                            <td class="fw-medium">
+                                                <span> 
+                                                    <span th:text="${#strings.capitalize(#temporals.format(turno.fecha, 'EEEE'))}"></span>,
+                                                    <span th:text="${#temporals.format(turno.fecha, 'dd')}"></span> de
+                                                    <span th:text="${#temporals.format(turno.fecha, 'MMMM')}"></span> del
+                                                    <span th:text="${#temporals.format(turno.fecha, 'yyyy')}"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Hora</td>
+                                            <td class="fw-medium" th:text="${#temporals.format(turno.hora, 'HH:mm')}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Paciente</td>
+                                            <td class="fw-medium">
+                                                <a th:href="@{/pacientes/{id} (id = ${turno.paciente.id})}" th:text="${turno.paciente.nombre + ' ' + turno.paciente.apellido}"></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Doctor</td>
+                                            <td class="fw-medium" th:text="${turno.doctor.nombre + ' ' + turno.doctor.apellido}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Tratamiento</td>
+                                            <td class="fw-medium" th:text="${turno.tratamiento.nombre}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Observaciones</td>
+                                            <td class="fw-medium">
+                                                <span th:if="${#strings.isEmpty(turno.observaciones)}" class="text-muted">(Sin observaciones)</span>
+                                                <span th:unless="${#strings.isEmpty(turno.observaciones)}" th:text="${turno.observaciones}"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pb-3 text-muted">Fecha de creación</td>
+                                            <td class="fw-medium">
+                                                <span th:text="${#temporals.format(turno.createdAt, 'dd/MM/yyyy')}"></span>
+                                                a las
+                                                <span th:text="${#temporals.format(turno.createdAt, 'HH:mm')}"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-12 col-xxl-6">
-                            <h3>Estado</h3>
-                            
-                            <div class="p-4 bg-light border rounded">
-                                <div class="d-flex justify-content-evenly align-items-start text-center">
-                                    <div>
-                                        <p class="fs-5 ls-1 text-muted">Completado</p>
-                                        <p class="fs-5 fw-bold text-success" th:if="${turno.completado == true}">Sí</h>
-                                        <p class="fs-5 fw-bold" th:unless="${turno.completado == true}">No</h>
-                                    </div>
+                    <div class="col col-lg-3">
+                        <div class="d-flex flex-lg-column justify-content-between gap-4">
+                            <div class="w-100 p-4 bg-white rounded-2 shadow text-center" th:with="daysDiff = ${T(java.time.temporal.ChronoUnit).DAYS.between(todayDate, turno.fecha)}">
+                                <h2>
+                                    <i th:if="${daysDiff < 0}" class="fa-solid fa-clock-rotate-left text-secondary"></i>
+                                    <i th:unless="${daysDiff < 0}" class="fa-solid fa-hourglass-start text-primary"></i>
+                                </h2>
 
-                                    <div>
-                                        <p class="fs-5 ls-1 text-muted">Pago</p>
-                                        <div th:if="${turno.pago == null}">
-                                            <p class="fs-5">No hay pago registrado</p>
+                                <p th:if="${daysDiff < -1}" class="mb-0 fw-semibold text-muted">El turno fue hace <span th:text="${-daysDiff}"></span> días</p>
+                                <p th:if="${daysDiff == -1}" class="mb-0 fw-semibold text-muted">El turno fue ayer</p>
+                                <p th:if="${daysDiff == 0}" class="mb-0 fw-semibold text-muted">El turno es HOY</p>
+                                <p th:if="${daysDiff == 1}" class="mb-0 fw-semibold text-muted">El turno es mañana</p>
+                                <p th:if="${daysDiff > 1}" class="mb-0 fw-semibold text-muted">El turno es dentro de <span th:text="${daysDiff}"></span> días</p>
+                            </div>
 
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago de turno')">
-                                                <i class="fa-solid fa-sack-dollar"></i>
-                                                Registrar pago
-                                            </button>
-                                        </div>
-                                        <div th:unless="${turno.pago == null}">
-                                            <a th:href="@{/pagos/{id} (id = ${turno.pago.id})}" class="btn btn-primary">Ver pago</a>
-                                        </div>
-                                    </div>
+                            <div class="w-100 p-4 bg-white rounded-2 shadow text-center" >
+                                <div th:if="${turno.completado == true}">
+                                    <h2><i class="fa-solid fa-clipboard-check text-primary"></i></h2>
+
+                                    <p class="mb-0 fw-semibold text-muted">Turno completado</p>
+                                </div>
+
+                                <div th:unless="${turno.completado == true}">
+                                    <h2><i class="fa-solid fa-circle-question text-secondary"></i></h2>
+
+                                    <p class="mb-0 fw-semibold text-muted">Turno sin completar</p>
+                                </div>
+                            </div>
+
+                            <div class="w-100 p-4 bg-white rounded-2 shadow text-center">
+                                <div th:if="${turno.pago == null}">
+                                    <h2><i class="fa-solid fa-circle-question text-secondary"></i></h2>
+
+                                    <p class="fw-semibold text-muted">Pago sin registrar</p>
+
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal" onclick="onNewEntity('Registrar pago de turno')">
+                                        <i class="fa-solid fa-sack-dollar"></i>
+                                        Registrar pago
+                                    </button>
+                                </div>
+
+                                <div th:unless="${turno.pago == null}">
+                                    <h2><i class="fa-solid fa-sack-dollar text-primary"></i></h2>
+
+                                    <p class="fw-semibold text-muted">Pago registrado</p>
+
+                                    <a th:href="@{/pagos/{id} (id = ${turno.pago.id})}" class="btn btn-primary">Ver pago</a>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +209,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label" for="observaciones">Observaciones</label>
-                                        <input class="form-control" type="text" name="observaciones" id="observaciones">
+                                        <textarea class="form-control" name="observaciones" id="observaciones" rows="3" placeholder="Información adicional sobre esta cita"></textarea>
                                         <div class="invalid-feedback" id="error-observaciones"></div>
                                     </div>
 
@@ -247,7 +258,7 @@
                                         <select name="metodoPago" id="metodoPago" class="form-select">
                                             <option value="Efectivo" selected>Efectivo</option>
                                             <option value="Tarjeta de crédito">Tarjeta de crédito</option>
-                                            <option value="Tarjeta de debito">Tarjeta de debito</option>
+                                            <option value="Tarjeta de débito">Tarjeta de débito</option>
                                             <option value="Cheque">Cheque</option>
                                             <option value="Otro">Otro</option>
                                         </select>
@@ -261,13 +272,13 @@
 
                                     <div class="mb-3">
                                         <label class="form-label" for="fechaPago">Fecha del pago *</label>
-                                        <input class="form-control" type="date" name="fechaPago" id="fechaPago" th:value="${todayDate}" required>
+                                        <input class="form-control" type="datetime-local" name="fechaPago" id="fechaPago" th:value="${todayDateTime}" required>
                                         <div class="invalid-feedback" id="error-fechaPago"></div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label" for="detalles">Detalles adicionales</label>
-                                        <input class="form-control" type="text" name="detalles" id="detalles">
+                                        <textarea class="form-control" name="detalles" id="detalles" placeholder="Entidad bancaria, número de transacción, etc..." rows="3"></textarea>
                                         <div class="invalid-feedback" id="error-detalles"></div>
                                     </div>
 

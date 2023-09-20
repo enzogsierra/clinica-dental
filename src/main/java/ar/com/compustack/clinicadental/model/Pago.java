@@ -1,6 +1,6 @@
 package ar.com.compustack.clinicadental.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +41,11 @@ public class Pago
     @Min(value = 0, message = "El monto del pago no puede ser menor a $0")
     private Double monto;
 
+    @NotNull(message = "Debes elegir la fecha del pago")
+    @Column(columnDefinition = "DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime fechaPago;
+
     private String metodoPago;
 
     private String detalles;
@@ -55,9 +60,4 @@ public class Pago
     @OneToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private Turno turno;
-
-    @NotNull(message = "Debes elegir la fecha del pago")
-    @Column(columnDefinition = "DATE")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate fechaPago;
 }

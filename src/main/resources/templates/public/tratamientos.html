@@ -19,9 +19,18 @@
                 </button>
 
                 <div class="my-4 p-4 bg-white rounded-2 shadow">
-                    <p class="text-muted">Lista de tratamientos</p>
+                    <div th:if="${tratamientos.size() == 0}" class="text-center">
+                        <p class="text-muted">Aún no hay tratamientos creados</p>
 
-                    <table class="table table-bordered table-striped table-hover">
+                        <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#tratamientoModal" onclick="onNewEntity('Añadir tratamiento')">
+                            <i class="fa-solid fa-plus"></i>
+                            Añadir tratamiento
+                        </button>
+                    </div>
+
+                    <table th:unless="${tratamientos.size() == 0}" class="table table-bordered table-striped table-hover caption-top">
+                        <caption>Lista de tratamientos</caption>
+
                         <thead class="text-bg-success bg-gradient">
                             <tr>
                                 <th>Nombre</th>
@@ -36,17 +45,17 @@
                             <tr th:each="entity: ${tratamientos}">
                                 <td th:text="${entity.nombre}"></td>
                                 <td>
-                                    <span th:if="${entity.descripcion.isEmpty()}" class="text-muted">(Sin descripción)</span>
-                                    <span th:unless="${entity.descripcion.isEmpty()}" th:text="${entity.descripcion}"></span>
+                                    <span th:if="${#strings.isEmpty(entity.descripcion)}" class="text-muted">(Sin descripción)</span>
+                                    <span th:unless="${#strings.isEmpty(entity.descripcion)}" th:text="${entity.descripcion}"></span>
                                 </td>
                                 <td class="text-nowrap" th:text="'$ ' + ${#numbers.formatDecimal(entity.precio, 0, 'POINT', 0, 'DEFAULT')}"></td>
                                 <td th:text="${#temporals.format(entity.precioLastUpdate, 'dd/MM/yyyy')}"></td>
                                 <td class="text-nowrap">
                                     <button type="button" class="btn btn-outline-dark" th:entity-id="${entity.id}" data-bs-toggle="modal" data-bs-target="#tratamientoModal" onclick="onEditEntity('/tratamientos/get', 'Editar tratamiento')">
-                                        <i class="fa-solid fa-pen-to-square pointer-event-none"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger" th:entity-id="${entity.id}" id="deleteEntityBtn" th:entity-text="${entity.nombre}" onclick="onDeleteEntity('/tratamientos/delete', 'Tratamiento')">
-                                        <i class="fa-solid fa-trash-can pointer-event-none"></i>
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -64,14 +73,10 @@
                             </div>
 
                             <div class="modal-body">
-                                <form method="POST" id="entityForm" onsubmit="onFormSubmit('/tratamientos/form', 'Tratamiento')">
-                                    <input type="hidden" name="id">
-                                    <input type="hidden" name="precioLastUpdate">
-                                    <input type="hidden" name="createdAt">
-                        
+                                <form method="POST" onsubmit="onFormSubmit('/tratamientos/form', 'Tratamiento')">
                                     <div class="mb-3">
                                         <label class="form-label" for="nombre">Nombre *</label>
-                                        <input class="form-control" type="tel" name="nombre" id="nombre" required>
+                                        <input class="form-control" type="text" name="nombre" id="nombre" required autocomplete="off">
                                         <div class="invalid-feedback" id="error-nombre"></div>
                                     </div>
 
@@ -82,7 +87,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label" for="descripcion">Descripcion *</label>
+                                        <label class="form-label" for="descripcion">Descripcion</label>
                                         <textarea class="form-control" name="descripcion" id="descripcion" placeholder="Información detallada sobre el tratamiento, tales como la duración, opciones de financiamiento, etc..." rows="5"></textarea>
                                     </div>
                                 
